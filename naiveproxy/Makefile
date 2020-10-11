@@ -7,12 +7,12 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=naiveproxy
-PKG_VERSION:=85.0.4183.83-3
+PKG_VERSION:=86.0.4240.75-1
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/klzgrad/naiveproxy/tar.gz/v$(PKG_VERSION)?
-PKG_HASH:=66a8f275a9aa0fa04649062fb141a10add9bd76855f32ee65e6ee60a7fc4649c
+PKG_HASH:=91f946e137565115649bc5787788a6889d84e0a20e9878553a832b89c0cb161f
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
 
 PKG_LICENSE:=BSD 3-Clause
@@ -36,13 +36,17 @@ endif
 
 include $(INCLUDE_DIR)/package.mk
 
+define Package/naiveproxy/config
+	depends on !(arc||armeb||mips||mips64||powerpc)
+endef
+
 define Package/naiveproxy
 	SECTION:=net
 	CATEGORY:=Network
 	SUBMENU:=Web Servers/Proxies
 	URL:=https://github.com/klzgrad/naiveproxy
 	TITLE:=Make a fortune quietly
-	DEPENDS:=@!(arc||armeb||powerpc) +libatomic +libnss
+	DEPENDS:=+libatomic +libnss
 endef
 
 define Package/naiveproxy/description
@@ -72,14 +76,11 @@ define Build/Compile
 endef
 
 define Package/naiveproxy/conffiles
-/etc/chromium/policies/managed/proxy.json
 endef
 
 define Package/naiveproxy/install
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/src/out/Release/naive $(1)/usr/bin/naive
-	$(INSTALL_DIR) $(1)/etc/chromium/policies/managed
-	$(INSTALL_CONF) $(CURDIR)/files/proxy.json $(1)/etc/chromium/policies/managed/proxy.json
 endef
 
 $(eval $(call BuildPackage,naiveproxy))
