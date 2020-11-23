@@ -18,7 +18,7 @@ endchoice
 
 config V2RAY_COMPRESS_GOPROXY
 	bool "Compiling with GOPROXY proxy"
-	default n
+	default y
 
 config V2RAY_EXCLUDE_V2CTL
 	bool "Exclude V2Ctl"
