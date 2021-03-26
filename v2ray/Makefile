@@ -9,13 +9,13 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=v2ray
-PKG_VERSION:=4.35.1
+PKG_VERSION:=4.36.2
 PKG_RELEASE:=1
 PKG_BUILD_DIR:=$(BUILD_DIR)/v2ray-core-$(PKG_VERSION)
 
 PKG_SOURCE:=v2ray-core-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/v2fly/v2ray-core/tar.gz/v$(PKG_VERSION)?
-PKG_HASH:=skip
+PKG_HASH:=e7f7ceefd4cd9d2e57d18cecf55228a5a126c6ed5ee53767660601c35e70535c
 
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=LICENSE
@@ -46,7 +46,7 @@ define Package/$(PKG_NAME)
   SECTION:=net
   CATEGORY:=Network
   SUBMENU:=Web Servers/Proxies
-  DEPENDS:=@BROKEN $(GO_ARCH_DEPENDS) +ca-bundle
+  DEPENDS:=@BROKEN $(GO_ARCH_DEPENDS) +ca-certificates
 endef
 
 define Package/$(PKG_NAME)/config
