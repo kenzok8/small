@@ -1,20 +1,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=xray-core
-PKG_VERSION:=1.4.1
+PKG_VERSION:=1.4.2
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=https://codeload.github.com/XTLS/Xray-core/tar.gz/v$(PKG_VERSION)?
-PKG_HASH:=0dfedb6e133f431e9588a84b7a36112e058bf09ced2d10ffe603ab0db6610430
+PKG_SOURCE_URL:=https://codeload.github.com/XTLS/xray-core/tar.gz/v$(PKG_VERSION)?
+PKG_HASH:=565255d8c67b254f403d498b9152fa7bc097d649c50cb318d278c2be644e92cc
 
-#PKG_SOURCE_PROTO:=git
-#PKG_SOURCE_URL:=https://github.com/XTLS/xray-core.git
-#PKG_MIRROR_HASH:=19f3017d8279acc28d242d18689b95a39ca00a286e72329552d114f04a861ecb
-#PKG_SOURCE_VERSION:=c345d4818efa763b07961d6c132afe1cf91845de
-#PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_SOURCE_VERSION).tar.gz
-
-PKG_MAINTAINER:=
+PKG_MAINTAINER:=Tianling Shen <cnsztl@project-openwrt.eu.org>
 PKG_LICENSE:=MPL-2.0
 PKG_LICENSE_FILES:=LICENSE
 
@@ -50,18 +44,10 @@ define Package/xray-core
   PROVIDES:=v2ray-core
 endef
 
-define Package/xray-example
-  $(call Package/xray/template)
-  TITLE+= (example configs)
-  DEPENDS:=xray-core
-  PKGARCH:=all
-endef
-
 define Package/xray-geodata
   $(call Package/xray/template)
   TITLE+= (geodata files)
   DEPENDS:=xray-core
-  PKGARCH:=all
 endef
 
 define Package/xray/description
@@ -71,12 +57,6 @@ endef
 
 define Package/xray-core/description
   $(call Package/xray/description)
-endef
-
-define Package/xray-example/description
-  $(call Package/xray/description)
-
-  This includes example configuration files for xray-core.
 endef
 
 define Package/xray-geodata/description
@@ -99,29 +79,24 @@ config XRAY_CORE_COMPRESS_UPX
 endmenu
 endef
 
-define Package/xray-core/conffiles
-/etc/xray/
-/etc/config/xray
-endef
-
-GEOIP_VER:=202103302203
+GEOIP_VER:=202103250007
 GEOIP_FILE:=geoip.dat.$(GEOIP_VER)
 
 define Download/geoip
-  URL:=https://github.com/Loyalsoldier/v2ray-rules-dat/releases/download/$(GEOIP_VER)/
+  URL:=https://github.com/v2fly/geoip/releases/download/$(GEOIP_VER)/
   URL_FILE:=geoip.dat
   FILE:=$(GEOIP_FILE)
-  HASH:=969043ce2f307f79a617a2d82daa1dcfdba4ad72fefb7e4b70233ad45d221946
+  HASH:=eca0b25e528167dbdec6c130b6a5240284ce20b28158d1448f8dbeddace2e8cf
 endef
 
-GEOSITE_VER:=202103302203
-GEOSITE_FILE:=geosite.dat.$(GEOSITE_VER)
+GEOSITE_VER:=20210331082244
+GEOSITE_FILE:=dlc.dat.$(GEOSITE_VER)
 
 define Download/geosite
-  URL:=https://github.com/Loyalsoldier/v2ray-rules-dat/releases/download/$(GEOSITE_VER)/
-  URL_FILE:=geosite.dat
+  URL:=https://github.com/v2fly/domain-list-community/releases/download/$(GEOSITE_VER)/
+  URL_FILE:=dlc.dat
   FILE:=$(GEOSITE_FILE)
-  HASH:=9fba42672073b3d21e9e2e514b26f4a12d08319718ab878a8eda6f6b375a1485
+  HASH:=e2b942b93994af1a59fd0c39179eeac7afaf351f48bf863f3e779b46a7530823
 endef
 
 ifneq ($(CONFIG_XRAY_CORE_COMPRESS_GOPROXY),)
@@ -149,23 +124,6 @@ define Package/xray-core/install
 	$(INSTALL_DIR) $(1)/usr/bin/
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/main $(1)/usr/bin/xray
 	$(LN) xray $(1)/usr/bin/v2ray
-
-	$(INSTALL_DIR) $(1)/etc/xray/
-	$(INSTALL_CONF) $(CURDIR)/files/config.json.example $(1)/etc/xray/
-
-	$(INSTALL_DIR) $(1)/etc/config/
-	$(INSTALL_CONF) $(CURDIR)/files/xray.conf $(1)/etc/config/xray
-	$(INSTALL_DIR) $(1)/etc/init.d/
-	$(INSTALL_BIN) $(CURDIR)/files/xray.init $(1)/etc/init.d/xray
-
-	$(INSTALL_DIR) $(1)/etc/capabilities/
-	$(INSTALL_DATA) $(CURDIR)/files/xray.capabilities $(1)/etc/capabilities/xray.json
-endef
-
-define Package/xray-example/install
-	$(INSTALL_DIR) $(1)/etc/xray/
-	$(INSTALL_CONF) $(CURDIR)/files/vpoint_socks_vmess.json $(1)/etc/xray/
-	$(INSTALL_CONF) $(CURDIR)/files/vpoint_vmess_freedom.json $(1)/etc/xray/
 endef
 
 define Package/xray-geodata/install
@@ -175,5 +133,4 @@ define Package/xray-geodata/install
 endef
 
 $(eval $(call BuildPackage,xray-core))
-$(eval $(call BuildPackage,xray-example))
 $(eval $(call BuildPackage,xray-geodata))
