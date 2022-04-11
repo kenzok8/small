@@ -6,11 +6,11 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=v2rayA
 PKG_VERSION:=1.5.6.2
-PKG_RELEASE:=$(AUTORELEASE)
+PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/v2rayA/v2rayA/tar.gz/v$(PKG_VERSION)?
-PKG_HASH:=skip
+PKG_HASH:=d949246aa9fe80aa9cb8fb4d80cb470f508bb44d4ac23e84e28e3b9abd30b67c
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)/service
 
 PKG_LICENSE:=AGPL-3.0-only
@@ -37,8 +37,6 @@ define Package/v2raya
   SUBMENU:=Web Servers/Proxies
   DEPENDS:=$(GO_ARCH_DEPENDS) \
     +ca-bundle \
-    +iptables \
-    +IPV6:ip6tables \
     +iptables-mod-conntrack-extra \
     +iptables-mod-extra \
     +iptables-mod-filter \

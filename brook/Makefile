@@ -10,7 +10,7 @@ PKG_RELEASE:=$(AUTORELEASE)
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/txthinking/brook/tar.gz/v$(PKG_VERSION)?
-PKG_HASH:=skip
+PKG_HASH:=cf4433263cc755edfe56be66d206b7ee5083faaaa8b30bb4102174ad73e22764
 
 PKG_MAINTAINER:=Tianling Shen <cnsztl@immortalwrt.org>
 PKG_LICENSE:=GPL-3.0
@@ -24,7 +24,7 @@ GO_PKG:=github.com/txthinking/brook
 GO_PKG_BUILD_PKG:=$(GO_PKG)/cli/brook
 
 include $(INCLUDE_DIR)/package.mk
-include $(TOPDIR)/feeds/packages/lang/golang/golang-package.mk
+include ../../lang/golang/golang-package.mk
 
 define Package/brook
   SECTION:=net
