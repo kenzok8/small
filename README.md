@@ -15,8 +15,6 @@
 
 * 重新归类把ssr,passwall,vssr等相关依赖整合一个仓库 ，该仓库每天自动同步更新
 
-* 软件不定期同步大神库更新，适合一键下载用于openwrt编译
-
 
 ##### 插件每日更新下载:
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/kenzok8/compile-package?style=for-the-badge&label=插件更新下载)](https://github.com/kenzok8/compile-package/releases/latest)
