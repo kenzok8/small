@@ -121,14 +121,4 @@ jobs:
         with:
           name: ${{env.ARCHIVE_NAME}}-packages
           path: |
-            *.ipk
-            
-      - name: Upload packages
-        uses: ncipollo/release-action@main
-        with:
-          name: ${{ github.ref_name }}
-          token: ${{ secrets.ACCESS_TOKEN }}
-          allowUpdates: true
-          replacesArtifacts: true
-          artifacts: "bin/packages/${{ matrix.arch }}/packages_ci/*.ipk"
-          tag_name: v9.0.0 # 根据需要修改       
+            *.ipk    
