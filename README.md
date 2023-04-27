@@ -21,7 +21,7 @@
 
 + [passwall依赖](https://github.com/kenzok8/small)
 
-+ [openwrt固件与插件下载](https://op.dllkids.xyz/op/firmware/)
++ [openwrt固件与插件下载](https://op.dllkids.xyz/)
 
 #### 使用
 一键命令
