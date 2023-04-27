@@ -15,10 +15,6 @@
 
 * 重新归类把ssr,passwall,vssr等相关依赖整合一个仓库 ，该仓库每天自动同步更新
 
-* 喜欢追新的可以去下载small-package，该仓库每天自动同步更新
-
-* [small-package仓库地址](https://github.com/kenzok8/small-package) 
-
 * 软件不定期同步大神库更新，适合一键下载用于openwrt编译
 
 
