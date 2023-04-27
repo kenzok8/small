@@ -215,7 +215,6 @@ o = s:taboption("DNS", ListValue, "remote_dns_protocol", translate("Remote DNS P
 o:value("tcp", "TCP")
 o:value("doh", "DoH")
 o:value("udp", "UDP")
-o:value("fakedns", "FakeDNS")
 
 ---- DNS Forward
 o = s:taboption("DNS", Value, "remote_dns", translate("Remote DNS"))
@@ -253,6 +252,10 @@ o.datatype = "ipaddr"
 o:depends("remote_dns_protocol", "tcp")
 o:depends("remote_dns_protocol", "doh")
 
+o = s:taboption("DNS", Flag, "remote_fakedns", "FakeDNS", translate("Use FakeDNS work in the shunt domain that proxy."))
+o.default = "0"
+o.rmempty = false
+
 o = s:taboption("DNS", ListValue, "remote_dns_query_strategy", translate("Remote Query Strategy"))
 o.default = "UseIPv4"
 o:value("UseIP")
@@ -262,6 +265,13 @@ o:value("UseIPv6")
 hosts = s:taboption("DNS", TextValue, "dns_hosts", translate("Domain Override"))
 hosts.rows = 5
 hosts.wrap = "off"
+
+o = s:taboption("DNS", Button, "clear_ipset", translate("Clear IPSET"), translate("Try this feature if the rule modification does not take effect."))
+o.inputstyle = "remove"
+function o.write(e, e)
+	luci.sys.call("sh /usr/share/" .. appname .. "/iptables.sh flush_ipset > /dev/null 2>&1 &")
+	luci.http.redirect(api.url("log"))
+end
 
 s:tab("log", translate("Log"))
 o = s:taboption("log", Flag, "close_log", translate("Close Node Log"))
