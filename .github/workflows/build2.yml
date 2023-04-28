@@ -5,6 +5,8 @@ on:
   push:
     tags:
       - v*.**
+   schedule:
+     - cron: "0 */8 * * *"
 
 jobs:
   build:
