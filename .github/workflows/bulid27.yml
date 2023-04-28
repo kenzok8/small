@@ -1,4 +1,4 @@
-﻿name: kenzo by test
+﻿name: bulid 27 package
 
 on:
  workflow_dispatch:
