@@ -48,3 +48,4 @@ jobs:
           replacesArtifacts: true
           commit: ssr+passwall__${{ matrix.arch }}
           tag: v1.${{ github.run_number }}_${{ matrix.arch }}          
+          generateReleaseNotes: true
