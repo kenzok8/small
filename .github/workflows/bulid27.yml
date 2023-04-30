@@ -69,4 +69,4 @@ jobs:
           artifacts: "bin/packages/${{ matrix.arch }}/packages_ci/*.ipk"
           allowUpdates: true
           replacesArtifacts: true
-          tag: v1.${{ github.run_number }}${{ matrix.arch }}              
+          tag: v1.${{ github.run_number }}_${{ matrix.arch }}              
