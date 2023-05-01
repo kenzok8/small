@@ -1,12 +1,19 @@
 name: bulid 2 package
 
 on:
- workflow_dispatch:
   push:
+    paths:
+      - '.github/workflows/build2.yml'  
     tags:
       - v*.**
   schedule:
-    - cron: "0 */8 * * *"
+    - cron: "0 */12 * * *"
+  workflow_dispatch:
+    inputs:
+      packages:
+        description: 'packages'
+        required: false
+        default: 'false'
 
 jobs:
   build:
