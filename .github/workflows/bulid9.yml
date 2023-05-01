@@ -1,4 +1,4 @@
-﻿name: bulid 27 package
+﻿name: bulid 9 package
 
 on:
  workflow_dispatch:
@@ -69,4 +69,4 @@ jobs:
           artifacts: "bin/packages/${{ matrix.arch }}/packages_ci/*.ipk"
           allowUpdates: true
           replacesArtifacts: true
-          tag: v1.${{ github.run_number }}_${{ matrix.arch }}              
+          tag: v2.1.${{ github.run_number }}_${{ matrix.arch }}              
