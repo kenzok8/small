@@ -36,7 +36,7 @@ jobs:
         env:
           ARCH: ${{ matrix.arch }}-openwrt-22.03
           FEEDNAME: packages_ci
-          PACKAGES: luci-app-ssr-plus luci-app-passwall
+          PACKAGES: luci-app-bypass luci-app-passwall luci-app-passwall2 luci-app-ssr-plus
           NO_REFRESH_CHECK: true
 
       - name: Upload artifacts
@@ -52,5 +52,4 @@ jobs:
           artifacts: "bin/packages/${{ matrix.arch }}/packages_ci/*.ipk"
           allowUpdates: true
           replacesArtifacts: true
-          tag: v1.${{ github.run_number }}_${{ matrix.arch }}          
-          generateReleaseNotes: true
+          tag: v1.${{ github.run_number }}_${{ matrix.arch }}
