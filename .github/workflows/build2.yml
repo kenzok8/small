@@ -2,8 +2,6 @@ name: bulid 2 package
 
 on:
   push:
-    paths:
-      - '.github/workflows/build2.yml'  
     tags:
       - v*.**
   schedule:
@@ -50,9 +48,9 @@ jobs:
           zip -r bin/packages/${{ matrix.arch }}/packages_ci/${{ matrix.arch }}.zip bin/packages/${{ matrix.arch }}/packages_ci/*.ipk
           echo -e "**文件说明:** 🎈:\n" >> release.txt
           echo -e "1. 默认ssr与passwall的插件与依赖整合包\n" >> release.txt
-          echo -e "2. 用法 上传openwrt固件tmp目录，运行'opkg install *.ipk'\n" >> release.txt
+          echo -e "2. 用法 上传openwrt固件tmp目录，运行`opkg install *.ipk`\n" >> release.txt
           echo -e "3. 默认压缩包里包含ssr passwall bypass passwall2 插件\n" >> release.txt
-          echo -e "4. 如果单独安装ssr与依赖，'rm -rf {*passwall*,*bypass*,*vssr*}'\n" >> release.txt
+          echo -e "4. 如果单独安装ssr与依赖，`rm -rf {*passwall*,*bypass*,*vssr*}`\n" >> release.txt
           
       - name: Create Release zip
         uses: ncipollo/release-action@v1
@@ -62,4 +60,4 @@ jobs:
           allowUpdates: true
           replacesArtifacts: true
           bodyFile: "release.txt"
-          tag: v3.1.${{ github.run_number }}_${{ matrix.arch }}
+          tag: v1.1.${{ github.run_number }}_${{ matrix.arch }}
