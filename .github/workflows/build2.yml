@@ -1,17 +1,10 @@
 name: bulid 2 package
 
 on:
+ workflow_dispatch:
   push:
     tags:
-      - v*.**
-  schedule:
-    - cron: 0 10 * * SAT
-  workflow_dispatch:
-    inputs:
-      packages:
-        description: 'packages'
-        required: false
-        default: 'false'
+      - v.**
 
 jobs:
   build:
