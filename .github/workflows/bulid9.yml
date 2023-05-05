@@ -65,8 +65,8 @@ jobs:
         run: |
       - name: Zip ipk packages
         run: |
-          zip -r bin/packages/${{ matrix.arch }}/packages_ci/${{ matrix.arch }}.zip bin/packages/${{ matrix.arch }}/packages_ci/*.ipk
-          echo -e "**文件说明:** 🎈:\n" >> release.txt
+          zip -r bin/packages/${{ matrix.arch }}/packages_ci/${{ matrix.arch }}_packages.zip bin/packages/${{ matrix.arch }}/packages_ci/*.ipk
+          echo -e "**文件说明** 🎈:\n" >> release.txt
           echo -e "1. 默认ssr与passwall的插件与依赖整合包\n" >> release.txt
           echo -e "2. 使用方法：将整合包上传到openwrt设备的tmp目录，输入命令 \`opkg install *.ipk\`\n" >> release.txt
           echo -e "3. 默认压缩包里包含ssr passwall bypass passwall2 插件\n" >> release.txt
@@ -76,7 +76,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
-          artifacts: "bin/packages/${{ matrix.arch }}/packages_ci/${{ matrix.arch }}.zip,bin/packages/${{ matrix.arch }}/packages_ci/*.ipk"
+          artifacts: "bin/packages/${{ matrix.arch }}/packages_ci/${{ matrix.arch }}_packages.zip,bin/packages/${{ matrix.arch }}/packages_ci/*.ipk"
           allowUpdates: true
           replacesArtifacts: true
           bodyFile: "release.txt"
