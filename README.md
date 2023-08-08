@@ -32,8 +32,6 @@
 
 * [small-package仓库地址](https://github.com/kenzok8/small-package) 
 
-* 软件不定期同步大神库更新，适合一键下载用于openwrt编译
-
 
 ##### 插件每日更新下载:
 [![GitHub release (latest by date)](https://img.shields.io/github/v/release/kenzok8/small?style=for-the-badge&label=插件下载)](https://github.com/kenzok8/small/releases/latest)
