@@ -1,5 +1,5 @@
-module("luci.passwall2.util_sing-box", package.seeall)
-local api = require "luci.passwall2.api"
+module("luci.passwall.util_sing-box", package.seeall)
+local api = require "luci.passwall.api"
 local uci = api.uci
 local sys = api.sys
 local jsonc = api.jsonc
@@ -228,7 +228,7 @@ function gen_outbound(flag, node, tag, proxy_table)
 		if node.protocol == "vless" then
 			protocol_table = {
 				uuid = node.uuid,
-				flow = (node.tls == '1' and node.flow) and node.flow or nil,
+				flow = (node.tls == '1' and node.tlsflow) and node.tlsflow or nil,
 				tls = tls,
 				packet_encoding = "xudp", --UDP 包编码。(空)：禁用	packetaddr：由 v2ray 5+ 支持	xudp：由 xray 支持
 				transport = v2ray_transport,
@@ -302,11 +302,7 @@ function gen_outbound(flag, node, tag, proxy_table)
 				udp_over_stream = false,
 				zero_rtt_handshake = (node.tuic_zero_rtt_handshake == "1") and true or false,
 				heartbeat = tonumber(node.tuic_heartbeat),
-				tls = {
-					enabled = true,
-					server_name = node.tls_serverName,
-					insecure = (node.tls_allowInsecure == "1") and true or false,
-				},
+				tls = tls,
 			}
 		end
 
@@ -319,11 +315,7 @@ function gen_outbound(flag, node, tag, proxy_table)
 					password = node.hysteria2_obfs_password
 				},
 				password = node.hysteria2_auth_password or nil,
-				tls = {
-					enabled = true,
-					server_name = node.tls_serverName,
-					insecure = (node.tls_allowInsecure == "1") and true or false,
-				},
+				tls = tls,
 			}
 		end
 
@@ -544,11 +536,7 @@ function gen_config_server(node)
 			congestion_control = node.tuic_congestion_control or "cubic",
 			zero_rtt_handshake = (node.tuic_zero_rtt_handshake == "1") and true or false,
 			heartbeat = node.tuic_heartbeat .. "s",
-			tls = {
-				enabled = true,
-				certificate_path = node.tls_certificateFile,
-				key_path = node.tls_keyFile,
-			}
+			tls = tls,
 		}
 	end
 
@@ -567,11 +555,7 @@ function gen_config_server(node)
 				}
 			},
 			ignore_client_bandwidth = (node.hysteria2_ignore_client_bandwidth == "1") and true or false,
-			tls = {
-				enabled = true,
-				certificate_path = node.tls_certificateFile,
-				key_path = node.tls_keyFile,
-			}
+			tls = tls,
 		}
 	end
 
@@ -607,9 +591,9 @@ function gen_config_server(node)
 				bind_interface = node.outbound_node_iface,
 				routing_mark = 255,
 			}
-			sys.call("mkdir -p /tmp/etc/passwall2/iface && touch /tmp/etc/passwall2/iface/" .. node.outbound_node_iface)
+			sys.call("mkdir -p /tmp/etc/passwall/iface && touch /tmp/etc/passwall/iface/" .. node.outbound_node_iface)
 		else
-			local outbound_node_t = uci:get_all("passwall2", node.outbound_node)
+			local outbound_node_t = uci:get_all("passwall", node.outbound_node)
 			if node.outbound_node == "_socks" or node.outbound_node == "_http" then
 				outbound_node_t = {
 					type = node.type,
@@ -620,7 +604,7 @@ function gen_config_server(node)
 					password = (node.outbound_node_password and node.outbound_node_password ~= "") and node.outbound_node_password or nil,
 				}
 			end
-			outbound = require("luci.passwall2.util_sing-box").gen_outbound(nil, outbound_node_t, "outbound")
+			outbound = require("luci.passwall.util_sing-box").gen_outbound(nil, outbound_node_t, "outbound")
 		end
 		if outbound then
 			route.final = "outbound"
@@ -658,7 +642,8 @@ function gen_config(var)
 	local logfile = var["-logfile"] or "/dev/null"
 	local node_id = var["-node"]
 	local tcp_proxy_way = var["-tcp_proxy_way"]
-	local redir_port = var["-redir_port"]
+	local tcp_redir_port = var["-tcp_redir_port"]
+	local udp_redir_port = var["-udp_redir_port"]
 	local local_socks_address = var["-local_socks_address"] or "0.0.0.0"
 	local local_socks_port = var["-local_socks_port"]
 	local local_socks_username = var["-local_socks_username"]
@@ -750,31 +735,42 @@ function gen_config(var)
 		table.insert(inbounds, inbound)
 	end
 
-	if redir_port then
-		local inbound_tproxy = {
-			type = "tproxy",
-			tag = "tproxy",
-			listen = "::",
-			listen_port = tonumber(redir_port),
-			sniff = true,
-			sniff_override_destination = (singbox_settings.sniff_override_destination == "1") and true or false
-		}
+	if tcp_redir_port then
 		if tcp_proxy_way ~= "tproxy" then
 			local inbound = {
 				type = "redirect",
 				tag = "redirect_tcp",
 				listen = "::",
-				listen_port = tonumber(redir_port),
+				listen_port = tonumber(tcp_redir_port),
 				sniff = true,
 				sniff_override_destination = (singbox_settings.sniff_override_destination == "1") and true or false,
 			}
 			table.insert(inbounds, inbound)
-
-			inbound_tproxy.tag = "tproxy_udp"
-			inbound_tproxy.network = "udp"
+		else
+			local inbound = {
+				type = "tproxy",
+				tag = "tproxy_tcp",
+				network = "tcp",
+				listen = "::",
+				listen_port = tonumber(tcp_redir_port),
+				sniff = true,
+				sniff_override_destination = (singbox_settings.sniff_override_destination == "1") and true or false,
+			}
+			table.insert(inbounds, inbound)
 		end
+	end
 
-		table.insert(inbounds, inbound_tproxy)
+	if udp_redir_port then
+		local inbound = {
+			type = "tproxy",
+			tag = "tproxy_udp",
+			network = "udp",
+			listen = "::",
+			listen_port = tonumber(udp_redir_port),
+			sniff = true,
+			sniff_override_destination = (singbox_settings.sniff_override_destination == "1") and true or false,
+		}
+		table.insert(inbounds, inbound)
 	end
 	
 	local dns_outTag = nil
@@ -904,7 +900,7 @@ function gen_config(var)
 							}
 							table.insert(outbounds, _outbound)
 							rule_outboundTag = rule_name
-							sys.call("touch /tmp/etc/passwall2/iface/" .. _node.iface)
+							sys.call("touch /tmp/etc/passwall/iface/" .. _node.iface)
 						end
 					end
 				end
@@ -1056,7 +1052,7 @@ function gen_config(var)
 						bind_interface = node.iface,
 						routing_mark = 255,
 					}
-					sys.call("touch /tmp/etc/passwall2/iface/" .. node.iface)
+					sys.call("touch /tmp/etc/passwall/iface/" .. node.iface)
 				end
 			else
 				outbound = gen_outbound(flag, node)
@@ -1164,7 +1160,7 @@ function gen_config(var)
 					end
 					experimental.clash_api = {
 						store_fakeip = true,
-						cache_file = "/tmp/singbox_passwall2_" .. flag .. ".db"
+						cache_file = "/tmp/singbox_passwall_" .. flag .. ".db"
 					}
 				end
 			end
@@ -1177,7 +1173,7 @@ function gen_config(var)
 		end
 	
 		if direct_dns_udp_server then
-			local nodes_domain_text = sys.exec('uci show passwall2 | grep ".address=" | cut -d "\'" -f 2 | grep "[a-zA-Z]$" | sort -u')
+			local nodes_domain_text = sys.exec('uci show passwall | grep ".address=" | cut -d "\'" -f 2 | grep "[a-zA-Z]$" | sort -u')
 			string.gsub(nodes_domain_text, '[^' .. "\r\n" .. ']+', function(w)
 				table.insert(dns_direct_domains, "full:" .. w)
 			end)
@@ -1256,7 +1252,7 @@ function gen_config(var)
 		})
 	
 		local default_dns_flag = "remote"
-		if node_id and redir_port then
+		if node_id and (tcp_redir_port or udp_redir_port) then
 			local node = uci:get_all(appname, node_id)
 			if node.protocol == "_shunt" then
 				if node.default_node == "_direct" then
