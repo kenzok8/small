@@ -735,6 +735,9 @@ function to_check(arch, app_name)
 	end
 
 	local remote_version = json.tag_name
+	if com[app_name].remote_version_str_replace then
+		remote_version = remote_version:gsub(com[app_name].remote_version_str_replace, "")
+	end
 	local has_update = compare_versions(local_version:match("[^v]+"), "<", remote_version:match("[^v]+"))
 
 	if not has_update then
@@ -939,7 +942,7 @@ function get_version()
 end
 
 function to_check_self()
-	local url = "https://raw.githubusercontent.com/xiaorouji/openwrt-passwall/luci/luci-app-passwall/Makefile"
+	local url = "https://raw.githubusercontent.com/xiaorouji/openwrt-passwall/main/luci-app-passwall/Makefile"
 	local tmp_file = "/tmp/passwall_makefile"
 	local return_code, result = curl_logic(url, tmp_file, curl_args)
 	result = return_code == 0

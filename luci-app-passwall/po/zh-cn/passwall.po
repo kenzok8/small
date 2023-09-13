@@ -112,6 +112,9 @@ msgstr "当前节点：%s"
 msgid "Filter Mode"
 msgstr "过滤模式"
 
+msgid "A/AAAA type"
+msgstr "A/AAAA 类型"
+
 msgid "TCP node must be '%s' type to use FakeDNS."
 msgstr "TCP 节点必须是 '%s' 类型才能使用 FakeDNS。"
 
@@ -513,6 +516,9 @@ msgstr "QUIC 并发双向流的最大数量"
 
 msgid "Disable MTU detection"
 msgstr "禁用 MTU 检测"
+
+msgid "ignoreClientBandwidth"
+msgstr "忽略客户端带宽设置"
 
 msgid "Lazy Start"
 msgstr "延迟启动"

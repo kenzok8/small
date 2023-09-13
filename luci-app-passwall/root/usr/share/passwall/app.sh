@@ -37,7 +37,7 @@ UTIL_SS=$LUA_UTIL_PATH/util_shadowsocks.lua
 UTIL_XRAY=$LUA_UTIL_PATH/util_xray.lua
 UTIL_TROJAN=$LUA_UTIL_PATH/util_trojan.lua
 UTIL_NAIVE=$LUA_UTIL_PATH/util_naiveproxy.lua
-UTIL_HYSTERIA=$LUA_UTIL_PATH/util_hysteria.lua
+UTIL_HYSTERIA2=$LUA_UTIL_PATH/util_hysteria2.lua
 UTIL_TUIC=$LUA_UTIL_PATH/util_tuic.lua
 
 echolog() {
@@ -327,7 +327,7 @@ run_ipt2socks() {
 
 run_singbox() {
 	local flag type node tcp_redir_port udp_redir_port socks_address socks_port socks_username socks_password http_address http_port http_username http_password
-	local dns_listen_port direct_dns_port direct_dns_udp_server remote_dns_protocol remote_dns_udp_server remote_dns_tcp_server remote_dns_doh remote_dns_query_strategy dns_cache dns_socks_address dns_socks_port
+	local dns_listen_port direct_dns_port direct_dns_udp_server remote_dns_protocol remote_dns_udp_server remote_dns_tcp_server remote_dns_doh remote_fakedns remote_dns_query_strategy dns_cache dns_socks_address dns_socks_port
 	local loglevel log_file config_file
 	local _extra_param=""
 	eval_set_val $@
@@ -395,10 +395,8 @@ run_singbox() {
 			[ -n "$_doh_bootstrap" ] && _extra_param="${_extra_param} -remote_dns_server ${_doh_bootstrap}"
 			_extra_param="${_extra_param} -remote_dns_port ${_doh_port} -remote_dns_doh_url ${_doh_url} -remote_dns_doh_host ${_doh_host}"
 		;;
-		fakedns)
-			_extra_param="${_extra_param} -remote_dns_fake 1"
-		;;
 	esac
+	[ "$remote_fakedns" = "1" ] && _extra_param="${_extra_param} -remote_dns_fake 1"
 	_extra_param="${_extra_param} -tcp_proxy_way $tcp_proxy_way"
 	lua $UTIL_SINGBOX gen_config ${_extra_param} > $config_file
 	ln_run "$(first_type $(config_t_get global_app singbox_file) sing-box)" "sing-box" $log_file run -c "$config_file"
@@ -406,7 +404,7 @@ run_singbox() {
 
 run_xray() {
 	local flag type node tcp_redir_port udp_redir_port socks_address socks_port socks_username socks_password http_address http_port http_username http_password
-	local dns_listen_port remote_dns_protocol remote_dns_udp_server remote_dns_tcp_server remote_dns_doh dns_client_ip dns_query_strategy dns_cache dns_socks_address dns_socks_port
+	local dns_listen_port remote_dns_udp_server remote_dns_tcp_server remote_dns_doh dns_client_ip dns_query_strategy dns_cache dns_socks_address dns_socks_port
 	local loglevel log_file config_file
 	local _extra_param=""
 	eval_set_val $@
@@ -443,30 +441,25 @@ run_xray() {
 	}
 	local buffer_size=$(config_t_get global_forwarding buffer_size)
 	[ -n "${buffer_size}" ] && _extra_param="${_extra_param} -buffer_size ${buffer_size}"
-	case "$remote_dns_protocol" in
-		tcp)
-			local _dns=$(get_first_dns remote_dns_tcp_server 53 | sed 's/#/:/g')
-			local _dns_address=$(echo ${_dns} | awk -F ':' '{print $1}')
-			local _dns_port=$(echo ${_dns} | awk -F ':' '{print $2}')
-			_extra_param="${_extra_param} -remote_dns_server ${_dns_address} -remote_dns_port ${_dns_port} -remote_dns_tcp_server tcp://${_dns}"
-		;;
-		doh)
-			local _doh_url=$(echo $remote_dns_doh | awk -F ',' '{print $1}')
-			local _doh_host_port=$(lua_api "get_domain_from_url(\"${_doh_url}\")")
-			#local _doh_host_port=$(echo $_doh_url | sed "s/https:\/\///g" | awk -F '/' '{print $1}')
-			local _doh_host=$(echo $_doh_host_port | awk -F ':' '{print $1}')
-			local is_ip=$(lua_api "is_ip(\"${_doh_host}\")")
-			local _doh_port=$(echo $_doh_host_port | awk -F ':' '{print $2}')
-			[ -z "${_doh_port}" ] && _doh_port=443
-			local _doh_bootstrap=$(echo $remote_dns_doh | cut -d ',' -sf 2-)
-			[ "${is_ip}" = "true" ] && _doh_bootstrap=${_doh_host}
-			[ -n "$_doh_bootstrap" ] && _extra_param="${_extra_param} -remote_dns_server ${_doh_bootstrap}"
-			_extra_param="${_extra_param} -remote_dns_port ${_doh_port} -remote_dns_doh_url ${_doh_url} -remote_dns_doh_host ${_doh_host}"
-		;;
-		fakedns)
-			_extra_param="${_extra_param} -remote_dns_fake 1"
-		;;
-	esac
+	[ -n "${remote_dns_tcp_server}" ] && {
+		local _dns=$(get_first_dns remote_dns_tcp_server 53 | sed 's/#/:/g')
+		local _dns_address=$(echo ${_dns} | awk -F ':' '{print $1}')
+		local _dns_port=$(echo ${_dns} | awk -F ':' '{print $2}')
+		_extra_param="${_extra_param} -remote_dns_tcp_server ${_dns_address} -remote_dns_tcp_port ${_dns_port}"
+	}
+	[ -n "${remote_dns_doh}" ] && {
+		local _doh_url=$(echo $remote_dns_doh | awk -F ',' '{print $1}')
+		local _doh_host_port=$(lua_api "get_domain_from_url(\"${_doh_url}\")")
+		#local _doh_host_port=$(echo $_doh_url | sed "s/https:\/\///g" | awk -F '/' '{print $1}')
+		local _doh_host=$(echo $_doh_host_port | awk -F ':' '{print $1}')
+		local is_ip=$(lua_api "is_ip(\"${_doh_host}\")")
+		local _doh_port=$(echo $_doh_host_port | awk -F ':' '{print $2}')
+		[ -z "${_doh_port}" ] && _doh_port=443
+		local _doh_bootstrap=$(echo $remote_dns_doh | cut -d ',' -sf 2-)
+		[ "${is_ip}" = "true" ] && _doh_bootstrap=${_doh_host}
+		[ -n "$_doh_bootstrap" ] && _extra_param="${_extra_param} -remote_dns_doh_ip ${_doh_bootstrap}"
+		_extra_param="${_extra_param} -remote_dns_doh_port ${_doh_port} -remote_dns_doh_url ${_doh_url} -remote_dns_doh_host ${_doh_host}"
+	}
 	_extra_param="${_extra_param} -tcp_proxy_way $tcp_proxy_way"
 	_extra_param="${_extra_param} -loglevel $loglevel"
 	lua $UTIL_XRAY gen_config ${_extra_param} > $config_file
@@ -663,13 +656,13 @@ run_socks() {
 		lua $UTIL_SS gen_config -node $node -local_socks_port $socks_port -server_host $server_host -server_port $port ${_extra_param} > $config_file
 		ln_run "$(first_type sslocal)" "sslocal" $log_file -c "$config_file" -v
 	;;
-	hysteria)
+	hysteria2)
 		[ "$http_port" != "0" ] && {
 			http_flag=1
 			config_file=$(echo $config_file | sed "s/SOCKS/HTTP_SOCKS/g")
 			local _extra_param="-local_http_port $http_port"
 		}
-		lua $UTIL_HYSTERIA gen_config -node $node -local_socks_port $socks_port -server_host $server_host -server_port $port ${_extra_param} > $config_file
+		lua $UTIL_HYSTERIA2 gen_config -node $node -local_socks_port $socks_port -server_host $server_host -server_port $port ${_extra_param} > $config_file
 		ln_run "$(first_type $(config_t_get global_app hysteria_file))" "hysteria" $log_file -c "$config_file" client
 	;;
 	tuic)
@@ -775,8 +768,8 @@ run_redir() {
 			lua $UTIL_SS gen_config -node $node -local_udp_redir_port $local_port > $config_file
 			ln_run "$(first_type sslocal)" "sslocal" $log_file -c "$config_file" -v
 		;;
-		hysteria)
-			lua $UTIL_HYSTERIA gen_config -node $node -local_udp_redir_port $local_port > $config_file
+		hysteria2)
+			lua $UTIL_HYSTERIA2 gen_config -node $node -local_udp_redir_port $local_port > $config_file
 			ln_run "$(first_type $(config_t_get global_app hysteria_file))" "hysteria" $log_file -c "$config_file" client
 		;;
 		tuic)
@@ -848,21 +841,25 @@ run_redir() {
 				local v2ray_dns_mode=$(config_t_get global v2ray_dns_mode tcp)
 				_args="${_args} remote_dns_protocol=${v2ray_dns_mode}"
 				_args="${_args} dns_listen_port=${dns_listen_port}"
+				local logout=""
 				case "$v2ray_dns_mode" in
 					tcp)
 						_args="${_args} remote_dns_tcp_server=${REMOTE_DNS}"
-						echolog "  - 域名解析 DNS Over TCP..."
+						logout="  - 域名解析 DNS Over TCP"
 					;;
 					doh)
 						remote_dns_doh=$(config_t_get global remote_dns_doh "https://1.1.1.1/dns-query")
 						_args="${_args} remote_dns_doh=${remote_dns_doh}"
-						echolog "  - 域名解析 DNS Over HTTPS..."
-					;;
-					fakedns)
-						fakedns=1
-						echolog "  - 域名解析 Fake DNS..."
+						logout="  - 域名解析 DNS Over HTTPS"
 					;;
 				esac
+				local remote_fakedns=$(config_t_get global remote_fakedns 0)
+				[ "${remote_fakedns}" = "1" ] && {
+					fakedns=1
+					_args="${_args} remote_fakedns=1"
+					logout="${logout} + FakeDNS"
+				}
+				echolog ${logout}
 			}
 			run_singbox flag=$_flag node=$node tcp_redir_port=$local_port config_file=$config_file log_file=$log_file ${_args}
 		;;
@@ -893,24 +890,13 @@ run_redir() {
 				local _dns_client_ip=$(config_t_get global dns_client_ip)
 				[ -n "${_dns_client_ip}" ] && _args="${_args} dns_client_ip=${_dns_client_ip}"
 				[ "${DNS_CACHE}" == "0" ] && _args="${_args} dns_cache=0"
-				local v2ray_dns_mode=$(config_t_get global v2ray_dns_mode tcp)
-				_args="${_args} remote_dns_protocol=${v2ray_dns_mode}"
 				_args="${_args} dns_listen_port=${dns_listen_port}"
-				case "$v2ray_dns_mode" in
-					tcp)
-						_args="${_args} remote_dns_tcp_server=${REMOTE_DNS}"
-						echolog "  - 域名解析 DNS Over TCP..."
-					;;
-					doh)
-						remote_dns_doh=$(config_t_get global remote_dns_doh "https://1.1.1.1/dns-query")
-						_args="${_args} remote_dns_doh=${remote_dns_doh}"
-						echolog "  - 域名解析 DNS Over HTTPS..."
-					;;
-					fakedns)
-						fakedns=1
-						echolog "  - 域名解析 Fake DNS..."
-					;;
-				esac
+				_args="${_args} remote_dns_tcp_server=${REMOTE_DNS}"
+				local v2ray_dns_mode=$(config_t_get global v2ray_dns_mode tcp)
+				[ "$v2ray_dns_mode" = "tcp+doh" ] && {
+					remote_dns_doh=$(config_t_get global remote_dns_doh "https://1.1.1.1/dns-query")
+					_args="${_args} remote_dns_doh=${remote_dns_doh}"
+				}
 			}
 			run_xray flag=$_flag node=$node tcp_redir_port=$local_port config_file=$config_file log_file=$log_file ${_args}
 		;;
@@ -997,7 +983,7 @@ run_redir() {
 			lua $UTIL_SS gen_config -node $node ${_extra_param} > $config_file
 			ln_run "$(first_type sslocal)" "sslocal" $log_file -c "$config_file" -v
 		;;
-		hysteria)
+		hysteria2)
 			local _extra_param="-local_tcp_redir_port $local_port"
 			[ "$tcp_node_socks" = "1" ] && {
 				tcp_node_socks_flag=1
@@ -1016,7 +1002,7 @@ run_redir() {
 				_extra_param="${_extra_param} -local_udp_redir_port $local_port"
 			}
 			_extra_param="${_extra_param} -tcp_proxy_way $tcp_proxy_way"
-			lua $UTIL_HYSTERIA gen_config -node $node ${_extra_param} > $config_file
+			lua $UTIL_HYSTERIA2 gen_config -node $node ${_extra_param} > $config_file
 			ln_run "$(first_type $(config_t_get global_app hysteria_file))" "hysteria" $log_file -c "$config_file" client
 		;;
 		esac
@@ -1313,31 +1299,13 @@ start_dns() {
 			local _dns_client_ip=$(config_t_get global dns_client_ip)
 			[ -n "${_dns_client_ip}" ] && _args="${_args} dns_client_ip=${_dns_client_ip}"
 			use_tcp_node_resolve_dns=1
-			local v2ray_dns_mode=$(config_t_get global v2ray_dns_mode tcp)
 			_args="${_args} dns_listen_port=${dns_listen_port}"
-			_args="${_args} remote_dns_protocol=${v2ray_dns_mode}"
-			case "$v2ray_dns_mode" in
-				tcp)
-					_args="${_args} remote_dns_tcp_server=${REMOTE_DNS}"
-					echolog "  - 域名解析 DNS Over TCP..."
-				;;
-				doh)
-					remote_dns_doh=$(config_t_get global remote_dns_doh "https://1.1.1.1/dns-query")
-					_args="${_args} remote_dns_doh=${remote_dns_doh}"
-
-					local _doh_url=$(echo $remote_dns_doh | awk -F ',' '{print $1}')
-					local _doh_host_port=$(lua_api "get_domain_from_url(\"${_doh_url}\")")
-					local _doh_host=$(echo $_doh_host_port | awk -F ':' '{print $1}')
-					local _is_ip=$(lua_api "is_ip(\"${_doh_host}\")")
-					local _doh_port=$(echo $_doh_host_port | awk -F ':' '{print $2}')
-					[ -z "${_doh_port}" ] && _doh_port=443
-					local _doh_bootstrap=$(echo $remote_dns_doh | cut -d ',' -sf 2-)
-					[ "${_is_ip}" = "true" ] && _doh_bootstrap=${_doh_host}
-					[ -n "${_doh_bootstrap}" ] && REMOTE_DNS=${_doh_bootstrap}:${_doh_port}
-					unset _doh_url _doh_host_port _doh_host _is_ip _doh_port _doh_bootstrap
-					echolog "  - 域名解析 DNS Over HTTPS..."
-				;;
-			esac
+			_args="${_args} remote_dns_tcp_server=${REMOTE_DNS}"
+			local v2ray_dns_mode=$(config_t_get global v2ray_dns_mode tcp)
+			[ "$v2ray_dns_mode" = "tcp+doh" ] && {
+				remote_dns_doh=$(config_t_get global remote_dns_doh "https://1.1.1.1/dns-query")
+				_args="${_args} remote_dns_doh=${remote_dns_doh}"
+			}
 			run_xray ${_args}
 		}
 	;;
@@ -1482,7 +1450,7 @@ acl_app() {
 			remote_dns=${remote_dns:-1.1.1.1}
 			chinadns_ng=${chinadns_ng:-0}
 			when_chnroute_default_dns=${when_chnroute_default_dns:-direct}
-			[ "$dns_mode" = "sing-box" -o "$dns_mode" = "xray" ] && {
+			[ "$dns_mode" = "sing-box" ] && {
 				[ "$v2ray_dns_mode" = "doh" ] && remote_dns=${remote_dns_doh:-https://1.1.1.1/dns-query}
 			}
 			[ "$tcp_proxy_mode" = "default" ] && tcp_proxy_mode=$TCP_PROXY_MODE
@@ -1504,7 +1472,8 @@ acl_app() {
 									run_dns2socks flag=acl_${sid} socks_address=127.0.0.1 socks_port=$socks_port listen_address=0.0.0.0 listen_port=${_dns_port} dns=$remote_dns cache=1
 								elif [ "$dns_mode" = "sing-box" -o "$dns_mode" = "xray" ]; then
 									config_file=$TMP_ACL_PATH/${tcp_node}_SOCKS_${socks_port}_DNS.json
-									run_${dns_mode} flag=acl_${sid} type=$dns_mode dns_socks_address=127.0.0.1 dns_socks_port=$socks_port dns_listen_port=${_dns_port} remote_dns_protocol=${v2ray_dns_mode} remote_dns_tcp_server=${remote_dns} remote_dns_doh="${remote_dns}" remote_dns_query_strategy=${DNS_QUERY_STRATEGY} dns_client_ip=${dns_client_ip} dns_query_strategy=${DNS_QUERY_STRATEGY} config_file=$config_file
+									[ "$dns_mode" = "xray" ] && [ "$v2ray_dns_mode" = "tcp+doh" ] && remote_dns_doh=${remote_dns_doh:-https://1.1.1.1/dns-query}
+									run_${dns_mode} flag=acl_${sid} type=$dns_mode dns_socks_address=127.0.0.1 dns_socks_port=$socks_port dns_listen_port=${_dns_port} remote_dns_protocol=${v2ray_dns_mode} remote_dns_tcp_server=${remote_dns} remote_dns_doh="${remote_dns_doh}" remote_dns_query_strategy=${DNS_QUERY_STRATEGY} dns_client_ip=${dns_client_ip} dns_query_strategy=${DNS_QUERY_STRATEGY} config_file=$config_file
 								fi
 								eval node_${tcp_node}_$(echo -n "${remote_dns}" | md5sum | cut -d " " -f1)=${_dns_port}
 							}
@@ -1594,7 +1563,9 @@ acl_app() {
 										dns_port=$(get_new_port $(expr $dns_port + 1))
 										_dns_port=$dns_port
 										config_file=$(echo $config_file | sed "s/TCP_/DNS_${_dns_port}_TCP_/g")
-										_extra_param="dns_listen_port=${_dns_port} remote_dns_protocol=${v2ray_dns_mode} remote_dns_tcp_server=${remote_dns} remote_dns_doh=${remote_dns} remote_dns_query_strategy=${DNS_QUERY_STRATEGY} dns_client_ip=${dns_client_ip} dns_query_strategy=${DNS_QUERY_STRATEGY}"
+										remote_dns_doh=${remote_dns}
+										[ "$dns_mode" = "xray" ] && [ "$v2ray_dns_mode" = "tcp+doh" ] && remote_dns_doh=${remote_dns_doh:-https://1.1.1.1/dns-query}
+										_extra_param="dns_listen_port=${_dns_port} remote_dns_protocol=${v2ray_dns_mode} remote_dns_tcp_server=${remote_dns} remote_dns_doh=${remote_dns_doh} remote_dns_query_strategy=${DNS_QUERY_STRATEGY} dns_client_ip=${dns_client_ip} dns_query_strategy=${DNS_QUERY_STRATEGY}"
 									fi
 									[ "$udp_node" != "nil" ] && ([ "$udp_node" = "tcp" ] || [ "$udp_node" = "$tcp_node" ]) && {
 										config_file=$(echo $config_file | sed "s/TCP_/TCP_UDP_/g")
@@ -1790,8 +1761,8 @@ WHEN_CHNROUTE_DEFAULT_DNS=$(config_t_get global when_chnroute_default_dns direct
 FILTER_PROXY_IPV6=$(config_t_get global filter_proxy_ipv6 0)
 dns_listen_port=${DNS_PORT}
 
-REDIRECT_LIST="socks ss ss-rust ssr sing-box xray trojan-go trojan-plus naiveproxy hysteria"
-TPROXY_LIST="brook socks ss ss-rust ssr sing-box xray trojan-go trojan-plus hysteria"
+REDIRECT_LIST="socks ss ss-rust ssr sing-box xray trojan-go trojan-plus naiveproxy hysteria2"
+TPROXY_LIST="brook socks ss ss-rust ssr sing-box xray trojan-go trojan-plus hysteria2"
 RESOLVFILE=/tmp/resolv.conf.d/resolv.conf.auto
 [ -f "${RESOLVFILE}" ] && [ -s "${RESOLVFILE}" ] || RESOLVFILE=/tmp/resolv.conf.auto
 
