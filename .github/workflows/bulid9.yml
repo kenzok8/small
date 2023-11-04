@@ -52,7 +52,7 @@ jobs:
         env:
           ARCH: ${{ matrix.arch }}-openwrt-22.03
           FEEDNAME: packages_ci
-          PACKAGES: luci-app-bypass luci-app-passwall luci-app-passwall2 luci-app-ssr-plus luci-app-vssr luci-app-bypass naiveproxy tuic-client
+          PACKAGES: luci-app-bypass luci-app-passwall luci-app-passwall2 luci-app-ssr-plus luci-app-bypass naiveproxy tuic-client
           NO_REFRESH_CHECK: true
 
       - name: Upload artifacts
