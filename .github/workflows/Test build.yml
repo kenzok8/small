@@ -28,14 +28,14 @@ jobs:
       - name: Build
         uses: openwrt/gh-action-sdk@main
         env:
-          ARCH: ${{ matrix.arch }}
+          ARCH: ${{ matrix.arch }}-${{ matrix.release }}
           PACKAGES: luci-app-passwall
           NO_REFRESH_CHECK: true
 
       - name: Store packages
         uses: actions/upload-artifact@main
         with:
-          name: ${{ matrix.arch}}-packages
+          name: ${{ matrix.arch }}-${{ matrix.release }}-packages
           path: bin/packages/${{ matrix.arch }}/packages/*.ipk
 
       - name: Upload packages
