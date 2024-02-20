@@ -15,8 +15,8 @@ jobs:
       matrix:
         release:
           - 23.05.2
-          - 22.03.2
         arch:
+          - aarch64_cortex-a53
           - x86_64
 
     steps:
@@ -45,4 +45,4 @@ jobs:
           allowUpdates: true
           replacesArtifacts: true
           artifacts: "${{ matrix.release }}-${{ matrix.arch }}"
-          tag: v2..${{ github.run_number }}-${{ matrix.release }}-${{ matrix.arch }}
+          tag: v2.${{ github.run_number }}-${{ matrix.release }}-${{ matrix.arch }}
