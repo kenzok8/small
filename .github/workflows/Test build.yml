@@ -1,7 +1,7 @@
 name: Test Build
 
 on:
-  workflow_dispatch:
+ workflow_dispatch:
   push:
     tags:
       - v2.**
