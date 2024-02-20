@@ -1,7 +1,7 @@
 name: Test Build
 
 on:
- workflow_dispatch:
+  workflow_dispatch:
   push:
     tags:
       - v2.**
@@ -16,7 +16,6 @@ jobs:
         release:
           - 23.05.2
           - 22.03.2
-
         arch:
           - x86_64
 
@@ -42,7 +41,8 @@ jobs:
         uses: ncipollo/release-action@main
         with:
           name: ${{ github.ref_name }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.ACCESS_TOKEN }}
           allowUpdates: true
           replacesArtifacts: true
           artifacts: "${{ matrix.release }}-${{ matrix.arch }}"
+	  tag: v2..${{ github.run_number }}-${{ matrix.release }}-${{ matrix.arch }}
