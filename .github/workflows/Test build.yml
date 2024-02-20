@@ -29,7 +29,6 @@ jobs:
         uses: openwrt/gh-action-sdk@main
         env:
           ARCH: ${{ matrix.arch }}
-          FEEDNAME: packages
           PACKAGES: luci-app-passwall
           NO_REFRESH_CHECK: true
 
