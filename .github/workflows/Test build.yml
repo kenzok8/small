@@ -34,15 +34,38 @@ jobs:
       - name: Store packages
         uses: actions/upload-artifact@main
         with:
-          name: ${{ matrix.arch }}-${{ matrix.release }}-packages
+          name: ${{ matrix.arch }}-${{ matrix.release }}
           path: bin/packages/${{ matrix.arch }}/packages/*.ipk
 
+      - name: Zip packages
+        run: |
+          zip -j ${{ matrix.arch }}-${{ matrix.release }}.zip bin/packages/${{ matrix.arch }}/packages/*.ipk
+          echo -e "**文件说明** 🎈:\n" >> release.txt
+          echo -e "1. 默认ssr与passwall的插件与依赖整合包\n" >> release.txt
+          echo -e "2. 使用方法：将整合包上传到openwrt设备的tmp目录，输入命令 \`opkg install *.ipk\`\n" >> release.txt
+          echo -e "3. 默认压缩包里包含ssr passwall bypass passwall2 插件\n" >> release.txt
+          echo -e "4. 如果单独安装ssr与依赖，\`rm -rf {*passwall*,*bypass*,*vssr*}\`\n" >> release.txt
+          
       - name: Upload packages
         uses: ncipollo/release-action@main
         with:
-          name: ${{ github.ref_name }}
           token: ${{ secrets.ACCESS_TOKEN }}
+          artifacts: "${{ matrix.arch }}-${{ matrix.release }}.zip,bin/packages/${{ matrix.arch }}/packages/*.ipk"
           allowUpdates: true
           replacesArtifacts: true
-          artifacts: "${{ matrix.release }}-${{ matrix.arch }}"
-          tag: v2.${{ github.run_number }}-${{ matrix.release }}-${{ matrix.arch }}
+          bodyFile: "release.txt"
+          tag: v2.${{ github.run_number }}-${{ matrix.arch }}-${{ matrix.release }}
+
+      - name: Delete workflow runs
+        uses: Mattraks/delete-workflow-runs@main
+        with:
+          retain_days: 1
+          keep_minimum_runs: 0
+    
+      - name: Remove old Releases
+        uses: dev-drprasad/delete-older-releases@master
+        with:
+          keep_latest: 4
+          delete_tags: true
+        env:
+           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
