@@ -8,12 +8,12 @@ on:
 
 jobs:
   build:
-    name: build ${{ matrix.arch }}-${{ matrix.release }}
+    name: build ${{ matrix.arch }}-${{ matrix.sdk }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        release:
+        sdk:
           - 23.05.2
         arch:
           - aarch64_cortex-a53
@@ -27,19 +27,19 @@ jobs:
       - name: Build
         uses: openwrt/gh-action-sdk@main
         env:
-          ARCH: ${{ matrix.arch }}-${{ matrix.release }}
+          ARCH: ${{ matrix.arch }}-${{ matrix.sdk }}
           PACKAGES: luci-app-passwall
           NO_REFRESH_CHECK: true
 
       - name: Store packages
         uses: actions/upload-artifact@main
         with:
-          name: ${{ matrix.arch }}-${{ matrix.release }}
+          name: ${{ matrix.arch }}-${{ matrix.sdk }}
           path: bin/packages/${{ matrix.arch }}/packages/*.ipk
 
       - name: Zip packages
         run: |
-          zip -j ${{ matrix.arch }}-${{ matrix.release }}.zip bin/packages/${{ matrix.arch }}/packages/*.ipk
+          zip -j ${{ matrix.arch }}-${{ matrix.sdk }}.zip bin/packages/${{ matrix.arch }}/packages/*.ipk
           echo -e "**文件说明** 🎈:\n" >> release.txt
           echo -e "1. 默认ssr与passwall的插件与依赖整合包\n" >> release.txt
           echo -e "2. 使用方法：将整合包上传到openwrt设备的tmp目录，输入命令 \`opkg install *.ipk\`\n" >> release.txt
@@ -50,11 +50,11 @@ jobs:
         uses: ncipollo/release-action@main
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
-          artifacts: "${{ matrix.arch }}-${{ matrix.release }}.zip,bin/packages/${{ matrix.arch }}/packages/*.ipk"
+          artifacts: "${{ matrix.arch }}-${{ matrix.sdk }}.zip,bin/packages/${{ matrix.arch }}/packages/*.ipk"
           allowUpdates: true
           replacesArtifacts: true
           bodyFile: "release.txt"
-          tag: v2.${{ github.run_number }}-${{ matrix.arch }}-${{ matrix.release }}
+          tag: v2.${{ github.run_number }}-${{ matrix.arch }}-${{ matrix.sdk }}
 
       - name: Delete workflow runs
         uses: Mattraks/delete-workflow-runs@main
