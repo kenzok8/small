@@ -78,7 +78,7 @@ jobs:
           allowUpdates: true
           replacesArtifacts: true
           bodyFile: "release.txt"
-          tag: v3.1.${{ github.run_number }}_${{ matrix.arch }}
+          tag: v3.${{ github.run_number }}_${{ matrix.arch }}
 
       - name: Delete workflow runs
         uses: Mattraks/delete-workflow-runs@main
