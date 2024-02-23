@@ -28,7 +28,7 @@ jobs:
         uses: openwrt/gh-action-sdk@main
         env:
           ARCH: ${{ matrix.arch }}-${{ matrix.sdk }}
-	  FEEDNAME: packages_ci
+          FEEDNAME: packages_ci
           PACKAGES: luci-app-passwall luci-app-passwall2 luci-app-ssr-plus naiveproxy tuic-client
           NO_REFRESH_CHECK: true
 
