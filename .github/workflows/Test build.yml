@@ -31,6 +31,7 @@ jobs:
           FEEDNAME: packages_ci
           PACKAGES: luci-app-passwall luci-app-passwall2 luci-app-ssr-plus luci-app-bypass brook hysteria ipt2socks pdnsd-alt redsocks2 shadow-tls trojan tuic-client xray-plugin v2ray-core v2ray-geodata naiveproxy
           NO_REFRESH_CHECK: true
+          IGNORE_ERRORS: true
 
       - name: Store packages
         uses: actions/upload-artifact@main
