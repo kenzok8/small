@@ -25,7 +25,7 @@ jobs:
           fetch-depth: 0
 
       - name: Build
-        uses: kenzok8/gh-action-sdk@main
+        uses: sbwml/openwrt-gh-action-sdk@helloworld
         env:
           ARCH: ${{ matrix.arch }}-${{ matrix.sdk }}
           FEEDNAME: packages_ci
