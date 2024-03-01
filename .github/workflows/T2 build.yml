@@ -1,18 +1,20 @@
-name: bulid 2 package
+name: T2 Build
 
 on:
  workflow_dispatch:
   push:
     tags:
-      - v.**
+      - v2.**
 
 jobs:
   build:
-    name: Build ${{ matrix.arch }}
+    name: build ${{ matrix.arch }}-${{ matrix.sdk }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
+        sdk:
+          - 23.05.2
         arch:
           - aarch64_cortex-a53
           - x86_64
@@ -23,48 +25,49 @@ jobs:
           fetch-depth: 0
 
       - name: Build
-        uses: sbwml/openwrt-gh-action-sdk@go1.21
+        uses: kenzok8/gh-action-sdk@main
         env:
-          ARCH: ${{ matrix.arch }}-openwrt-22.03
+          ARCH: ${{ matrix.arch }}-${{ matrix.sdk }}
           FEEDNAME: packages_ci
-          PACKAGES: luci-app-passwall luci-app-passwall2 luci-app-ssr-plus naiveproxy tuic-client
+          PACKAGES: luci-app-passwall luci-app-passwall2 luci-app-ssr-plus luci-app-bypass brook hysteria ipt2socks pdnsd-alt redsocks2 shadow-tls trojan tuic-client xray-plugin v2ray-core v2ray-geodata naiveproxy
           NO_REFRESH_CHECK: true
+          IGNORE_ERRORS: true
 
-      - name: Upload artifacts
+      - name: Store packages
         uses: actions/upload-artifact@main
         with:
-          name: ${{ matrix.arch }}
+          name: ${{ matrix.arch }}-${{ matrix.sdk }}
           path: bin/packages/${{ matrix.arch }}/packages_ci/*.ipk
 
-      - name: Zip ipk packages
+      - name: Zip packages
         run: |
-          zip -j ${{ matrix.arch }}.zip bin/packages/${{ matrix.arch }}/packages_ci/*.ipk
+          zip -j ${{ matrix.arch }}-${{ matrix.sdk }}.zip bin/packages/${{ matrix.arch }}/packages_ci/*.ipk
           echo -e "**文件说明** 🎈:\n" >> release.txt
           echo -e "1. 默认ssr与passwall的插件与依赖整合包\n" >> release.txt
           echo -e "2. 使用方法：将整合包上传到openwrt设备的tmp目录，输入命令 \`opkg install *.ipk\`\n" >> release.txt
           echo -e "3. 默认压缩包里包含ssr passwall bypass passwall2 插件\n" >> release.txt
-          echo -e "4. 如果单独安装ssr与依赖，\`rm -rf {*passwall*,*bypass*,*vssr*}\`\n" >> release.txt
+          echo -e "4. 如果单独安装ssr与依赖，\`rm -rf {*passwall*,*bypass*}\`\n" >> release.txt
           
-      - name: Create Release zip
+      - name: Upload packages
         uses: ncipollo/release-action@main
         with:
           token: ${{ secrets.ACCESS_TOKEN }}
-          artifacts: "${{ matrix.arch }}.zip,bin/packages/${{ matrix.arch }}/packages_ci/*.ipk"
+          artifacts: "${{ matrix.arch }}-${{ matrix.sdk }}.zip,bin/packages/${{ matrix.arch }}/packages_ci/*.ipk"
           allowUpdates: true
           replacesArtifacts: true
           bodyFile: "release.txt"
-          tag: v1.${{ github.run_number }}_${{ matrix.arch }}
+          tag: v2.${{ github.run_number }}-${{ matrix.arch }}-${{ matrix.sdk }}
 
       - name: Delete workflow runs
         uses: Mattraks/delete-workflow-runs@main
         with:
-          retain_days: 1
+          retain_days: 10
           keep_minimum_runs: 0
     
       - name: Remove old Releases
         uses: dev-drprasad/delete-older-releases@master
         with:
-          keep_latest: 4
+          keep_latest: 60
           delete_tags: true
         env:
            GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
