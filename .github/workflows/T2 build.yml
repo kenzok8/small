@@ -4,7 +4,7 @@ on:
  workflow_dispatch:
   push:
     tags:
-      - v2.**
+      - '*'
 
 jobs:
   build:
@@ -56,7 +56,7 @@ jobs:
           allowUpdates: true
           replacesArtifacts: true
           bodyFile: "release.txt"
-          tag: v2.${{ github.run_number }}-${{ matrix.arch }}-${{ matrix.sdk }}
+          #tag: v2.${{ github.run_number }}-${{ matrix.arch }}-${{ matrix.sdk }}
 
       - name: Delete workflow runs
         uses: Mattraks/delete-workflow-runs@main
