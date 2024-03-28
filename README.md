@@ -1,6 +1,6 @@
-![Anurag's GitHub stats](https://github-readme-stats.vercel.app/api?username=kenzok8&show_icons=true&theme=radical)
+![Anurag's GitHub stats](https://github-readme-stats.vercel.app/api?username=kenzok8&show_icons=true&&theme=transparent)
 <div align="center">
-<h1 align="center"smmall</h1>
+<h1 align="center"small</h1>
 <img src="https://img.shields.io/github/issues/kenzok8/small?color=green">
 <img src="https://img.shields.io/github/stars/kenzok8/small?color=yellow">
 <img src="https://img.shields.io/github/forks/kenzok8/small?color=orange">
