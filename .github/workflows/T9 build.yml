@@ -50,7 +50,7 @@ jobs:
           fetch-depth: 0
 
       - name: Build
-        uses: kenzok8/gh-action-sdk@main
+        uses: kenzok8/gh-action-sdk@hash
         env:
           ARCH: ${{ matrix.arch }}-${{ matrix.sdk }}
           FEEDNAME: packages_ci
