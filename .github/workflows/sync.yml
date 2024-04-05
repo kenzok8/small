@@ -1,0 +1,52 @@
+name: Upstream Sync
+
+permissions:
+  contents: write
+  issues: write
+  actions: write
+
+on:
+  schedule:
+    - cron: '0 */8 * * *' # every 8 hour
+  workflow_dispatch:
+
+jobs:
+  sync_latest_from_upstream:
+    name: Sync latest commits from upstream repo
+    runs-on: ubuntu-latest
+    if: ${{ github.event.repository.fork }}
+
+    steps:
+      - uses: actions/checkout@main
+
+      - name: Clean issue notice
+        uses: actions-cool/issues-helper@main
+        with:
+          actions: 'close-issues'
+          labels: '?? Sync Fail'
+
+      - name: Sync upstream changes
+        id: sync
+        uses: aormsby/Fork-Sync-With-Upstream-action@main
+        with:
+          upstream_sync_repo: lobehub/lobe-chat
+          upstream_sync_branch: main
+          target_sync_branch: main
+          target_repo_token: ${{ secrets.GITHUB_TOKEN }} # automatically generated, no need to set
+          test_mode: false
+
+      - name: Sync check
+        if: failure()
+        uses: actions-cool/issues-helper@main
+        with:
+          actions: 'create-issue'
+          title: '?? 同步失败 | Sync Fail'
+          labels: '?? Sync Fail'
+          body: |
+            Due to a change in the workflow file of the [small][small] upstream repository, GitHub has automatically suspended the scheduled automatic update. 
+
+            由于 [small][small] 上游仓库的 workflow 文件变更，导致 GitHub 自动暂停了本次自动更新，你需要手动 Sync Fork 一次
+
+            ![](https://github-production-user-asset-6210df.s3.amazonaws.com/17870709/273954625-df80c890-0822-4ac2-95e6-c990785cbed5.png)
+
+            [small]: https://github.com/kenzok8/small
