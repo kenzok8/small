@@ -812,7 +812,7 @@ function gen_config(var)
 					if not _node then return nil, nil end
 
 					if api.is_normal_node(_node) then
-						local _proxy_node = uci:get_all(appname, proxy_node_id) or nil
+						local _proxy_node = (proxy_node and proxy_node_id) and uci:get_all(appname, proxy_node_id) or nil
 						local use_proxy = _proxy_node and node[rule_name .. "_proxy_tag"] == proxy_tag and _node_id ~= proxy_node_id
 						if use_proxy and proxy_balancerTag then
 							for _, blc_node_id in ipairs(_proxy_node.balancing_node) do
@@ -1114,6 +1114,8 @@ function gen_config(var)
 				end
 			end)
 		end
+
+		local _remote_dns_ip = nil
 	
 		local _remote_dns = {
 			_flag = "remote",
@@ -1124,12 +1126,14 @@ function gen_config(var)
 			_remote_dns.address = remote_dns_udp_server
 			_remote_dns.port = tonumber(remote_dns_udp_port) or 53
 			_remote_dns_proto = "udp"
+			_remote_dns_ip = remote_dns_udp_server
 		end
 
 		if remote_dns_tcp_server then
 			_remote_dns.address = "tcp://" .. remote_dns_tcp_server
 			_remote_dns.port = tonumber(remote_dns_tcp_port) or 53
 			_remote_dns_proto = "tcp"
+			_remote_dns_ip = remote_dns_tcp_server
 		end
 
 		if remote_dns_doh_url and remote_dns_doh_host then
@@ -1138,6 +1142,7 @@ function gen_config(var)
 			end
 			_remote_dns.address = remote_dns_doh_url
 			_remote_dns.port = tonumber(remote_dns_doh_port) or 443
+			_remote_dns_ip = remote_dns_doh_ip
 		end
 
 		if _remote_dns.address then
@@ -1146,7 +1151,7 @@ function gen_config(var)
 				table.insert(routing.rules, 1, {
 					type = "field",
 					ip = {
-						_remote_dns.address
+						_remote_dns_ip
 					},
 					port = _remote_dns.port,
 					network = _remote_dns_proto,
