@@ -49,6 +49,20 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Delete workflow runs
+        uses: Mattraks/delete-workflow-runs@main
+        with:
+          retain_days: 10
+          keep_minimum_runs: 8
+    
+      - name: Remove old Releases
+        uses: dev-drprasad/delete-older-releases@master
+        with:
+          keep_latest: 60
+          delete_tags: true
+        env:
+           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+
       - name: Build
         uses: kenzok8/gh-action-sdk@hash
         env:
@@ -82,17 +96,3 @@ jobs:
           replacesArtifacts: true
           bodyFile: "release.txt"
           tag: ${{ github.run_number }}-${{ matrix.arch }}
-
-      - name: Delete workflow runs
-        uses: Mattraks/delete-workflow-runs@main
-        with:
-          retain_days: 10
-          keep_minimum_runs: 8
-    
-      - name: Remove old Releases
-        uses: dev-drprasad/delete-older-releases@master
-        with:
-          keep_latest: 60
-          delete_tags: true
-        env:
-           GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
