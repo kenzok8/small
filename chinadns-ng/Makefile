@@ -9,10 +9,10 @@ PKG_RELEASE:=1
 ifeq ($(ARCH),aarch64)
   ifeq ($(BOARD),rockchip)
     PKG_ARCH:=chinadns-ng+wolfssl@aarch64-linux-musl@generic+v8a@fast+lto
-  PKG_HASH:=605cdcf46b2b82a4c4989747e5e16b577a5b42574d0432d1ff0bc689daa62124
+    PKG_HASH:=605cdcf46b2b82a4c4989747e5e16b577a5b42574d0432d1ff0bc689daa62124
   else
     PKG_ARCH:=chinadns-ng+wolfssl_noasm@aarch64-linux-musl@generic+v8a@fast+lto
-  PKG_HASH:=a3706e49aa71c113710a4d28fca5f1201708feb82002c26a3c8bf6a333cbaea7
+    PKG_HASH:=dfa60cf7cdac7bd4ccfc9d3ed4bc99e8a8ed4e8542e42dacfb2daa2ca9e0fc85
   endif
 else ifeq ($(ARCH),arm)
   ARM_CPU_FEATURES:=$(word 2,$(subst +,$(space),$(call qstrip,$(CONFIG_CPU_TYPE))))
