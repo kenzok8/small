@@ -10,7 +10,7 @@
 <img src="https://v2.jinrishici.com/one.svg?font-size=24&spacing=2&color=Black">
 
 
-* 把openwrt-packages与small仓库重新归类，ssr、passwall、vssr以及依赖合并small
+* 把openwrt-packages与small仓库重新归类，ssr、passwall、homeproxy依赖合并small
 
 #### 使用方式
 ```yaml
