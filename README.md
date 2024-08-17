@@ -19,7 +19,7 @@
 
 使用方法：将整合包上传到openwrt设备的tmp目录，输入命令 opkg install *.ipk
 
-默认压缩包里包含ssr passwall bypass passwall2 插件
+默认压缩包里包含ssr passwall bypass passwall2 homeproxy 插件
 
 如果单独安装ssr与依赖，rm -rf {*passwall*,*bypass*,*homeproxy*}
 ```
