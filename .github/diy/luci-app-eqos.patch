@@ -1,0 +1,12 @@
+diff --git a/luci-app-eqos/luasrc/controller/eqos.lua b/luci-app-eqos1/luasrc/controller/eqos.lua
+index a8aea86..d24a36f 100755
+--- a/luci-app-eqos/luasrc/controller/eqos.lua
++++ b/luci-app-eqos/luasrc/controller/eqos.lua
+@@ -6,6 +6,5 @@ function index()
+ 	end
+ 	
+ 	local page
+-        entry({"admin", "nas"}, firstchild(), "NAS", 45).dependent = false
+-	entry({"admin", "network", "eqos"}, cbi("eqos"), _("EQoS"))
++	entry({"admin", "network", "eqos"}, cbi("eqos"), _("EQoS"), 121).dependent = true
+ end

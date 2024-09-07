@@ -1,0 +1,82 @@
+name: small
+
+on:
+  push:
+    paths:
+      - '.github/workflows/small.yml'
+      - 'small.sh'
+  schedule:
+    - cron: 0 */4 * * *
+  repository_dispatch:
+  workflow_dispatch:
+    inputs:
+      packages:
+        description: 'packages'
+        required: false
+        default: 'false'	
+
+jobs:
+  job_small:
+    if: github.event.repository.owner.id == github.event.sender.id || ! github.event.sender.id
+    runs-on: ubuntu-latest
+
+    name: Update small
+    strategy:
+      fail-fast: false
+      matrix:
+        target: [master]
+        
+    steps:
+    - name: Checkout
+      uses: actions/checkout@main
+      with:
+        fetch-depth: 0
+
+    - name: Initialization environment
+      run : |
+        git config --global user.email "kenzok8@users.noreply.github.com"
+        git config --global user.name "actions-user"
+        sudo timedatectl set-timezone "Asia/Shanghai"
+        
+    - name: Clone packages
+      run: |
+        cd $GITHUB_WORKSPACE
+        chmod +x .github/diy/small.sh
+        git clone -b master https://github.com/kenzok8/small.git ${{matrix.target}}
+        cd ${{matrix.target}}
+        git rm -r --cache * >/dev/null 2>&1 &
+        rm -rf `find ./* -maxdepth 0 -type d ! -name "commit"` >/dev/null 2>&1
+        $GITHUB_WORKSPACE/.github/diy/small.sh
+        patch -p1 < $GITHUB_WORKSPACE/.github/diy/homeproxy.patch
+        bash /$GITHUB_WORKSPACE/.github/diy/convert_translation.sh
+        bash /$GITHUB_WORKSPACE/.github/diy/create_acl_for_luci.sh -a
+        bash /$GITHUB_WORKSPACE/.github/diy/Modify.sh
+
+    - name: Upload
+      env: 
+        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+      run: |
+        cd $GITHUB_WORKSPACE/${{matrix.target}}
+    
+        # 检查是否有文件更改
+        if git status --porcelain | grep .; then
+      
+          # 读取 small.sh 生成的提交消息
+          commit_message=$(cat commit_messages.txt)
+      
+          # 添加所有更改并提交
+          git add .
+          git commit -m "$commit_message"
+      
+          # 推送到远程仓库
+          git push --quiet "https://${{ secrets.ACCESS_TOKEN }}@github.com/kenzok8/small.git" HEAD:master
+        else
+          echo "nothing to commit"
+          exit 0
+        fi || exit 0
+
+    - name: Delete workflow runs
+      uses: Mattraks/delete-workflow-runs@main
+      with:
+        retain_days: 1
+        keep_minimum_runs: 1
