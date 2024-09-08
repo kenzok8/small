@@ -10,7 +10,7 @@
 <img src="https://v2.jinrishici.com/one.svg?font-size=24&spacing=2&color=Black">
 
 
-* small仓库不定期添加主流代理软件，ssr、passwall、homeproxy、mihomo依赖合并small
+* small仓库不定期添加主流代理软件，ssr、passwall、homeproxy、mihomo等
 
 #### 使用方式
 ```yaml
