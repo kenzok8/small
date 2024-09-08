@@ -10,7 +10,7 @@
 <img src="https://v2.jinrishici.com/one.svg?font-size=24&spacing=2&color=Black">
 
 
-* 把openwrt-packages与small仓库重新归类，ssr、passwall、homeproxy依赖合并small
+* small仓库不定期添加主流代理软件，ssr、passwall、homeproxy、mihomo依赖合并small
 
 #### 使用方式
 ```yaml
@@ -19,9 +19,9 @@
 
 使用方法：将整合包上传到openwrt设备的tmp目录，输入命令 opkg install *.ipk
 
-默认压缩包里包含ssr passwall bypass passwall2 homeproxy 插件
+默认压缩包里包含ssr passwall bypass passwall2 homeproxy mihomo插件
 
-如果单独安装ssr与依赖，rm -rf {*passwall*,*bypass*,*homeproxy*}
+如果单独安装ssr与依赖，rm -rf {*passwall*,*bypass*,*homeproxy*,*mihomo*}
 ```
 
 * 喜欢追新的可以去下载small-package，该仓库每天自动同步更新
