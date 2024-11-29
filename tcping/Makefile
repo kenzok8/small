@@ -23,7 +23,7 @@ define Package/tcping
   SECTION:=net
   CATEGORY:=Network
   TITLE:=tcping measures the latency of a tcp-connection (IPv4/IPv6 support)
-  URL:=https://github.com/Mattraks/tcping
+  URL:=https://github.com/jlyo/tcping
 endef
 
 define Build/Compile
