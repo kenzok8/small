@@ -1,12 +1,12 @@
-From 348bc3f68c676de929e74accc75e62d01ea999be Mon Sep 17 00:00:00 2001
-From: Henry-ZHR <henry-zhr@qq.com>
-Date: Mon, 16 Sep 2024 10:59:42 +0800
-Subject: [PATCH] forward: avoid picking same upstream
+From f5d190ab1542b96688353eeb3d3d5c46fbad8b7c Mon Sep 17 00:00:00 2001
+From: Irine Sistiana <49315432+IrineSistiana@users.noreply.github.com>
+Date: Wed, 11 Dec 2024 20:49:42 +0800
+Subject: [PATCH 1/2] forward: avoid picking same upstream if concurrent > 2
 
 ---
- plugin/executable/forward/forward.go | 7 ++++++-
+ plugin/executable/forward/forward.go | 4 +++-
  plugin/executable/forward/utils.go   | 5 -----
- 2 files changed, 6 insertions(+), 6 deletions(-)
+ 2 files changed, 3 insertions(+), 6 deletions(-)
 
 --- a/plugin/executable/forward/forward.go
 +++ b/plugin/executable/forward/forward.go
@@ -14,28 +14,18 @@ Subject: [PATCH] forward: avoid picking same upstream
  	"crypto/tls"
  	"errors"
  	"fmt"
-+	"math/rand"
++	"math/rand/v2"
  	"strings"
  	"time"
  
-@@ -251,6 +252,9 @@ func (f *Forward) exchange(ctx context.C
- 	if concurrent > maxConcurrentQueries {
- 		concurrent = maxConcurrentQueries
- 	}
-+	if concurrent > len(us) {
-+		concurrent = len(us)
-+	}
- 
- 	type res struct {
- 		r   *dns.Msg
-@@ -261,8 +265,9 @@ func (f *Forward) exchange(ctx context.C
+@@ -261,8 +262,9 @@ func (f *Forward) exchange(ctx context.C
  	done := make(chan struct{})
  	defer close(done)
  
-+	p := rand.Perm(len(us))
++	r := rand.IntN(len(us))
  	for i := 0; i < concurrent; i++ {
 -		u := randPick(us)
-+		u := us[p[i]]
++		u := us[(r+i)%len(us)]
  		qc := copyPayload(queryPayload)
  		go func(uqid uint32, question dns.Question) {
  			defer pool.ReleaseBuf(qc)
