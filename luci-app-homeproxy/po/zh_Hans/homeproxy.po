@@ -785,7 +785,7 @@ msgstr "外部账户密钥标识符"
 
 #: htdocs/luci-static/resources/view/homeproxy/server.js:65
 msgid "Failed to generate %s, error: %s."
-msgstr "生成 %s 失败，错误：%s。
+msgstr "生成 %s 失败，错误：%s。"
 
 #: htdocs/luci-static/resources/homeproxy.js:268
 msgid "Failed to upload %s, error: %s."
