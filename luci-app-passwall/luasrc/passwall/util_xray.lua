@@ -198,13 +198,6 @@ function gen_outbound(flag, node, tag, proxy_table)
 					earlyDataHeaderName = (node.ws_earlyDataHeaderName) and node.ws_earlyDataHeaderName or nil,
 					heartbeatPeriod = tonumber(node.ws_heartbeatPeriod) or nil
 				} or nil,
-				dsSettings = (node.transport == "ds") and
-					{path = node.ds_path} or nil,
-				quicSettings = (node.transport == "quic") and {
-					security = node.quic_security,
-					key = node.quic_key,
-					header = {type = node.quic_guise}
-				} or nil,
 				grpcSettings = (node.transport == "grpc") and {
 					serviceName = node.grpc_serviceName,
 					multiMode = (node.grpc_mode == "multi") and true or nil,
@@ -217,10 +210,10 @@ function gen_outbound(flag, node, tag, proxy_table)
 					path = node.httpupgrade_path or "/",
 					host = node.httpupgrade_host
 				} or nil,
-				xhttpSettings = (node.transport == "xhttp" or node.transport == "splithttp") and {
+				xhttpSettings = (node.transport == "xhttp") and {
 					mode = node.xhttp_mode or "auto",
-					path = node.xhttp_path or node.splithttp_path or "/",
-					host = node.xhttp_host or node.splithttp_host,
+					path = node.xhttp_path or "/",
+					host = node.xhttp_host,
 					-- 如果包含 "extra" 节，取 "extra" 内的内容，否则直接赋值给 extra
 					extra = node.xhttp_extra and (function()
 						local success, parsed = pcall(jsonc.parse, node.xhttp_extra)
@@ -494,14 +487,6 @@ function gen_config_server(node)
 					wsSettings = (node.transport == "ws") and {
 						host = node.ws_host or nil,
 						path = node.ws_path
-					} or nil,
-					dsSettings = (node.transport == "ds") and {
-						path = node.ds_path
-					} or nil,
-					quicSettings = (node.transport == "quic") and {
-						security = node.quic_security,
-						key = node.quic_key,
-						header = {type = node.quic_guise}
 					} or nil,
 					grpcSettings = (node.transport == "grpc") and {
 						serviceName = node.grpc_serviceName
