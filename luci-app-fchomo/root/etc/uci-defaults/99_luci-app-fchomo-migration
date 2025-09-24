@@ -47,6 +47,9 @@ if [ -n "$dns_port" ]; then
 	EOF
 fi
 
+# mieru_port_range -> mieru_ports
+sed -i 's|^\toption mieru_port_range |\tlist mieru_ports |' /etc/config/fchomo 2>/dev/null
+
 uci commit fchomo
 
 exit 0
