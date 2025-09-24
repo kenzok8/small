@@ -1,0 +1,244 @@
+#!/bin/sh
+#
+# Copyright (C) 2017 openwrt-ssr
+# Copyright (C) 2017 yushi studio <ywb94@qq.com>
+#
+# This is free software, licensed under the GNU General Public License v3.
+# See /LICENSE for more information.
+#
+. $IPKG_INSTROOT/etc/init.d/shadowsocksr
+LOCK_FILE="/var/lock/ssr-monitor.lock"
+[ -f "$LOCK_FILE" ] && exit 2
+touch "$LOCK_FILE"
+server_process_count=$1
+redir_tcp_process=$2
+redir_udp_process=$3
+kcp_process=$4
+local_process=$5
+pdnsd_process=$6
+if [ -z "$pdnsd_process" ]; then
+	pdnsd_process=0
+fi
+i=0
+GLOBAL_SERVER=$(uci_get_by_type global global_server)
+server=$(uci_get_by_name $GLOBAL_SERVER server)
+kcp_port=$(uci_get_by_name $GLOBAL_SERVER kcp_port)
+server_port=$(uci_get_by_name $GLOBAL_SERVER server_port)
+password=$(uci_get_by_name $GLOBAL_SERVER kcp_password)
+kcp_param=$(uci_get_by_name $GLOBAL_SERVER kcp_param)
+[ "$password" != "" ] && password="--key "${password}
+
+while [ "1" == "1" ]; do #死循环
+	sleep 000030s
+	#redir tcp
+	if [ "$redir_tcp_process" -gt 0 ]; then
+		icount=$(busybox ps -w | grep ssr-retcp | grep -v grep | wc -l)
+		if [ "$icount" == 0 ]; then
+			logger -t "$NAME" "ssrplus redir tcp error.restart!"
+			echolog "ssrplus redir tcp error.restart!"
+			/etc/init.d/shadowsocksr restart
+			exit 0
+		fi
+	fi
+	#redir udp
+	if [ "$redir_udp_process" -gt 0 ]; then
+		icount=$(busybox ps -w | grep ssr-reudp | grep -v grep | wc -l)
+		if [ "$icount" == 0 ]; then
+			logger -t "$NAME" "ssrplus redir udp error.restart!"
+			echolog "ssrplus redir udp error.restart!"
+			/etc/init.d/shadowsocksr restart
+			exit 0
+		fi
+	fi
+	#server
+	if [ "$server_process_count" -gt 0 ]; then
+		icount=$(busybox ps -w | grep ssr-server | grep -v grep | wc -l)
+		if [ "$icount" -lt "$server_process_count" ]; then #如果进程挂掉就重启它
+			logger -t "$NAME" "ssrplus server error.restart!"
+			echolog "ssrplus server error.restart!"
+			kill -9 $(busybox ps -w | grep ssr-server | grep -v grep | awk '{print $1}') >/dev/null 2>&1
+			/etc/init.d/shadowsocksr restart
+			exit 0
+		fi
+	fi
+	#kcptun
+	if [ "$kcp_process" -gt 0 ]; then
+		icount=$(busybox ps -w | grep kcptun-client | grep -v grep | wc -l)
+		if [ "$icount" -lt "$kcp_process" ]; then #如果进程挂掉就重启它
+			logger -t "$NAME" "ssrplus kcptun error.restart!"
+			echolog "ssrplus kcptun error.restart!"
+			killall -q -9 kcptun-client
+			(/usr/bin/kcptun-client -r $server:$kcp_port -l :$server_port $password $kcp_param &)
+		fi
+	fi
+	#localsocks
+	if [ "$local_process" -gt 0 ]; then
+		icount=$(busybox ps -w | grep ssr-local | grep -v grep | wc -l)
+		if [ "$icount" -lt "$local_process" ]; then #如果进程挂掉就重启它
+			logger -t "$NAME" "global socks server error.restart!"
+			echolog "global socks server error.restart!"
+			kill -9 $(busybox ps -w | grep ssr-local | grep -v grep | awk '{print $1}') >/dev/null 2>&1
+			/etc/init.d/shadowsocksr restart
+			exit 0
+		fi
+	fi
+	#dns2tcp
+	if [ "$pdnsd_process" -eq 1 ]; then
+		icount=$(busybox ps -w | grep $TMP_BIN_PATH/dns2tcp | grep -v grep | wc -l)
+		if [ "$icount" -lt 1 ]; then #如果进程挂掉就重启它
+			logger -t "$NAME" "dns2tcp tunnel error.restart!"
+			echolog "dns2tcp tunnel error.restart!"
+			dnsserver=$(uci_get_by_type global tunnel_forward 8.8.4.4:53)
+			kill -9 $(busybox ps -w | grep $TMP_BIN_PATH/dns2tcp | grep -v grep | awk '{print $1}') >/dev/null 2>&1
+			ln_start_bin $(first_type dns2tcp) dns2tcp -L "127.0.0.1#$dns_port" -R "${dnsserver/:/#}"
+		fi
+	#dns2socks
+	elif [ "$pdnsd_process" -eq 2 ]; then
+		icount=$(busybox ps -w | grep -e ssrplus-dns -e "dns2socks 127.0.0.1 $tmp_dns_port" | grep -v grep | wc -l)
+		if [ "$icount" -lt 1 ]; then #如果进程挂掉就重启它
+			logger -t "$NAME" "dns2socks $dnsserver tunnel error.restart!"
+			echolog "dns2socks $dnsserver tunnel error.restart!"
+			dnsserver=$(uci_get_by_type global tunnel_forward 8.8.4.4:53)
+			kill -9 $(busybox ps -w | grep ssrplus-dns | grep -v grep | awk '{print $1}') >/dev/null 2>&1
+			kill -9 $(busybox ps -w | grep "dns2socks 127.0.0.1 $tmp_dns_port" | grep -v grep | awk '{print $1}') >/dev/null 2>&1
+			ln_start_bin $(first_type microsocks) microsocks -i 127.0.0.1 -p $tmp_dns_port ssrplus-dns
+			ln_start_bin $(first_type dns2socks) dns2socks 127.0.0.1:$tmp_dns_port $dnsserver 127.0.0.1:$dns_port -q
+		fi
+	#dns2socks-rust
+	elif [ "$pdnsd_process" -eq 3 ]; then
+		icount=$(busybox ps -w | grep -e ssrplus-dns -e "dns2socks-rust -s socks5://127.0.0.1 $tmp_dns_port" | grep -v grep | wc -l)
+		if [ "$icount" -lt 1 ]; then #如果进程挂掉就重启它
+			logger -t "$NAME" "dns2socks-rust $dnsserver tunnel error.restart!"
+			echolog "dns2socks-rust $dnsserver tunnel error.restart!"
+			dnsserver=$(uci_get_by_type global tunnel_forward 8.8.4.4:53)
+			kill -9 $(busybox ps -w | grep ssrplus-dns | grep -v grep | awk '{print $1}') >/dev/null 2>&1
+			kill -9 $(busybox ps -w | grep "dns2socks-rust -s socks5://127.0.0.1 $tmp_dns_port" | grep -v grep | awk '{print $1}') >/dev/null 2>&1
+			ln_start_bin $(first_type microsocks) microsocks -i 127.0.0.1 -p $tmp_dns_port ssrplus-dns
+			ln_start_bin $(first_type dns2socks) dns2socks-rust -s socks5://127.0.0.1:$tmp_dns_port -d $dnsserver -l 127.0.0.1:$dns_port -f -c
+		fi
+	#mosdns
+	elif [ "$pdnsd_process" -eq 4 ]; then
+		icount=$(busybox ps -w | grep $TMP_BIN_PATH/mosdns | grep -v grep | wc -l)
+		if [ "$icount" -lt 1 ]; then #如果进程挂掉就重启它
+			logger -t "$NAME" "mosdns tunnel error.restart!"
+			echolog "mosdns tunnel error.restart!"
+			dnsserver=$(uci_get_by_type global tunnel_forward 8.8.4.4:53)
+			kill -9 $(busybox ps -w | grep $TMP_BIN_PATH/mosdns | grep -v grep | awk '{print $1}') >/dev/null 2>&1
+			ln_start_bin $(first_type mosdns) mosdns start -c /etc/mosdns/config.yaml
+	#dnsproxy
+	elif [ "$pdnsd_process" -eq 5 ]; then
+		icount=$(busybox ps -w | grep -e ssrplus-dns -e "dnsproxy -l 127.0.0.1 -p $tmp_dns_port" | grep -v grep | wc -l)
+		if [ "$icount" -lt 1 ]; then #如果进程挂掉就重启它
+			logger -t "$NAME" "dnsproxy $dnsserver tunnel error.restart!"
+			echolog "dnsproxy $dnsserver tunnel error.restart!"
+			local dnsproxy_dnsserver="$(uci_get_by_type global parse_method)"
+			if [ -n "$dnsproxy_dnsserver" ] && [ "$dnsproxy_dnsserver" != "parse_file" ]; then
+				dnsserver="$(uci_get_by_type global dnsproxy_tunnel_forward 8.8.4.4:53)"
+			fi
+			kill -9 $(busybox ps -w | grep "dnsproxy -l 127.0.0.1 -p $tmp_dns_port" | grep -v grep | awk '{print $1}') >/dev/null 2>&1
+			dnsproxy_ipv6="$(uci_get_by_type global dnsproxy_ipv6)"
+				disabled_ipv6="--ipv6-disabled"
+			fi
+			if [ "$dnsproxy_dnsserver" != "parse_file" ]; then
+				ln_start_bin $(first_type dnsproxy) dnsproxy -l 127.0.0.1 -p $tmp_dns_port  -p $dns_port -u $dnsserver $disabled_ipv6 --cache --cache-min-ttl=3600
+			else
+				dnsproxy_dnsserver_file="$TMP_PATH/dnsproxy_dns.list"
+				cleaned_file="$TMP_PATH/cleaned_dns.list"
+				temp_file="$TMP_PATH/temp_dns.list"
+				> "$cleaned_file"
+				# 清理输入文件并去重
+				while IFS= read -r line || [ -n "$line" ]; do
+				    line=$(echo "$line" | sed -E 's/^[ \t\r]+//; s/[ \t\r]+$//')
+					[ -z "$line" ] && continue
+					echo "$line" | grep -qE '^#' && continue
+					echo "$line" >> "$cleaned_file"
+				done < "/etc/ssrplus/dnsproxy_dns.list"
+				# 获取清理后文件的MD5
+				cleaned_md5=$(md5sum "$cleaned_file" | awk '{print $1}')
+				if [ ! -f "$dnsproxy_dnsserver_file" ]; then
+				    cp "$cleaned_file" "$dnsproxy_dnsserver_file"
+				else
+				    target_md5=$(md5sum "$dnsproxy_dnsserver_file" | awk '{print $1}')
+					if [ "$cleaned_md5" != "$target_md5" ]; then
+					    > "$temp_file"
+					    # 保留目标文件中也存在于清理文件的记录（去重）
+					    while IFS= read -r line; do
+						    line=$(echo "$line" | sed -E 's/^[ \t\r]+//; s/[ \t\r]+$//')
+						    if grep -qixF "$line" "$cleaned_file" && ! grep -qixF "$line" "$temp_file"; then
+							    echo "$line" >> "$temp_file"
+						    fi
+						done < "$dnsproxy_dnsserver_file"
+						# 添加清理文件中有但目标文件没有的记录（去重）
+						while IFS= read -r line; do
+						    line=$(echo "$line" | sed -E 's/^[ \t\r]+//; s/[ \t\r]+$//')
+							if ! grep -qixF "$line" "$temp_file"; then
+							    echo "$line" >> "$temp_file"
+							fi
+						done < "$cleaned_file"
+						temp_md5=$(md5sum "$temp_file" | awk '{print $1}')
+						if [ "$temp_md5" != "$target_md5" ]; then
+						    mv "$temp_file" "$dnsproxy_dnsserver_file"
+						else
+						    rm -f "$temp_file"
+						fi
+					fi
+				fi
+				rm -f "$cleaned_file"
+
+				if [ -n "$dnsproxy_dnsserver_file" ] && [ -s "$dnsproxy_dnsserver_file" ]; then
+					local upstreams_logic_mode="$(uci_get_by_type global upstreams_logic_mode)"
+					ln_start_bin $(first_type dnsproxy) dnsproxy -l 127.0.0.1 -p $tmp_dns_port  -p $dns_port -u $dnsproxy_dnsserver_file $disabled_ipv6 --cache --cache-min-ttl=3600 --upstream-mode=$upstreams_logic_mode
+				fi
+			fi
+		fi
+	#chinadns-ng(proxy)
+	elif [ "$pdnsd_process" -eq 6 ]; then
+		icount=$(busybox ps -w | grep -e ssrplus-dns -e "chinadns-ng -b 127.0.0.1 -l $tmp_dns_port" | grep -v grep | wc -l)
+		if [ "$icount" -lt 1 ]; then #如果进程挂掉就重启它
+			logger -t "$NAME" "chinadns-ng $dnsserver tunnel error.restart!"
+			echolog "chinadns-ng $dnsserver tunnel error.restart!"
+			dnsserver=$(uci_get_by_type global chinadns_ng_tunnel_forward 8.8.4.4:53)
+			kill -9 $(busybox ps -w | grep "chinadns-ng -b 127.0.0.1 -l $tmp_dns_port" | grep -v grep | awk '{print $1}') >/dev/null 2>&1
+			local chinadns_ng_proto="$(uci_get_by_type global chinadns_ng_proto)"
+			local chinadns_ng_dns=""
+			IFS=','
+			for chinadns_ng_server in $dnsserver; do
+				local chinadns_ng_ip="${chinadns_ng_server%%:*}"
+				local chinadns_ng_port="${chinadns_ng_server##*:}"
+				[ "$chinadns_ng_ip" = "$chinadns_ng_port" ] && chinadns_ng_port="53"
+				chinadns_ng_tls_port="853"
+				case "$chinadns_ng_proto" in
+					"none")
+						chinadns_ng_server="${chinadns_ng_ip}#${chinadns_ng_port}"
+						;;
+					"tls")
+						chinadns_ng_server="${chinadns_ng_proto}://${chinadns_ng_ip}#${chinadns_ng_tls_port}"
+						;;
+					*)
+						chinadns_ng_server="${chinadns_ng_proto}://${chinadns_ng_ip}#${chinadns_ng_port}"
+						;;
+				esac
+					chinadns_ng_dns="${chinadns_ng_dns} -t ${chinadns_ng_server}"
+			done
+			unset IFS
+			dnsserver="$chinadns_ng_dns"
+			ln_start_bin $(first_type chinadns-ng) chinadns-ng -b 127.0.0.1 -l $tmp_dns_port -l $dns_port -p 3 -d gfw $dnsserver -N --filter-qtype 64,65 -f -r --cache 4096 --cache-stale 86400 --cache-refresh 20
+		fi
+	fi
+	#chinadns-ng(china)
+	if [ "$(uci -q get "dhcp.@dnsmasq[0]._unused_ssrp_changed")" = "1" ]; then
+		icount=$(busybox ps -w | grep $TMP_BIN_PATH/chinadns-ng | grep -v grep | wc -l)
+		if [ "$icount" -lt 1 ]; then #如果进程挂掉就重启它
+			logger -t "$NAME" "chinadns-ng tunnel error.restart!"
+			echolog "chinadns-ng tunnel error.restart!"
+			chinadns=$(uci_get_by_type global chinadns_forward)
+			wandns="$(ifstatus wan | jsonfilter -e '@["dns-server"][0]' || echo "119.29.29.29")"
+			case "$chinadns" in
+			"wan") chinadns="$wandns" ;;
+			""|"wan_114") chinadns="$wandns,114.114.114.114" ;;
+			esac
+			kill -9 $(busybox ps -w | grep $TMP_BIN_PATH/chinadns-ng | grep -v grep | awk '{print $1}') >/dev/null 2>&1
+			ln_start_bin $(first_type chinadns-ng) chinadns-ng -l $china_dns_port -4 china -p 3 -c ${chinadns/:/#} -t 127.0.0.1#$dns_port -N -f -r
+		fi
+	fi
+done

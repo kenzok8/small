@@ -1,0 +1,17 @@
+{
+	"luci-app-ssr-plus": {
+		"description": "Grant UCI access for luci-app-ssr-plus",
+		"read": {
+			"file": {
+				"/etc/ssrplus/*": [ "read" ]
+			},
+			"uci": ["shadowsocksr"]
+		},
+		"write": {
+			"file": {
+				"/etc/ssrplus/*": [ "write" ]
+			},
+			"uci": ["shadowsocksr"]
+		}
+	}
+}
