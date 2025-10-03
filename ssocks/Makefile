@@ -76,3 +76,4 @@ endef
 $(eval $(call BuildPackage,ssocks))
 $(eval $(call BuildPackage,ssocksd))
 
+
