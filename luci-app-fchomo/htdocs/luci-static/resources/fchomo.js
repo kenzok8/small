@@ -515,6 +515,39 @@ const CBIGenText = CBITextValue.extend({
 	}
 });
 
+const CBICopyValue = form.Value.extend({
+	__name__: 'CBI.CopyValue',
+
+	readonly: true,
+
+	renderWidget(section_id, option_index, cfgvalue) {
+		let node = form.Value.prototype.renderWidget.call(this, section_id, option_index, cfgvalue);
+
+		node.classList.add('control-group');
+
+		node.appendChild(E('button', {
+			class: 'cbi-button cbi-button-add',
+			click: ui.createHandlerFn(this, async (section_id) => {
+				try {
+					await navigator.clipboard.writeText(this.formvalue(section_id));
+					console.log('Content copied to clipboard!');
+				} catch (e) {
+					console.error('Failed to copy: ', e);
+				}
+				/* Deprecated
+				let inputEl = document.getElementById(this.cbid(section_id)).querySelector('input');
+				inputEl.select();
+				document.execCommand("copy");
+				inputEl.blur();
+				*/
+				return alert(_('Content copied to clipboard!'));
+			}, section_id)
+		}, [ _('Copy') ]));
+
+		return node;
+	}
+});
+
 const CBIHandleImport = baseclass.extend(/** @lends hm.HandleImport.prototype */ {
 	__init__(map, section, title, description) {
 		this.map = map;
@@ -1568,6 +1601,7 @@ return baseclass.extend({
 	TextValue: CBITextValue,
 	GenValue: CBIGenValue,
 	GenText: CBIGenText,
+	CopyValue: CBICopyValue,
 	HandleImport: CBIHandleImport,
 
 	/* Method */
