@@ -1692,8 +1692,8 @@ msgstr "最大填充率"
 
 #: htdocs/luci-static/resources/view/fchomo/node.js:421
 #: htdocs/luci-static/resources/view/fchomo/server.js:409
-msgid "Maximum padding rate must be greater than minimum padding rate."
-msgstr ""
+msgid "Maximum padding rate must be greater than or equal to the minimum padding rate."
+msgstr "最大填充率必須大於等于最小填充率。"
 
 #: htdocs/luci-static/resources/view/fchomo/node.js:1230
 msgid "Maximum streams"

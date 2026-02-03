@@ -406,7 +406,7 @@ return view.extend({
 			const padding_min = this.section.getOption('sudoku_padding_min').formvalue(section_id);
 
 			if (value < padding_min)
-				return _('Expecting: %s').format(_('Maximum padding rate must be greater than minimum padding rate.'));
+				return _('Expecting: %s').format(_('Maximum padding rate must be greater than or equal to the minimum padding rate.'));
 
 			return true;
 		}

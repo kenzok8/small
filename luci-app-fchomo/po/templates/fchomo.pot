@@ -1663,7 +1663,7 @@ msgstr ""
 
 #: htdocs/luci-static/resources/view/fchomo/node.js:421
 #: htdocs/luci-static/resources/view/fchomo/server.js:409
-msgid "Maximum padding rate must be greater than minimum padding rate."
+msgid "Maximum padding rate must be greater than or equal to the minimum padding rate."
 msgstr ""
 
 #: htdocs/luci-static/resources/view/fchomo/node.js:1230
