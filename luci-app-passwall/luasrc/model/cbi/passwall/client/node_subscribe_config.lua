@@ -210,6 +210,9 @@ o:value("prefer_ipv6", translate("Prefer IPv6"))
 o:value("ipv4_only", translate("IPv4 Only"))
 o:value("ipv6_only", translate("IPv6 Only"))
 
+o = s:option(Flag, "boot_update", translate("Update Once on Boot"), translate("Updates the subscription the first time PassWall runs automatically after each system boot."))
+o.default = 0
+
 ---- Enable auto update subscribe
 o = s:option(Flag, "auto_update", translate("Enable auto update subscribe"))
 o.default = 0

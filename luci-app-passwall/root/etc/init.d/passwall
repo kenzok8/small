@@ -39,7 +39,7 @@ boot_func() {
 		echolog "执行启动延时 $delay 秒后再启动!"
 		sleep $delay
 	fi
-	restart
+	restart boot
 	touch ${LOCK_FILE_DIR}/${CONFIG}_ready.lock
 }
 
@@ -66,7 +66,7 @@ restart() {
 	set_lock
 	[ $? == 1 ] && echolog "脚本已经在运行，不重复运行，退出." && exit 0
 	$APP_FILE stop
-	$APP_FILE start
+	$APP_FILE start $1
 	unset_lock
 }
 
