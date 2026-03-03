@@ -1029,6 +1029,12 @@ msgstr "URL اشتراک نمی‌تواند خالی باشد."
 msgid "Subscribe via proxy"
 msgstr "اشتراک از طریق پروکسی"
 
+msgid "Update Once on Boot"
+msgstr "یک بار در بوت به‌روزرسانی کنید"
+
+msgid "Updates the subscription the first time runs automatically after each system boot."
+msgstr "اشتراک را برای اولین بار به طور خودکار پس از هر بار بوت سیستم به‌روزرسانی می‌کند."
+
 msgid "Enable auto update subscribe"
 msgstr "فعال‌سازی به‌روزرسانی خودکار اشتراک"
 
@@ -1617,9 +1623,6 @@ msgstr "بازنویسی آدرس مقصد اتصال"
 msgid "Override the connection destination address with the sniffed domain.<br />Otherwise use sniffed domain for routing only.<br />If using shunt nodes, configure the domain shunt rules correctly."
 msgstr "بازنویسی آدرس مقصد اتصال با دامنه شنود شده (Sniffed Domain).<br />در غیر این صورت، از دامنه شنود شده فقط برای مسیریابی استفاده می‌شود.<br />اگر از گره‌های شنت (Shunt) استفاده می‌کنید، قوانین مربوطه را به درستی پیکربندی کنید."
 
-msgid "Override the connection destination address with the sniffed domain.<br />When enabled, traffic will match only by domain, ignoring IP rules.<br />If using shunt nodes, configure the domain shunt rules correctly."
-msgstr "بازنویسی آدرس مقصد اتصال با دامنه شنود شده.<br />زمانی که فعال باشد، ترافیک فقط با دامنه مطابقت داده می‌شود و قوانین IP نادیده گرفته می‌شوند.<br />اگر از گره‌های شنت استفاده می‌کنید، قوانین شنت دامنه را به درستی پیکربندی کنید."
-
 msgid "Handshake Server"
 msgstr "سرور دست تکان دادن"
 
@@ -1649,12 +1652,6 @@ msgstr "پیکربندی ECH"
 
 msgid "ECH Key"
 msgstr "کلید ECH"
-
-msgid "PQ signature schemes"
-msgstr "طرح‌های امضای PQ"
-
-msgid "Disable adaptive sizing of TLS records"
-msgstr "غیرفعال‌سازی اندازه‌دهی تطبیقی رکوردهای TLS"
 
 msgid "ECH Query Policy"
 msgstr "سیاست پرس‌وجوی ECH"

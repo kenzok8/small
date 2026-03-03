@@ -59,7 +59,6 @@ config global_subscribe
 	option filter_keyword_mode '1'
 	
 config global_singbox
-	option sniff_override_destination '0'
 
 config shunt_rules 'China'
 	option remarks 'China'

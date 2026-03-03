@@ -1021,6 +1021,12 @@ msgstr "訂閱網址不能為空。"
 msgid "Subscribe via proxy"
 msgstr "通過代理訂閱"
 
+msgid "Update Once on Boot"
+msgstr "開機更新一次"
+
+msgid "Updates the subscription the first time runs automatically after each system boot."
+msgstr "路由每次啟動後，首次自動執行時更新訂閱。"
+
 msgid "Enable auto update subscribe"
 msgstr "開啟自動更新訂閱"
 
@@ -1609,9 +1615,6 @@ msgstr "覆盖連接目標地址"
 msgid "Override the connection destination address with the sniffed domain.<br />Otherwise use sniffed domain for routing only.<br />If using shunt nodes, configure the domain shunt rules correctly."
 msgstr "用探測出的域名覆盖連接目標地址。<br />否則仅將探測得到的域名用於路由。<br />如使用分流節點，請正確設置域名分流規則。"
 
-msgid "Override the connection destination address with the sniffed domain.<br />When enabled, traffic will match only by domain, ignoring IP rules.<br />If using shunt nodes, configure the domain shunt rules correctly."
-msgstr "用探測出的域名覆盖連接目標地址。<br />啟用後仅使用域名进行流量匹配，將忽略IP規則。<br />如使用分流節點，請正確設置域名分流規則。"
-
 msgid "Handshake Server"
 msgstr "握手服務器"
 
@@ -1641,12 +1644,6 @@ msgstr "ECH 配置"
 
 msgid "ECH Key"
 msgstr "ECH 密鑰"
-
-msgid "PQ signature schemes"
-msgstr "後量子對等證書签名方案"
-
-msgid "Disable adaptive sizing of TLS records"
-msgstr "禁用 TLS 記錄的自適應大小调整"
 
 msgid "ECH Query Policy"
 msgstr "ECH 查詢策略"

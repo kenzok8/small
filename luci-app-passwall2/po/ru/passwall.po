@@ -1030,6 +1030,12 @@ msgstr "URL подписки не может быть пустым."
 msgid "Subscribe via proxy"
 msgstr "Подписка через прокси"
 
+msgid "Update Once on Boot"
+msgstr "Обновлять один раз при загрузке"
+
+msgid "Updates the subscription the first time runs automatically after each system boot."
+msgstr "Подписку обновляют при первом запуске, и она автоматически активируется после каждой загрузки системы."
+
 msgid "Enable auto update subscribe"
 msgstr "Автообновление подписки"
 
@@ -1618,9 +1624,6 @@ msgstr "Заменять целевой адрес соединения"
 msgid "Override the connection destination address with the sniffed domain.<br />Otherwise use sniffed domain for routing only.<br />If using shunt nodes, configure the domain shunt rules correctly."
 msgstr "Заменять целевой адрес на домен, полученный при анализе трафика.<br />Иначе домен будет использоваться только для маршрутизации.<br />При использовании серверов разделения трафика правильно настройте правила доменной маршрутизации."
 
-msgid "Override the connection destination address with the sniffed domain.<br />When enabled, traffic will match only by domain, ignoring IP rules.<br />If using shunt nodes, configure the domain shunt rules correctly."
-msgstr "Заменять целевой адрес на домен, полученный при анализе трафика.<br />При включении трафик будет сопоставляться только по домену, IP-правила игнорируются.<br />При использовании серверов разделения трафика правильно настройте правила доменной маршрутизации."
-
 msgid "Handshake Server"
 msgstr "Сервер рукопожатия"
 
@@ -1650,12 +1653,6 @@ msgstr "Конфигурация ECH"
 
 msgid "ECH Key"
 msgstr "Ключ ECH"
-
-msgid "PQ signature schemes"
-msgstr "Схемы постквантовой подписи"
-
-msgid "Disable adaptive sizing of TLS records"
-msgstr "Отключить адаптивный размер TLS-записей"
 
 msgid "ECH Query Policy"
 msgstr "Политика запросов ECH"
