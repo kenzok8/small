@@ -264,8 +264,7 @@ do
 
 			for k, e in pairs(rules) do
 				local _node_id = node[e[".name"]] or nil
-				if _node_id and api.parseURL(_node_id) then
-				else
+				if _node_id and not _node_id:find("Socks_") then
 					CONFIG[#CONFIG + 1] = {
 						log = false,
 						currentNode = _node_id and uci:get_all(appname, _node_id) or nil,

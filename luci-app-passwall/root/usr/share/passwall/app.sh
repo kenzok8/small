@@ -169,15 +169,14 @@ run_singbox() {
 			local _dns=$(get_first_dns remote_dns_${_proto}_server 53 | sed 's/#/:/g')
 			local _dns_address=$(echo ${_dns} | awk -F ':' '{print $1}')
 			local _dns_port=$(echo ${_dns} | awk -F ':' '{print $2}')
-			json_add_string "remote_dns_server" "${_dns_address}"
+			json_add_string "remote_dns_${_proto}_server" "${_dns_address}"
 			json_add_string "remote_dns_port" "${_dns_port}"
-			json_add_string "remote_dns_${_proto}_server" "${_proto}://${_dns}"
 		;;
 		doh)
 			local _doh_url _doh_host _doh_port _doh_bootstrap
 			parse_doh "$remote_dns_doh" _doh_url _doh_host _doh_port _doh_bootstrap
-			[ -n "$_doh_bootstrap" ] && json_add_string "remote_dns_server" "${_doh_bootstrap}"
-			json_add_string "remote_dns_port" "${_doh_port}"
+			[ -n "$_doh_bootstrap" ] && json_add_string "remote_dns_doh_ip" "${_doh_bootstrap}"
+			json_add_string "remote_dns_doh_port" "${_doh_port}"
 			json_add_string "remote_dns_doh_url" "${_doh_url}"
 			json_add_string "remote_dns_doh_host" "${_doh_host}"
 		;;

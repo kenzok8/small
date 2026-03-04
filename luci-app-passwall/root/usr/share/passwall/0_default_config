@@ -50,7 +50,6 @@ config global_xray
 	option sniffing_override_dest '0'
 
 config global_singbox
-	option sniff_override_destination '0'
 
 config global_other
 	option auto_detection_time 'tcping'
