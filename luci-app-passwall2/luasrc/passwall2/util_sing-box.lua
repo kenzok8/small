@@ -1628,6 +1628,44 @@ function gen_config(var)
 			reverse_mapping = true, -- After responding to a DNS query, a reverse mapping of the IP address is stored to provide the domain name for routing purposes.
 		}
 
+		local dns_host = ""
+		if flag == "global" then
+			dns_host = uci:get(appname, "@global[0]", "dns_hosts") or ""
+		else
+			flag = flag:gsub("acl_", "")
+			local dns_hosts_mode = uci:get(appname, flag, "dns_hosts_mode") or "default"
+			if dns_hosts_mode == "default" then
+				dns_host = uci:get(appname, "@global[0]", "dns_hosts") or ""
+			elseif dns_hosts_mode == "disable" then
+				dns_host = ""
+			elseif dns_hosts_mode == "custom" then
+				dns_host = uci:get(appname, flag, "dns_hosts") or ""
+			end
+		end
+		if #dns_host > 0 then
+			local domains = {}
+			local hosts_server = {
+				tag = "hosts",
+				type = "hosts",
+				predefined = {}
+			}
+			string.gsub(dns_host, '[^' .. "\r\n" .. ']+', function(w)
+				local host = sys.exec(string.format("echo -n $(echo %s | awk -F ' ' '{print $1}')", w))
+				local key = sys.exec(string.format("echo -n $(echo %s | awk -F ' ' '{print $2}')", w))
+				if host ~= "" and key ~= "" then
+					hosts_server.predefined[host] = key
+					table.insert(domains, host)
+				end
+			end)
+			if next(hosts_server.predefined) then
+				table.insert(dns.servers, hosts_server)
+				table.insert(dns.rules, {
+					domain = domains,
+					server = "hosts"
+				})
+			end
+		end
+
 		remote_strategy = "prefer_ipv6"
 		if remote_dns_query_strategy == "UseIPv4" then
 			remote_strategy = "ipv4_only"

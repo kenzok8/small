@@ -232,12 +232,11 @@ o:value("UseIPv6")
 o = s:taboption("DNS", TextValue, "dns_hosts", translate("Domain Override"))
 o.rows = 5
 o.wrap = "off"
-o:depends({ __hide = true })
 o.remove = function(self, section)
 	local node_value = s.fields["node"]:formvalue(global_cfgid)
 	if node_value then
 		local node_t = m:get(node_value) or {}
-		if node_t.type == "Xray" then
+		if node_t.type == "Xray" or node_t.type == "sing-box" then
 			AbstractValue.remove(self, section)
 		end
 	end
@@ -256,13 +255,6 @@ function o.cfgvalue(self, section)
 		[[<button type="button" class="cbi-button cbi-button-remove" onclick="location.href='%s'">%s</button>]],
 		api.url("flush_set") .. "?redirect=1&reload=1", set_title)
 end
-
-o = s:taboption("DNS", DummyValue, "_xray_node", "")
-o.template = "passwall2/cbi/hidevalue"
-o.value = "1"
-o:depends({ __hide = true })
-
-s.fields["dns_hosts"]:depends({ _xray_node = "1" })
 
 s:tab("log", translate("Log"))
 o = s:taboption("log", Flag, "log_node", translate("Enable Node Log"))
@@ -354,9 +346,6 @@ for k, v in pairs(nodes_table) do
 	o_node.group[#o_node.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
 	o_socks:value(v.id, v["remark"])
 	o_socks.group[#o_socks.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
-	if v.type == "Xray" then
-		s.fields["_xray_node"]:depends({ node = v.id })
-	end
 	if v.node_type == "normal" or v.protocol == "_balancing" or v.protocol == "_urltest" then
 		--Shunt node has its own separate options.
 		s.fields["remote_fakedns"]:depends({ node = v.id })

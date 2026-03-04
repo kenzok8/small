@@ -215,11 +215,6 @@ if GLOBAL_ENABLED == "1" and NODE then
 	o:depends({ node = NODE })
 end
 
-o = s:option(DummyValue, "_xray_node", "")
-o.template = "passwall2/cbi/hidevalue"
-o.value = "1"
-o:depends({ __hide = true })
-
 ---- TCP Redir Ports
 local TCP_REDIR_PORTS = m:get("@global_forwarding[0]", "tcp_redir_ports")
 o = s:option(Value, "tcp_redir_ports", translate("TCP Redir Ports"))
@@ -318,15 +313,20 @@ o:depends("remote_dns_protocol", "tcp")
 o:depends("remote_dns_protocol", "doh")
 o:depends("remote_dns_protocol", "udp")
 
+o = s:option(ListValue, "dns_hosts_mode", translate("Domain Override"))
+o:value("default", translate("Use global config"))
+o:value("disable", translate("No patterns are used"))
+o:value("custom", translate("-- custom --"))
+
 o = s:option(TextValue, "dns_hosts", translate("Domain Override"))
 o.rows = 5
 o.wrap = "off"
-o:depends({ __hide = true })
+o:depends("dns_hosts_mode", "custom")
 o.remove = function(self, section)
 	local node_value = s.fields["node"]:formvalue(arg[1])
 	if node_value then
 		local node_t = m:get(node_value) or {}
-		if node_t.type == "Xray" then
+		if node_t.type == "Xray" or node_t.type == "sing-box" then
 			AbstractValue.remove(self, section)
 		end
 	end
@@ -337,9 +337,6 @@ local o_node = s.fields["node"]
 for k, v in pairs(nodes_table) do
 	o_node:value(v.id, v["remark"])
 	o_node.group[#o_node.group+1] = (v.group and v.group ~= "") and v.group or translate("default")
-	if v.type == "Xray" then
-		s.fields["_xray_node"]:depends({ node = v.id })
-	end
 	if v.node_type == "normal" or v.protocol == "_balancing" or v.protocol == "_urltest" then
 		--Shunt node has its own separate options.
 		s.fields["remote_fakedns"]:depends({ node = v.id, remote_dns_protocol = "tcp" })
@@ -347,7 +344,5 @@ for k, v in pairs(nodes_table) do
 		s.fields["remote_fakedns"]:depends({ node = v.id, remote_dns_protocol = "udp" })
 	end
 end
-
-s.fields["dns_hosts"]:depends({ _xray_node = "1" })
 
 return m
