@@ -48,8 +48,9 @@ function geo_convert_srs(var)
 	local rule_name = var["rule_name"]
 	local output_srs_file = GEO_VAR.TO_SRS_PATH .. prefix .. "-" .. rule_name .. ".srs"
 	if not fs.access(output_srs_file) then
-		local cmd = string.format("geoview -type %s -action convert -input '%s' -list '%s' -output '%s' -lowmem=true",
-			prefix, geo_path, rule_name, output_srs_file)
+		local bin = api.get_app_path("geoview")
+		local cmd = string.format("%q -type %q -action convert -input %q -list %q -output %q -lowmem=true",
+			bin, prefix, geo_path, rule_name, output_srs_file)
 		sys.call(cmd)
 		local status = fs.access(output_srs_file) and "success." or "failed!"
 		if status == "failed!" then
@@ -175,19 +176,19 @@ function gen_outbound(flag, node, tag, proxy_table)
 				--max_version = "1.3",
 				fragment = fragment,
 				record_fragment = record_fragment,
-				ech = {
-					enabled = (node.ech == "1") and true or false,
-					config = node.ech_config and split(node.ech_config:gsub("\\n", "\n"), "\n") or {},
-				},
-				utls = {
-					enabled = (node.utls == "1" or node.reality == "1") and true or false,
+				ech = (node.ech == "1") and {
+					enabled = true,
+					config = node.ech_config and split(node.ech_config:gsub("\\n", "\n"), "\n") or {}
+				} or nil,
+				utls = (node.utls == "1" or node.reality == "1") and {
+					enabled = true,
 					fingerprint = node.fingerprint or "chrome"
-				},
-				reality = {
-					enabled = (node.reality == "1") and true or false,
+				} or nil,
+				reality = (node.reality == "1") and {
+					enabled = true,
 					public_key = node.reality_publicKey,
 					short_id = node.reality_shortId
-				}
+				} or nil
 			}
 		end
 
@@ -426,10 +427,10 @@ function gen_outbound(flag, node, tag, proxy_table)
 					alpn = (node.hysteria_alpn and node.hysteria_alpn ~= "") and {
 						node.hysteria_alpn
 					} or nil,
-					ech = {
-						enabled = (node.ech == "1") and true or false,
-						config = node.ech_config and split(node.ech_config:gsub("\\n", "\n"), "\n") or {},
-					}
+					ech = (node.ech == "1") and {
+						enabled = true,
+						config = node.ech_config and split(node.ech_config:gsub("\\n", "\n"), "\n") or {}
+					} or nil
 				}
 			}
 		end
@@ -499,10 +500,10 @@ function gen_outbound(flag, node, tag, proxy_table)
 					insecure = (node.tls_allowInsecure == "1") and true or false,
 					fragment = fragment,
 					record_fragment = record_fragment,
-					ech = {
-						enabled = (node.ech == "1") and true or false,
-						config = node.ech_config and split(node.ech_config:gsub("\\n", "\n"), "\n") or {},
-					}
+					ech = (node.ech == "1") and {
+						enabled = true,
+						config = node.ech_config and split(node.ech_config:gsub("\\n", "\n"), "\n") or {}
+					} or nil
 				}
 			}
 		end
