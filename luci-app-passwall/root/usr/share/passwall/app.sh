@@ -170,7 +170,7 @@ run_singbox() {
 			local _dns_address=$(echo ${_dns} | awk -F ':' '{print $1}')
 			local _dns_port=$(echo ${_dns} | awk -F ':' '{print $2}')
 			json_add_string "remote_dns_${_proto}_server" "${_dns_address}"
-			json_add_string "remote_dns_port" "${_dns_port}"
+			json_add_string "remote_dns_${_proto}_port" "${_dns_port}"
 		;;
 		doh)
 			local _doh_url _doh_host _doh_port _doh_bootstrap

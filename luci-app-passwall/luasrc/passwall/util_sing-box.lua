@@ -916,9 +916,10 @@ function gen_config(var)
 	local direct_dns_udp_server = var["direct_dns_udp_server"]
 	local direct_dns_tcp_server = var["direct_dns_tcp_server"]
 	local direct_dns_query_strategy = var["direct_dns_query_strategy"]
-	local remote_dns_port = var["remote_dns_port"]
 	local remote_dns_udp_server = var["remote_dns_udp_server"]
+	local remote_dns_udp_port = var["remote_dns_udp_port"]
 	local remote_dns_tcp_server = var["remote_dns_tcp_server"]
+	local remote_dns_tcp_port = var["remote_dns_tcp_port"]
 	local remote_dns_doh_url = var["remote_dns_doh_url"]
 	local remote_dns_doh_host = var["remote_dns_doh_host"]
 	local remote_dns_client_ip = var["remote_dns_client_ip"]
@@ -1649,10 +1650,6 @@ function gen_config(var)
 			detour = default_outTag,
 		}
 
-		if api.is_local_ip(remote_server.server) then  --dns为本地ip，不走代理
-			remote_server.detour = "direct"
-		end
-
 		if remote_dns_udp_server then
 			local server_port = tonumber(remote_dns_udp_port) or 53
 			remote_server.type = "udp"
@@ -1675,6 +1672,10 @@ function gen_config(var)
 				end
 				remote_server.path = _a.pathname
 			end
+		end
+
+		if api.is_local_ip(remote_server.server) then  --dns为本地ip，不走代理
+			remote_server.detour = "direct"
 		end
 
 		table.insert(dns.servers, remote_server)
