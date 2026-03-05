@@ -90,11 +90,12 @@ o.template = appname .. "/cbi/nodes_listvalue"
 o:value("", translate("Close"))
 o.group = {""}
 
+current_node_id = m.uci:get(appname, global_cfgid, "node")
+current_node = current_node_id and m.uci:get_all(appname, current_node_id) or {}
+
 -- Shunt Start
 if (has_singbox or has_xray) and #nodes_table > 0 then
 	if #normal_list > 0 then
-		current_node_id = m.uci:get(appname, global_cfgid, "node")
-		current_node = current_node_id and m.uci:get_all(appname, current_node_id) or {}
 		if current_node.protocol == "_shunt" then
 			local shunt_lua = loadfile("/usr/lib/lua/luci/model/cbi/passwall2/client/include/shunt_options.lua")
 			setfenv(shunt_lua, getfenv(1))(m, s, {
@@ -177,8 +178,13 @@ o = s:taboption("DNS", ListValue, "remote_dns_protocol", translate("Remote DNS P
 o:value("tcp", "TCP")
 o:value("doh", "DoH")
 o:value("udp", "UDP")
+if current_node.type == "sing-box" then
+	o:value("tls", "TLS(DoT)")
+	o:value("quic", "QUIC(DoQ)")
+	o:value("http3", "HTTP3(DoH3)")
+end
 
----- DNS Forward
+---- DNS over TCP or UDP or TLS (DoT) or QUIC (DoQ)
 o = s:taboption("DNS", Value, "remote_dns", translate("Remote DNS"))
 o.datatype = "or(ipaddr,ipaddrport)"
 o.default = "1.1.1.1"
@@ -192,8 +198,10 @@ o:value("208.67.220.220", "208.67.220.220 (OpenDNS)")
 o:value("208.67.222.222", "208.67.222.222 (OpenDNS)")
 o:depends("remote_dns_protocol", "tcp")
 o:depends("remote_dns_protocol", "udp")
+o:depends("remote_dns_protocol", "quic")
+o:depends("remote_dns_protocol", "tls")
 
----- DoH
+---- DNS over HTTP (DoH) or DNS over HTTP3(DoH3)
 o = s:taboption("DNS", Value, "remote_dns_doh", translate("Remote DNS DoH"))
 o.default = "https://1.1.1.1/dns-query"
 o:value("https://1.1.1.1/dns-query", "CloudFlare")
@@ -208,6 +216,7 @@ o:value("https://doh.libredns.gr/dns-query,116.202.176.26", "LibreDNS")
 o:value("https://doh.libredns.gr/ads,116.202.176.26", "LibreDNS (No Ads)")
 o.validate = doh_validate
 o:depends("remote_dns_protocol", "doh")
+o:depends("remote_dns_protocol", "http3")
 
 o = s:taboption("DNS", Value, "remote_dns_client_ip", translate("Remote DNS EDNS Client Subnet"))
 o.description = translate("Notify the DNS server when the DNS query is notified, the location of the client (cannot be a private IP address).") .. "<br />" ..

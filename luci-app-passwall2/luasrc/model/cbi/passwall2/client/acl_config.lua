@@ -207,6 +207,12 @@ end
 o:depends({ _hide_node_option = "1",  ['!reverse'] = true })
 o.template = appname .. "/cbi/nodes_listvalue"
 
+current_node_id = o:formvalue(arg[1])
+if not current_node_id then
+	current_node_id = m.uci:get(appname, arg[1], "node")
+end
+current_node = current_node_id and m.uci:get_all(appname, current_node_id) or {}
+
 o = s:option(DummyValue, "_hide_dns_option", "")
 o.template = "passwall2/cbi/hidevalue"
 o.value = "1"
@@ -251,9 +257,14 @@ o = s:option(ListValue, "remote_dns_protocol", translate("Remote DNS Protocol"))
 o:value("tcp", "TCP")
 o:value("doh", "DoH")
 o:value("udp", "UDP")
+if current_node.type == "sing-box" then
+	o:value("tls", "TLS(DoT)")
+	o:value("quic", "QUIC(DoQ)")
+	o:value("http3", "HTTP3(DoH3)")
+end
 o:depends({ _hide_dns_option = "1",  ['!reverse'] = true })
 
----- DNS Forward
+---- DNS over TCP or UDP or TLS (DoT) or QUIC (DoQ)
 o = s:option(Value, "remote_dns", translate("Remote DNS"))
 o.datatype = "or(ipaddr,ipaddrport)"
 o.default = "1.1.1.1"
@@ -267,8 +278,10 @@ o:value("208.67.220.220", "208.67.220.220 (OpenDNS)")
 o:value("208.67.222.222", "208.67.222.222 (OpenDNS)")
 o:depends("remote_dns_protocol", "tcp")
 o:depends("remote_dns_protocol", "udp")
+o:depends("remote_dns_protocol", "quic")
+o:depends("remote_dns_protocol", "tls")
 
----- DoH
+---- DNS over HTTP (DoH) or DNS over HTTP3(DoH3)
 o = s:option(Value, "remote_dns_doh", translate("Remote DNS DoH"))
 o:value("https://1.1.1.1/dns-query", "CloudFlare")
 o:value("https://1.1.1.2/dns-query", "CloudFlare-Security")
@@ -283,6 +296,7 @@ o:value("https://doh.libredns.gr/ads,116.202.176.26", "LibreDNS (No Ads)")
 o.default = "https://1.1.1.1/dns-query"
 o.validate = doh_validate
 o:depends("remote_dns_protocol", "doh")
+o:depends("remote_dns_protocol", "http3")
 
 o = s:option(Value, "remote_dns_client_ip", translate("Remote DNS EDNS Client Subnet"))
 o.description = translate("Notify the DNS server when the DNS query is notified, the location of the client (cannot be a private IP address).") .. "<br />" ..
@@ -291,6 +305,9 @@ o.datatype = "ipaddr"
 o:depends("remote_dns_protocol", "tcp")
 o:depends("remote_dns_protocol", "doh")
 o:depends("remote_dns_protocol", "udp")
+o:depends("remote_dns_protocol", "http3")
+o:depends("remote_dns_protocol", "quic")
+o:depends("remote_dns_protocol", "tls")
 
 o = s:option(ListValue, "remote_dns_detour", translate("Remote DNS Outbound"))
 o.default = "remote"
@@ -299,6 +316,9 @@ o:value("direct", translate("Direct"))
 o:depends("remote_dns_protocol", "tcp")
 o:depends("remote_dns_protocol", "doh")
 o:depends("remote_dns_protocol", "udp")
+o:depends("remote_dns_protocol", "http3")
+o:depends("remote_dns_protocol", "quic")
+o:depends("remote_dns_protocol", "tls")
 
 o = s:option(Flag, "remote_fakedns", "FakeDNS", translate("Use FakeDNS work in the domain that proxy."))
 o.default = "0"
@@ -312,6 +332,9 @@ o:value("UseIPv6")
 o:depends("remote_dns_protocol", "tcp")
 o:depends("remote_dns_protocol", "doh")
 o:depends("remote_dns_protocol", "udp")
+o:depends("remote_dns_protocol", "http3")
+o:depends("remote_dns_protocol", "quic")
+o:depends("remote_dns_protocol", "tls")
 
 o = s:option(ListValue, "dns_hosts_mode", translate("Domain Override"))
 o:value("default", translate("Use global config"))
@@ -342,6 +365,9 @@ for k, v in pairs(nodes_table) do
 		s.fields["remote_fakedns"]:depends({ node = v.id, remote_dns_protocol = "tcp" })
 		s.fields["remote_fakedns"]:depends({ node = v.id, remote_dns_protocol = "doh" })
 		s.fields["remote_fakedns"]:depends({ node = v.id, remote_dns_protocol = "udp" })
+		s.fields["remote_fakedns"]:depends({ node = v.id, remote_dns_protocol = "http3" })
+		s.fields["remote_fakedns"]:depends({ node = v.id, remote_dns_protocol = "quic" })
+		s.fields["remote_fakedns"]:depends({ node = v.id, remote_dns_protocol = "tls" })
 	end
 end
 

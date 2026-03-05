@@ -928,12 +928,15 @@ function gen_config(var)
 	local direct_nftset = var["direct_nftset"]
 	local remote_dns_udp_server = var["remote_dns_udp_server"]
 	local remote_dns_udp_port = var["remote_dns_udp_port"]
+	local remote_dns_quic = var["remote_dns_quic"]
 	local remote_dns_tcp_server = var["remote_dns_tcp_server"]
 	local remote_dns_tcp_port = var["remote_dns_tcp_port"]
+	local remote_dns_tls = var["remote_dns_tls"]
 	local remote_dns_doh_url = var["remote_dns_doh_url"]
 	local remote_dns_doh_host = var["remote_dns_doh_host"]
 	local remote_dns_doh_ip = var["remote_dns_doh_ip"]
 	local remote_dns_doh_port = var["remote_dns_doh_port"]
+	local remote_dns_http3 = var["remote_dns_http3"]
 	local remote_dns_detour = var["remote_dns_detour"]
 	local remote_dns_query_strategy = var["remote_dns_query_strategy"]
 	local remote_dns_fake = var["remote_dns_fake"]
@@ -1657,9 +1660,17 @@ function gen_config(var)
 					table.insert(domains, host)
 				end
 			end)
+			if remote_dns_doh_ip and remote_dns_doh_host ~= remote_dns_doh_ip and not api.is_ip(remote_dns_doh_host) then
+				hosts_server.predefined[remote_dns_doh_host] = remote_dns_doh_ip
+				table.insert(domains, remote_dns_doh_host)
+				remote_server_domain_resolver = "hosts"
+			end
 			if next(hosts_server.predefined) then
 				table.insert(dns.servers, hosts_server)
 				table.insert(dns.rules, {
+					query_type = {
+						"A", "AAAA"
+					},
 					domain = domains,
 					server = "hosts"
 				})
@@ -1679,6 +1690,10 @@ function gen_config(var)
 			detour = COMMON.default_outbound_tag,
 		}
 
+		if remote_server_domain_resolver then
+			remote_server.domain_resolver = remote_server_domain_resolver
+		end
+
 		if remote_dns_detour == "direct" then
 			remote_server.detour = "direct"
 		end
@@ -1688,15 +1703,26 @@ function gen_config(var)
 			remote_server.type = "udp"
 			remote_server.server = remote_dns_udp_server
 			remote_server.server_port = server_port
+			if remote_dns_quic then
+				remote_server.type = "quic"
+				remote_server.server_port = 853
+			end
 		elseif remote_dns_tcp_server then
 			local server_port = tonumber(remote_dns_tcp_port) or 53
 			remote_server.type = "tcp"
 			remote_server.server = remote_dns_tcp_server
 			remote_server.server_port = server_port
+			if remote_dns_tls then
+				remote_server.type = "tls"
+				remote_server.server_port = 853
+			end
 		elseif remote_dns_doh_url then
 			local _a = api.parseURL(remote_dns_doh_url)
 			if _a then
 				remote_server.type = "https"
+				if remote_dns_http3 then
+					remote_server.type = "h3"
+				end
 				remote_server.server = _a.hostname
 				if _a.port then
 					remote_server.server_port = _a.port

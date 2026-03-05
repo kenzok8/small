@@ -538,35 +538,34 @@ table td, .table .td {
 	}
 
 	function urltest_node(cbi_id, dom) {
-		if (cbi_id != null) {
-			dom.onclick = null
-			dom.innerText = "<%:Check...%>";
-			XHR.get('<%=api.url("urltest_node")%>', {
-					id: cbi_id
-				},
-				function(x, result) {
-					if(x && x.status == 200) {
-						if (result.use_time == null || result.use_time.trim() == "") {
-							dom.outerHTML = "<font style='color:red'><%:Timeout%></font>";
-						} else {
-							var color = "red";
-							var use_time = result.use_time;
-							use_time = parseInt(use_time) + 1;
-							if (use_time < 1000) {
-								color = "green";
-							} else if (use_time < 2000) {
-								color = "#fb9a05";
-							} else {
-								color = "red";
-							}
-							dom.outerHTML = "<font style='color:" + color + "'>" + use_time + " ms" + "</font>";
-						}
+		if (dom.dataset.busy == "1" || !cbi_id) return;
+		dom.dataset.busy = "1";
+		dom.style.color = "";
+		dom.innerText = "<%:Check...%>";
+		XHR.get('<%=api.url("urltest_node")%>', {
+				id: cbi_id
+			},
+			function(x, result) {
+				let color = "red";
+				let text = "<%:Error%>";
+				if (x && x.status == 200) {
+					if (result.use_time == null || result.use_time.trim() == "") {
+						text = "<%:Timeout%>";
 					} else {
-						dom.outerHTML = "<font style='color:red'><%:Error%></font>";
+						let use_time = parseInt(result.use_time);
+						if (use_time < 1000) {
+							color = "green";
+						} else if (use_time < 2000) {
+							color = "#fb9a05";
+						}
+						text = use_time + " ms";
 					}
 				}
-			);
-		}
+				dom.innerText = text;
+				dom.style.color = color;
+				dom.dataset.busy = "0";
+			}
+		);
 	}
 
 	function ping_node(cbi_id, dom, type) {
