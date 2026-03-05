@@ -46,8 +46,8 @@ function geo_convert_srs(var)
 	local prefix = var["prefix"]
 	local rule_name = var["rule_name"]
 	local output_srs_file = GEO_VAR.TO_SRS_PATH .. prefix .. "-" .. rule_name .. ".srs"
-	if not fs.access(output_srs_file) then
-		local bin = api.get_app_path("geoview")
+	local bin = api.finded_com("geoview")
+	if not fs.access(output_srs_file) and bin then
 		local cmd = string.format("%q -type %q -action convert -input %q -list %q -output %q -lowmem=true",
 			bin, prefix, geo_path, rule_name, output_srs_file)
 		sys.call(cmd)

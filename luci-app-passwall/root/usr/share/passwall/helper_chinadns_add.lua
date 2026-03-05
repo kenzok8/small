@@ -1,6 +1,5 @@
-local sys = require "luci.sys"
 local api = require "luci.passwall.api"
-local appname = "passwall"
+local appname = api.appname
 
 local var = api.get_args(arg)
 local FLAG = var["-FLAG"]
@@ -96,9 +95,11 @@ local function get_geosite(list_arg, out_path)
 	local geosite_path = uci:get(appname, "@global_rules[0]", "v2ray_location_asset") or "/usr/share/v2ray/"
 	geosite_path = geosite_path:match("^(.*)/") .. "/geosite.dat"
 	if not is_file_nonzero(geosite_path) then return 1 end
-	if api.is_finded("geoview") and list_arg and out_path then
-		local bin = api.get_app_path("geoview")
-		sys.exec(bin .. " -type geosite -append=true -input " .. geosite_path .. " -list '" .. list_arg .. "' -output " .. out_path)
+	local bin = api.finded_com("geoview")
+	if bin and list_arg and out_path then
+		local cmd = string.format("%q -type geosite -append=true -input %q -list %q -output %q -lowmem=true",
+			bin, geosite_path, list_arg, out_path)
+		sys.call(cmd)
 		return 0
 	end
 	return 1
