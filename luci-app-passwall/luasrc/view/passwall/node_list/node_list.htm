@@ -31,8 +31,11 @@ table td, .table .td {
 	background: #5e72e445 !important;
 }
 
-.ping a:hover{
-	text-decoration : underline;
+.ping a,
+.ping_value a,
+.tcping_value a {
+    text-decoration: none;
+    cursor: pointer;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -553,11 +556,10 @@ table td, .table .td {
 						text = "<%:Timeout%>";
 					} else {
 						let use_time = parseInt(result.use_time);
-						if (use_time < 1000) {
+						if (use_time < 1000)
 							color = "green";
-						} else if (use_time < 2000) {
+						else if (use_time < 2000)
 							color = "#fb9a05";
-						}
 						text = use_time + " ms";
 					}
 				}
@@ -569,9 +571,11 @@ table td, .table .td {
 	}
 
 	function ping_node(cbi_id, dom, type) {
-		var full = get_address_full(cbi_id);
+		if (dom.dataset.busy == "1" || !cbi_id) return;
+		const full = get_address_full(cbi_id);
 		if ((type == "icmp" && full.address != "" ) || (type == "tcping" && full.address != "" && full.port != "")) {
-			dom.onclick = null
+			dom.dataset.busy = "1";
+			dom.style.color = "";
 			dom.innerText = "<%:Check...%>";
 			XHR.get('<%=api.url("ping_node")%>', {
 					address: full.address,
@@ -579,19 +583,23 @@ table td, .table .td {
 					type: type
 				},
 				function(x, result) {
+					let color = "red";
+					let text = "<%:Error%>";
 					if(x && x.status == 200) {
 						if (result.ping == null || result.ping.trim() == "") {
-							dom.outerHTML = "<font style='color:red'><%:Timeout%></font>";
+							text = "<%:Timeout%>";
 						} else {
 							var ping = parseInt(result.ping);
 							if (ping < 100)
-								dom.outerHTML = "<font style='color:green'>" + result.ping + " ms" + "</font>";
+								color = "green";
 							else if (ping < 200)
-								dom.outerHTML = "<font style='color:#fb9a05'>" + result.ping + " ms" + "</font>";
-							else if (ping >= 200)
-								dom.outerHTML = "<font style='color:red'>" + result.ping + " ms" + "</font>";
+								color = "#fb9a05";
+							text = result.ping + " ms";
 						}
 					}
+					dom.innerText = text;
+					dom.style.color = color;
+					dom.dataset.busy = "0";
 				}
 			);
 		}
@@ -601,15 +609,15 @@ table td, .table .td {
 	function pingAllNodes() {
 		if (auto_detection_time == "icmp" || auto_detection_time == "tcping") {
 			const now = Date.now();
-			var nodes = [];
+			const nodes = [];
 			const ping_value = document.getElementsByClassName(auto_detection_time == "tcping" ? 'tcping_value' : 'ping_value');
-			for (var i = 0; i < ping_value.length; i++) {
-				var cbi_id = ping_value[i].getAttribute("cbiid");
-				var full = get_address_full(cbi_id);
+			for (let i = 0; i < ping_value.length; i++) {
+				const cbi_id = ping_value[i].getAttribute("cbiid");
+				const full = get_address_full(cbi_id);
 				if ((auto_detection_time == "icmp" && full.address != "" ) || (auto_detection_time == "tcping" && full.address != "" && full.port != "")) {
-					var flag = false;
+					let flag = false;
 					// Merge duplicates
-					for (var j = 0; j < nodes.length; j++) {
+					for (let j = 0; j < nodes.length; j++) {
 						if (nodes[j].address == full.address && nodes[j].port == full.port) {
 							nodes[j].indexs = nodes[j].indexs + "," + i;
 							flag = true;
@@ -621,12 +629,17 @@ table td, .table .td {
 
 					const cacheData = JSON.parse(localStorage.getItem(auto_detection_time + ":" + full.address + ":" + full.port));
 					if (cacheData && cacheData.savetime && (now - cacheData.timestamp) < cacheData.savetime) {
+						const a = ping_value[i].firstElementChild;
+						let color = "red";
 						if (cacheData.value < 100)
-							ping_value[i].innerHTML = "<font style='color:green'>" + cacheData.value + " ms" + "</font>";
+							color = "green";
 						else if (cacheData.value < 200)
-							ping_value[i].innerHTML = "<font style='color:#fb9a05'>" + cacheData.value + " ms" + "</font>";
-						else if (cacheData.value >= 200)
-							ping_value[i].innerHTML = "<font style='color:red'>" + cacheData.value + " ms" + "</font>";
+							color = "#fb9a05";
+						a.innerText = cacheData.value + " ms";
+						a.style.color = color;
+						a.onclick = function () {
+							ping_node(cbi_id, this, auto_detection_time);
+						};
 					} else {
 						localStorage.removeItem(auto_detection_time + ":" + full.address + ":" + full.port);
 						nodes.push({
@@ -650,12 +663,14 @@ table td, .table .td {
 					},
 					function(x, result) {
 						if (x && x.status == 200) {
-							var strs = dom.indexs.split(",");
-							for (var i = 0; i < strs.length; i++) {
-								if (result.ping == null || result.ping.trim() == "") {
-									ping_value[strs[i]].innerHTML = "<font style='color:red'><%:Timeout%></font>";
-								} else {
-									var ping = parseInt(result.ping);
+							let strs = dom.indexs.split(",");
+							for (let i = 0; i < strs.length; i++) {
+								const a = ping_value[strs[i]].firstElementChild;
+								const cbi_id = ping_value[strs[i]].getAttribute("cbiid");
+								let color = "red";
+								let text = "<%:Timeout%>";
+								if (result.ping !== null && result.ping.trim() !== "") {
+									let ping = parseInt(result.ping);
 									//save to cache
 									const cache_data = {
 										dom_id: strs[i],
@@ -663,23 +678,33 @@ table td, .table .td {
 										savetime: 60 * 1000,
 										value: ping
 									};
+									text = result.ping + " ms";
 									localStorage.setItem(auto_detection_time + ":" + dom.address + ":" + dom.port, JSON.stringify(cache_data));
 									if (ping < 100)
-										ping_value[strs[i]].innerHTML = "<font style='color:green'>" + result.ping + " ms" + "</font>";
+										color = "green";
 									else if (ping < 200)
-										ping_value[strs[i]].innerHTML = "<font style='color:#fb9a05'>" + result.ping + " ms" + "</font>";
-									else if (ping >= 200)
-										ping_value[strs[i]].innerHTML = "<font style='color:red'>" + result.ping + " ms" + "</font>";
+										color = "#fb9a05";
 								}
+								a.innerText = text;
+								a.style.color = color;
+								a.onclick = function () {
+									ping_node(cbi_id, this, auto_detection_time);
+								};
 							}
 						}
 						res();
 					},
 					5000,
 					function(x) {
-						var strs = dom.indexs.split(",");
-						for (var i = 0; i < strs.length; i++) {
-							ping_value[strs[i]].innerHTML = "<font style='color:red'><%:Timeout%></font>";
+						let strs = dom.indexs.split(",");
+						for (let i = 0; i < strs.length; i++) {
+							const a = ping_value[strs[i]].firstElementChild;
+							const cbi_id = ping_value[strs[i]].getAttribute("cbiid");
+							a.innerText = "<%:Timeout%>";
+							a.style.color = "red";
+							a.onclick = function () {
+								ping_node(cbi_id, this, auto_detection_time);
+							};
 						}
 						res();
 					}
@@ -926,12 +951,12 @@ table td, .table .td {
 						if (auto_detection_time != "icmp" && o["address"] && o["port"]) {
 							innerHTML = innerHTML.split("{{ping}}").join('<span class="ping"><a href="javascript:void(0)" onclick="javascript:ping_node(\'{{id}}\', this, \'icmp\')"><%:Test%></a></span>');
 						} else {
-							innerHTML = innerHTML.split("{{ping}}").join('<span class="ping_value" cbiid="{{id}}">---</span>');
+							innerHTML = innerHTML.split("{{ping}}").join('<span class="ping_value" cbiid="{{id}}"><a href="javascript:void(0)" style="color:inherit">---</a></span>');
 						}
 						if (auto_detection_time != "tcping" && o["address"] && o["port"]) {
 							innerHTML = innerHTML.split("{{tcping}}").join('<span class="ping"><a href="javascript:void(0)" onclick="javascript:ping_node(\'{{id}}\', this, \'tcping\')"><%:Test%></a></span>');
 						} else {
-							innerHTML = innerHTML.split("{{tcping}}").join('<span class="tcping_value" cbiid="{{id}}">---</span>');
+							innerHTML = innerHTML.split("{{tcping}}").join('<span class="tcping_value" cbiid="{{id}}"><a href="javascript:void(0)" style="color:inherit">---</a></span>');
 						}
 						innerHTML = innerHTML.split("{{url_test}}").join('<span class="ping"><a href="javascript:void(0)" onclick="javascript:urltest_node(\'{{id}}\', this)" title="<%:TLS handshake test, latency for reference only%>"><%:Test%></a></span>');
 						innerHTML = innerHTML.split("{{id}}").join(o[".name"]);
