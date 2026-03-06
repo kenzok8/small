@@ -406,8 +406,8 @@ end
 
 o = s:option(ListValue, "xray_dns_mode", translate("Request protocol"))
 o.default = "tcp"
-o:value("udp", "UDP")
 o:value("tcp", "TCP")
+o:value("udp", "UDP")
 o:value("tcp+doh", "TCP + DoH (" .. translate("A/AAAA type") .. ")")
 o:depends("dns_mode", "xray")
 o.cfgvalue = function(self, section)
@@ -421,9 +421,10 @@ end
 
 o = s:option(ListValue, "singbox_dns_mode", translate("Request protocol"))
 o.default = "tcp"
-o:value("udp", "UDP")
 o:value("tcp", "TCP")
+o:value("udp", "UDP")
 o:value("doh", "DoH")
+o:value("http3", "HTTP3(DoH3)")
 o:depends("dns_mode", "sing-box")
 o.cfgvalue = function(self, section)
 	return m:get(section, "v2ray_dns_mode")
@@ -488,6 +489,7 @@ o.validate = function(self, value, t)
 end
 o:depends({xray_dns_mode = "tcp+doh"})
 o:depends({singbox_dns_mode = "doh"})
+o:depends({singbox_dns_mode = "http3"})
 
 o = s:option(Value, "remote_dns_client_ip", translate("EDNS Client Subnet"))
 o.description = translate("Notify the DNS server when the DNS query is notified, the location of the client (cannot be a private IP address).") .. "<br />" ..
