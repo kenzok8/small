@@ -749,7 +749,6 @@ function gen_config(var)
 	local fakedns = nil
 	local routing = nil
 	local observatory = nil
-	local burstObservatory = nil
 	local strategy = nil
 	local inbounds = {}
 	local outbounds = {}
@@ -975,29 +974,19 @@ function gen_config(var)
 				fallbackTag = fallback_node_tag,
 				strategy = strategy
 			})
-			if _node.balancingStrategy == "leastPing" or _node.balancingStrategy == "leastLoad" or fallback_node_tag then
-				if _node.balancingStrategy == "leastLoad" then
-					if not burstObservatory then
-						burstObservatory = {
-							subjectSelector = { "blc-" },
-							pingConfig = {
-								destination = _node.useCustomProbeUrl and _node.probeUrl or nil,
-								interval = (api.format_go_time(_node.probeInterval) ~= "0s") and api.format_go_time(_node.probeInterval) or "1m",
-								sampling = 3,
-								timeout = "5s"
-							}
-						}
-					end
-				else
-					if not observatory then
-						observatory = {
-							subjectSelector = { "blc-" },
-							probeUrl = _node.useCustomProbeUrl and _node.probeUrl or nil,
-							probeInterval = (api.format_go_time(_node.probeInterval) ~= "0s") and api.format_go_time(_node.probeInterval) or "1m",
-							enableConcurrency = true
-						}
-					end
+			if not observatory and (_node.balancingStrategy == "leastPing" or _node.balancingStrategy == "leastLoad" or fallback_node_tag) then
+				local t = api.format_go_time(_node.probeInterval)
+				if t == "0s" then
+					t = "60s"
+				elseif not t:find("[hm]") and tonumber(t:match("%d+")) < 10 then
+					t = "10s"
 				end
+				observatory = {
+					subjectSelector = { "blc-" },
+					probeUrl = _node.useCustomProbeUrl and _node.probeUrl or "https://www.google.com/generate_204",
+					probeInterval = t,
+					enableConcurrency = true
+				}
 			end
 			local loopback_outbound = gen_loopback(loopback_tag, loopback_dst)
 			local inbound_tag = loopback_outbound.settings.inboundTag
@@ -1652,8 +1641,7 @@ function gen_config(var)
 			-- 传出连接
 			outbounds = outbounds,
 			-- 连接观测
-			observatory = (not burstObservatory) and observatory or nil,
-			burstObservatory = burstObservatory,
+			observatory = observatory,
 			-- 路由
 			routing = routing,
 			-- 本地策略
