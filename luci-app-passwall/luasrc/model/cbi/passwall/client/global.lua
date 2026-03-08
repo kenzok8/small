@@ -486,7 +486,7 @@ o.validate = function(self, value, t)
 		end
 		local _tcp_node = s.fields["tcp_node"]:formvalue(t)
 		if _dns_mode and _tcp_node then
-			if m:get(_tcp_node, "type"):lower() ~= _dns_mode then
+			if (m:get(_tcp_node, "type") or ""):lower() ~= _dns_mode then
 				return nil, translatef("TCP node must be '%s' type to use FakeDNS.", _dns_mode)
 			end
 		end
