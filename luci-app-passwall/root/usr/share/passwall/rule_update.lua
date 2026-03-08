@@ -367,14 +367,14 @@ local function non_file_check(file_path, header_content)
 end
 
 local function GeoToRule(rule_name, rule_type, out_path)
-	if not api.is_finded("geoview") then
-		log(rule_name .. "生成失败，缺少 geoview 组件。")
-		return false;
+	local bin = api.finded_com("geoview")
+	if not (bin and api.compare_versions(api.get_app_version("geoview"), ">=", "0.1.10")) then
+		log("[警告] Geoview 组件缺失或版本过低，规则生成流程已被跳过。")
+		return false
 	end
 	local geosite_path = asset_location .. "geosite.dat"
 	local geoip_path = asset_location .. "geoip.dat"
 	local file_path = (rule_type == "domain") and geosite_path or geoip_path
-	local bin = api.get_app_path("geoview")
 	local geo_arg
 	if rule_type == "domain" then
 		if rule_name == "gfwlist" then
@@ -389,7 +389,13 @@ local function GeoToRule(rule_name, rule_type, out_path)
 	end
 	local cmd = string.format(bin .. " -input '%s' %s -lowmem=true -output '%s'", file_path, geo_arg, out_path)
 	sys.exec(cmd)
-	return true;
+	local local_file_size = tonumber(fs.stat(out_path, "size") or 0)
+	if local_file_size == 0 then
+		os.remove(out_path)
+		log(rule_name .. " 生成失败，请确保 Geo 文件正确且包含目标规则。")
+		return false
+	end
+	return true
 end
 
 --fetch rule
@@ -407,10 +413,10 @@ local function fetch_rule(rule_name, rule_type, url, exclude_domain, max_retries
 	end
 
 	for k, v in ipairs(url) do
-        local current_file = "/tmp/" .. rule_name .. "_dl" .. k
-        local success = false
+		local current_file = "/tmp/" .. rule_name .. "_dl" .. k
+		local success = false
 
-        if v ~= "geo2rule" then
+		if v ~= "geo2rule" then
 			for i = 1, max_attempts do
 				local http_code, header = curl(v, current_file)
 				if http_code == 200 and not non_file_check(current_file, header) then
