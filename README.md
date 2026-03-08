@@ -19,9 +19,9 @@
 
 使用方法：将整合包上传到openwrt设备的tmp目录，输入命令 opkg install *.ipk
 
-默认压缩包里包含ssr passwall bypass passwall2 homeproxy mihomo插件
+默认压缩包里包含ssr passwall passwall2 homeproxy mihomo插件
 
-如果单独安装ssr与依赖，rm -rf {*passwall*,*bypass*,*homeproxy*,*mihomo*}
+如果单独安装ssr与依赖，rm -rf {*passwall*,*homeproxy*,*mihomo*}
 ```
 
 * 喜欢追新的可以去下载small-package，该仓库每天自动同步更新
@@ -45,14 +45,7 @@ sed -i '2i src-git small https://github.com/kenzok8/small' feeds.conf.default
 rm -rf feeds/packages/net/{alist,adguardhome,mosdns,xray*,v2ray*,v2ray*,sing*,smartdns}
 rm -rf feeds/packages/utils/v2dat
 rm -rf feeds/packages/lang/golang
-git clone https://github.com/kenzok8/golang feeds/packages/lang/golang
-./scripts/feeds install -a 
-make menuconfig
-```
-
-#### 注意
-编译新版Sing-box和hysteria，尽量使用golang版本1.26版本 ，可以用以下命令
-```yaml
-rm -rf feeds/packages/lang/golang
 git clone https://github.com/kenzok8/golang -b 1.26 feeds/packages/lang/golang
+./scripts/feeds install -a
+make menuconfig
 ```
