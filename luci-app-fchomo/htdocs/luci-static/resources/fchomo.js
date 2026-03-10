@@ -152,6 +152,7 @@ const inbound_type = [
 	['anytls', _('AnyTLS') + ' - ' + _('TCP')],
 	['tuic', _('TUIC') + ' - ' + _('UDP')],
 	['hysteria2', _('Hysteria2') + ' - ' + _('UDP')],
+	['trusttunnel', _('TrustTunnel') + ' - ' + _('TCP/UDP')],
 	['tunnel', _('Tunnel') + ' - ' + _('TCP/UDP')]
 ];
 
@@ -187,6 +188,7 @@ const outbound_type = [
 	['hysteria2', _('Hysteria2') + ' - ' + _('UDP')],
 	['tuic', _('TUIC') + ' - ' + _('UDP')],
 	['masque', _('Masque') + ' - ' + _('UDP')], // https://blog.cloudflare.com/post-quantum-warp/
+	['trusttunnel', _('TrustTunnel') + ' - ' + _('TCP/UDP')],
 	['wireguard', _('WireGuard') + ' - ' + _('UDP')],
 	['ssh', _('SSH') + ' - ' + _('TCP')]
 ];

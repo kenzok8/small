@@ -34,6 +34,22 @@ migrate() {
 			uci_set "$CONF" "$1" vless_encryption_encryption "$vless_encryption"
 		fi
 	fi
+
+	# tuic_congestion_controller -> congestion_controller
+	if isDefined "$1" tuic_congestion_controller; then
+		local tuic_congestion_controller
+		config_get tuic_congestion_controller "$1" tuic_congestion_controller ""
+		uci_remove "$CONF" "$1" tuic_congestion_controller
+		uci_set "$CONF" "$1" congestion_controller "$tuic_congestion_controller"
+	fi
+
+	# masque_congestion_controller -> congestion_controller
+	if isDefined "$1" masque_congestion_controller; then
+		local masque_congestion_controller
+		config_get masque_congestion_controller "$1" masque_congestion_controller ""
+		uci_remove "$CONF" "$1" masque_congestion_controller
+		uci_set "$CONF" "$1" congestion_controller "$masque_congestion_controller"
+	fi
 }
 
 config_foreach migrate node

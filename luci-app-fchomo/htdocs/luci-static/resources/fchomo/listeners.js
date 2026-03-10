@@ -159,14 +159,14 @@ function renderListeners(s, uciconfig, isClient) {
 	/* hm.validateAuth */
 	o = s.taboption('field_general', form.Value, 'username', _('Username'));
 	o.validate = hm.validateAuthUsername;
-	o.depends({type: /^(http|socks|mixed|mieru|trojan|anytls|hysteria2)$/});
+	o.depends({type: /^(http|socks|mixed|mieru|trojan|anytls|hysteria2|trusttunnel)$/});
 	o.modalonly = true;
 
 	o = s.taboption('field_general', hm.GenValue, 'password', _('Password'));
 	o.password = true;
 	o.validate = hm.validateAuthPassword;
 	o.rmempty = false;
-	o.depends({type: /^(http|socks|mixed|mieru|trojan|anytls|hysteria2)$/, username: /.+/});
+	o.depends({type: /^(http|socks|mixed|mieru|trojan|anytls|hysteria2|trusttunnel)$/, username: /.+/});
 	o.depends({type: /^(tuic)$/, uuid: /.+/});
 	o.modalonly = true;
 
@@ -232,6 +232,12 @@ function renderListeners(s, uciconfig, isClient) {
 	o.default = 'TCP';
 	o.value('TCP');
 	o.value('UDP');
+	o.depends('type', 'mieru');
+	o.modalonly = true;
+
+	o = s.taboption('field_general', form.Value, 'mieru_traffic_pattern', _('Traffic pattern'),
+		_('A base64 string is used to fine-tune network behavior.<br/>Please refer to the <a target="_blank" href="%s" rel="noreferrer noopener">document</a>.')
+		.format('https://github.com/enfein/mieru/blob/main/docs/traffic-pattern.md'));
 	o.depends('type', 'mieru');
 	o.modalonly = true;
 
@@ -381,6 +387,7 @@ function renderListeners(s, uciconfig, isClient) {
 	o.value('stream', _('split-stream') + ' - ' + _('CDN support'));
 	o.value('poll', _('poll') + ' - ' + _('CDN support'));
 	o.value('auto', _('Auto') + ' - ' + _('CDN support'));
+	o.value('ws', _('WebSocket') + ' - ' + _('CDN support'));
 	o.depends('sudoku_http_mask', '1');
 	o.modalonly = true;
 
@@ -388,19 +395,16 @@ function renderListeners(s, uciconfig, isClient) {
 	o.depends('sudoku_http_mask', '1');
 	o.modalonly = true;
 
+	o = s.taboption('field_general', form.Value, 'sudoku_fallback', _('Fallback'));
+	o.datatype = 'hostport';
+	o.placeholder = '127.0.0.1:80';
+	o.depends('sudoku_http_mask', '1');
+	o.modalonly = true;
+
 	/* Tuic fields */
 	o = s.taboption('field_general', hm.GenValue, 'uuid', _('UUID'));
 	o.rmempty = false;
 	o.validate = hm.validateUUID;
-	o.depends('type', 'tuic');
-	o.modalonly = true;
-
-	o = s.taboption('field_general', form.ListValue, 'tuic_congestion_controller', _('Congestion controller'),
-		_('QUIC congestion controller.'));
-	o.default = hm.congestion_controller[0][0];
-	hm.congestion_controller.forEach((res) => {
-		o.value.apply(o, res);
-	})
 	o.depends('type', 'tuic');
 	o.modalonly = true;
 
@@ -474,13 +478,9 @@ function renderListeners(s, uciconfig, isClient) {
 	o.depends('type', 'vmess');
 	o.modalonly = true;
 
-	/* Tunnel fields */
-	o = s.taboption('field_general', form.MultiValue, 'tunnel_network', _('Network type'));
-	o.value('tcp', _('TCP'));
-	o.value('udp', _('UDP'));
-	o.depends('type', 'tunnel');
-	o.modalonly = true;
+	/* TrustTunnel fields */
 
+	/* Tunnel fields */
 	o = s.taboption('field_general', form.Value, 'tunnel_target', _('Target address'));
 	o.datatype = 'hostport';
 	o.placeholder = 'target.com:53';
@@ -533,6 +533,20 @@ function renderListeners(s, uciconfig, isClient) {
 		o.load = L.bind(hm.loadProxyGroupLabel, o, hm.preset_outbound.direct);
 		o.editable = true;
 	}
+
+	o = s.taboption('field_general', form.ListValue, 'congestion_controller', _('Congestion controller'));
+	o.default = hm.congestion_controller[0][0];
+	hm.congestion_controller.forEach((res) => {
+		o.value.apply(o, res);
+	})
+	o.depends({type: /^(tuic|trusttunnel)$/});
+	o.modalonly = true;
+
+	o = s.taboption('field_general', form.MultiValue, 'network', _('Network type'));
+	o.value('tcp', _('TCP'));
+	o.value('udp', _('UDP'));
+	o.depends({type: /^(trusttunnel|tunnel)$/});
+	o.modalonly = true;
 
 	o = s.taboption('field_general', form.Flag, 'udp', _('UDP'));
 	o.default = o.disabled;
@@ -760,7 +774,7 @@ function renderListeners(s, uciconfig, isClient) {
 		let tls_reality = this.section.getUIElement(section_id, 'tls_reality').node.querySelector('input');
 
 		// Force enabled
-		if (['trojan', 'anytls', 'tuic', 'hysteria2'].includes(type)) {
+		if (['trojan', 'anytls', 'tuic', 'hysteria2', 'trusttunnel'].includes(type)) {
 			tls.checked = true;
 			tls.disabled = true;
 			if (['tuic', 'hysteria2'].includes(type) && !`${tls_alpn.getValue()}`)
@@ -770,6 +784,12 @@ function renderListeners(s, uciconfig, isClient) {
 		}
 
 		// Force disabled
+		if (['trusttunnel'].includes(type)) {
+			tls_alpn.node.querySelector('input').disabled = true;
+			tls_alpn.setValue('');
+		} else {
+			tls_alpn.node.querySelector('input').removeAttribute('disabled');
+		}
 		if (!['vmess', 'vless', 'trojan'].includes(type)) {
 			tls_reality.checked = false;
 			tls_reality.disabled = true;
@@ -779,7 +799,7 @@ function renderListeners(s, uciconfig, isClient) {
 
 		return true;
 	}
-	o.depends({type: /^(http|socks|mixed|vmess|vless|trojan|anytls|tuic|hysteria2)$/});
+	o.depends({type: /^(http|socks|mixed|vmess|vless|trojan|anytls|tuic|hysteria2|trusttunnel)$/});
 	o.modalonly = true;
 
 	o = s.taboption('field_tls', form.DynamicList, 'tls_alpn', _('TLS ALPN'),
@@ -822,7 +842,7 @@ function renderListeners(s, uciconfig, isClient) {
 	hm.tls_client_auth_types.forEach((res) => {
 		o.value.apply(o, res);
 	})
-	o.depends({tls: '1', type: /^(http|socks|mixed|vmess|vless|trojan|anytls|hysteria2|tuic)$/});
+	o.depends({tls: '1', type: /^(http|socks|mixed|vmess|vless|trojan|anytls|hysteria2|tuic|trusttunnel)$/});
 	o.modalonly = true;
 
 	o = s.taboption('field_tls', form.Value, 'tls_client_auth_cert_path', _('Client Auth Certificate path') + _(' (mTLS)'),
@@ -831,7 +851,7 @@ function renderListeners(s, uciconfig, isClient) {
 	o.validate = function(/* ... */) {
 		return hm.validateMTLSClientAuth.call(this, 'tls_client_auth_type', ...arguments);
 	}
-	o.depends({tls: '1', type: /^(http|socks|mixed|vmess|vless|trojan|anytls|hysteria2|tuic)$/});
+	o.depends({tls: '1', type: /^(http|socks|mixed|vmess|vless|trojan|anytls|hysteria2|tuic|trusttunnel)$/});
 	o.modalonly = true;
 
 	o = s.taboption('field_tls', form.Button, '_upload_client_auth_cert', _('Upload certificate') + _(' (mTLS)'),
@@ -880,13 +900,13 @@ function renderListeners(s, uciconfig, isClient) {
 
 		return node;
 	}
-	o.depends({tls: '1', type: /^(http|socks|mixed|vmess|vless|trojan|anytls|hysteria2|tuic)$/});
+	o.depends({tls: '1', type: /^(http|socks|mixed|vmess|vless|trojan|anytls|hysteria2|tuic|trusttunnel)$/});
 	o.modalonly = true;
 
 	o = s.taboption('field_tls', hm.CopyValue, 'tls_ech_config', _('ECH config'),
 		_('This ECH parameter needs to be added to the HTTPS record of the domain.'));
 	o.placeholder = 'AEn+DQBFKwAgACABWIHUGj4u+PIggYXcR5JF0gYk3dCRioBW8uJq9H4mKAAIAAEAAQABAANAEnB1YmxpYy50bHMtZWNoLmRldgAA';
-	o.depends({tls: '1', type: /^(http|socks|mixed|vmess|vless|trojan|anytls|hysteria2|tuic)$/});
+	o.depends({tls: '1', type: /^(http|socks|mixed|vmess|vless|trojan|anytls|hysteria2|tuic|trusttunnel)$/});
 	o.modalonly = true;
 
 	// uTLS fields

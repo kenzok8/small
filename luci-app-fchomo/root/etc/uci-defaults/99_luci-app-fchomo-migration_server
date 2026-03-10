@@ -1,0 +1,33 @@
+#!/bin/sh
+# Migration script for fchomo server
+# Used to migrate LuCI application server option.
+
+. /lib/functions.sh
+. /usr/share/libubox/jshn.sh
+
+CONF=fchomo
+
+config_load "$CONF"
+
+# isDefined <section> <option>
+isDefined() {
+	local opt=CONFIG_${1}_${2};
+
+	eval "[ -n \"\${$opt+x}\" ] && return 0 || return 1"
+}
+
+migrate() {
+	# tuic_congestion_controller -> congestion_controller
+	if isDefined "$1" tuic_congestion_controller; then
+		local tuic_congestion_controller
+		config_get tuic_congestion_controller "$1" tuic_congestion_controller ""
+		uci_remove "$CONF" "$1" tuic_congestion_controller
+		uci_set "$CONF" "$1" congestion_controller "$tuic_congestion_controller"
+	fi
+}
+
+config_foreach migrate server
+
+uci_commit "$CONF"
+
+exit 0
