@@ -34,6 +34,14 @@
 			"path": "fchomo/hosts"
 		}
 	},
+	"admin/services/fchomo/inbound": {
+		"title": "Inbound",
+		"order": 27,
+		"action": {
+			"type": "view",
+			"path": "fchomo/inbound"
+		}
+	},
 	"admin/services/fchomo/node": {
 		"title": "Node",
 		"order": 30,

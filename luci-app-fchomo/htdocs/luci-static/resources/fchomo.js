@@ -124,6 +124,10 @@ const glossary = {
 		prefmt: 'rule_%s',
 		field: 'rule-providers',
 	},
+	inbound: {
+		prefmt: 'inbound_%s',
+		field: 'listeners',
+	},
 	server: {
 		prefmt: 'server_%s',
 		field: 'listeners',
@@ -148,7 +152,7 @@ const inbound_type = [
 	['anytls', _('AnyTLS') + ' - ' + _('TCP')],
 	['tuic', _('TUIC') + ' - ' + _('UDP')],
 	['hysteria2', _('Hysteria2') + ' - ' + _('UDP')],
-	//['tunnel', _('Tunnel') + ' - ' + _('TCP/UDP')]
+	['tunnel', _('Tunnel') + ' - ' + _('TCP/UDP')]
 ];
 
 const ip_version = [

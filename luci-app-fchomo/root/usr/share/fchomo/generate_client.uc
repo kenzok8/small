@@ -11,6 +11,7 @@ import { urldecode, urlencode } from 'luci.http';
 import {
 	isEmpty, strToBool, strToInt, bytesizeToByte, durationToSecond,
 	arrToObj, removeBlankAttrs,
+	parseListener,
 	HM_DIR, RUN_DIR, PRESET_OUTBOUND, RULES_LOGICAL_TYPE
 } from 'fchomo';
 
@@ -39,6 +40,7 @@ const ucisniff = 'sniff',
       ucidnspoli = 'dns_policy',
       ucidnsnpoli = 'dns_node_policy',
       ucipgrp = 'proxy_group',
+      uciinbd = 'inbound',
       ucinode = 'node',
       uciprov = 'provider',
       ucichain = 'dialer_proxy',
@@ -326,29 +328,14 @@ uci.foreach(uciconf, ucisniff, (cfg) => {
 /* Inbound START */
 const proxy_mode = uci.get(uciconf, uciinbound, 'proxy_mode') || 'redir_tproxy';
 /* Listen ports */
-config.listeners = [];
-push(config.listeners, {
-	name: 'mixed-in',
-	type: 'mixed',
-	port: strToInt(uci.get(uciconf, uciinbound, 'mixed_port')) || 7890,
-	listen: '::',
-	udp: true
-});
+config["allow-lan"] = true;
+config["bind-address"] = "*";
+config["mixed-port"] = strToInt(uci.get(uciconf, uciinbound, 'mixed_port')) || 7890;
 if (match(proxy_mode, /redir/))
-	push(config.listeners, {
-		name: 'redir-in',
-		type: 'redir',
-		port: strToInt(uci.get(uciconf, uciinbound, 'redir_port')) || 7891,
-		listen: '::'
-	});
+	config["redir-port"] = strToInt(uci.get(uciconf, uciinbound, 'redir_port')) || 7891;
 if (match(proxy_mode, /tproxy/))
-	push(config.listeners, {
-		name: 'tproxy-in',
-		type: 'tproxy',
-		port: strToInt(uci.get(uciconf, uciinbound, 'tproxy_port')) || 7892,
-		listen: '::',
-		udp: true
-	});
+	config["tproxy-port"] = strToInt(uci.get(uciconf, uciinbound, 'tproxy_port')) || 7892;
+config.listeners = [];
 push(config.listeners, {
 	name: 'dns-in',
 	type: 'tunnel',
@@ -357,6 +344,13 @@ push(config.listeners, {
 	network: ['tcp', 'udp'],
 	target: '1.1.1.1:53'
 }); // @Not required for v1.19.2+
+/* Custom Inbound settings */
+uci.foreach(uciconf, uciinbd, (cfg) => {
+	if (cfg.enabled === '0')
+		return;
+
+	push(config.listeners, parseListener(cfg, true, get_proxygroup(cfg.proxy)));
+});
 /* Tun settings */
 if (match(proxy_mode, /tun/))
 	config.tun = {

@@ -795,7 +795,7 @@ function renderRules(s, uciconfig) {
 		UIEl.setValue(rule.toString('json'));
 	}
 	o.write = function() {};
-	//o.depends('SUB-RULE', '');
+	//o.depends('SUB-RULE', ''); // work on subrules not rules
 	o.editable = true;
 
 	o = s.option(form.Flag, 'src', _('src'),
