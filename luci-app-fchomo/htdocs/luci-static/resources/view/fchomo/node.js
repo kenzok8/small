@@ -1003,7 +1003,7 @@ return view.extend({
 						def_alpn = ['h2', 'http/1.1'];
 						break;
 					case 'trusttunnel':
-						def_alpn = ['h2'];
+						def_alpn = ['h3', 'h2'];
 						break;
 					default:
 						def_alpn = [];

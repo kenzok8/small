@@ -545,6 +545,7 @@ function renderListeners(s, uciconfig, isClient) {
 	o = s.taboption('field_general', form.MultiValue, 'network', _('Network type'));
 	o.value('tcp', _('TCP'));
 	o.value('udp', _('UDP'));
+	o.rmempty = false;
 	o.depends({type: /^(trusttunnel|tunnel)$/});
 	o.modalonly = true;
 
