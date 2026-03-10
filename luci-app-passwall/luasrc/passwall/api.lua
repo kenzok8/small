@@ -1521,3 +1521,13 @@ function get_core(field, candidates)
 	end
 	return nil
 end
+
+function cleanEmptyTables(t)
+	if type(t) ~= "table" then return nil end
+	for k, v in pairs(t) do
+		if type(v) == "table" then
+			t[k] = cleanEmptyTables(v)
+		end
+	end
+	return next(t) and t or nil
+end
