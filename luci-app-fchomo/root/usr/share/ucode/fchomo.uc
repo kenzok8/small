@@ -224,7 +224,7 @@ export function parseListener(cfg, isClient, label) {
 
 		/* HTTP / SOCKS / VMess / VLESS / Trojan / AnyTLS / Tuic / Hysteria2 */
 		users: (cfg.type in ['http', 'socks', 'mixed', 'vmess', 'vless', 'trojan', 'trusttunnel']) ? [
-			{
+			(cfg.username || cfg.vmess_uuid) ? {
 				/* HTTP / SOCKS */
 				username: cfg.username,
 				password: cfg.password,
@@ -233,7 +233,7 @@ export function parseListener(cfg, isClient, label) {
 				uuid: cfg.vmess_uuid,
 				flow: cfg.vless_flow,
 				alterId: strToInt(cfg.vmess_alterid)
-			}
+			} : null
 			/*{
 			}*/
 		] : ((cfg.type in ['mieru', 'anytls', 'tuic', 'hysteria2']) ? {
