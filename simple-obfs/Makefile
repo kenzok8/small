@@ -6,31 +6,23 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=simple-obfs
-PKG_VERSION:=0.0.7
+PKG_VERSION:=0.0.9
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/kenzok8/simple-obfs/tar.gz/v$(PKG_VERSION)?
-PKG_HASH:=6a6df7111e2a71cf84f1e3cf5d49f81359362835cfea43fc7075e537c85bbefc
+PKG_HASH:=f9c05de42608691dad77c707504ad855191cd26ccd7095a0b3d4be939055111e
 
 PKG_LICENSE:=GPL-3.0-or-later
 PKG_LICENSE_FILES:=LICENSE
 PKG_MAINTAINER:=Jian Chang <aa65535@live.com>
 
 PKG_BUILD_DEPENDS:=libev
+PKG_FIXUP:=autoreconf
 PKG_BUILD_PARALLEL:=1
 PKG_INSTALL:=1
 
 include $(INCLUDE_DIR)/package.mk
-
-define Build/Prepare
-	$(call Build/Prepare/Default)
-	if [ ! -f $(PKG_BUILD_DIR)/libcork/Makefile.am ]; then \
-		git clone https://github.com/shadowsocks/libcork.git $(PKG_BUILD_DIR)/libcork; \
-		cd $(PKG_BUILD_DIR)/libcork && git checkout f02984545061c924808e4b9ea7cc6749a41f1979; \
-	fi
-	(cd $(PKG_BUILD_DIR); ./autogen.sh)
-endef
 
 define Package/simple-obfs/template
   SECTION:=net
