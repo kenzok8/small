@@ -23,6 +23,12 @@ PKG_INSTALL:=1
 
 include $(INCLUDE_DIR)/package.mk
 
+define Build/Prepare
+	$(call Build/Prepare/Default)
+	[ -f $(PKG_BUILD_DIR)/libcork/configure.ac ] || git clone --depth 1 https://github.com/shadowsocks/libcork.git $(PKG_BUILD_DIR)/libcork
+	(cd $(PKG_BUILD_DIR); ./autogen.sh)
+endef
+
 define Package/simple-obfs/template
   SECTION:=net
   CATEGORY:=Network
