@@ -32,8 +32,6 @@ version_compare() {
     return 1
 }
 
-TIME=$(date "+%Y-%m-%d-%H")
-CHTIME=$(date "+%Y-%m-%d-%H" -r "/tmp/openclash_last_version" 2>/dev/null)
 DOWNLOAD_FILE="/tmp/openclash_last_version"
 RELEASE_BRANCH=$(uci_get_config "release_branch" || echo "master")
 if [ -x "/bin/opkg" ]; then
@@ -47,24 +45,23 @@ if [ -n "$1" ]; then
    github_address_mod="$1"
 fi
 
-if [ "$TIME" != "$CHTIME" ]; then
-	if [ "$github_address_mod" != "0" ]; then
-      if [ "$github_address_mod" == "https://cdn.jsdelivr.net/" ] || [ "$github_address_mod" == "https://fastly.jsdelivr.net/" ] || [ "$github_address_mod" == "https://testingcf.jsdelivr.net/" ]; then
-         DOWNLOAD_URL="${github_address_mod}gh/vernesong/OpenClash@package/${RELEASE_BRANCH}/version"
-      else
-         DOWNLOAD_URL="${github_address_mod}https://raw.githubusercontent.com/vernesong/OpenClash/package/${RELEASE_BRANCH}/version"
-      fi
+if [ "$github_address_mod" != "0" ]; then
+   if [ "$github_address_mod" == "https://cdn.jsdelivr.net/" ] || [ "$github_address_mod" == "https://fastly.jsdelivr.net/" ] || [ "$github_address_mod" == "https://testingcf.jsdelivr.net/" ]; then
+      DOWNLOAD_URL="${github_address_mod}gh/vernesong/OpenClash@package/${RELEASE_BRANCH}/version"
    else
-      DOWNLOAD_URL="https://raw.githubusercontent.com/vernesong/OpenClash/package/${RELEASE_BRANCH}/version"
+      DOWNLOAD_URL="${github_address_mod}https://raw.githubusercontent.com/vernesong/OpenClash/package/${RELEASE_BRANCH}/version"
    fi
+else
+   DOWNLOAD_URL="https://raw.githubusercontent.com/vernesong/OpenClash/package/${RELEASE_BRANCH}/version"
+fi
 
-   DOWNLOAD_FILE_CURL "$DOWNLOAD_URL" "$DOWNLOAD_FILE"
+DOWNLOAD_FILE_CURL "$DOWNLOAD_URL" "$DOWNLOAD_FILE" "$DOWNLOAD_FILE"
 
-   if [ "$?" -eq 0 ]; then
-   	OP_LV=$(sed -n 1p $DOWNLOAD_FILE 2>/dev/null |awk -F 'v' '{print $2}' |awk -F '.' '{print $2$3}' 2>/dev/null)
-      if [ -n "$OP_CV" ] && [ -n "$OP_LV" ] && version_compare "$OP_CV" "$OP_LV" && [ -f "$DOWNLOAD_FILE" ]; then
-         sed -i '/^https:/,$d' $DOWNLOAD_FILE
-      fi
+if [ "$?" -eq 0 ]; then
+   OP_LV=$(sed -n 1p $DOWNLOAD_FILE 2>/dev/null |awk -F 'v' '{print $2}' |awk -F '.' '{print $2$3}' 2>/dev/null)
+   if [ -n "$OP_CV" ] && [ -n "$OP_LV" ] && version_compare "$OP_CV" "$OP_LV" && [ -f "$DOWNLOAD_FILE" ]; then
+      sed -i '/^https:/,$d' $DOWNLOAD_FILE
    fi
 fi
+
 del_lock

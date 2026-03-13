@@ -27,13 +27,13 @@ local self_status = SYS.exec(string.format('ps -w |grep -v grep |grep -c "opencl
 local select_logic = FS.uci_get_config("config", "stream_auto_select_logic") or "urltest"
 
 if not type then
-	print(os.date("%Y-%m-%d %H:%M:%S").." ".."Error: Streaming Unlock Has No Parameter of Type, Exiting...")
+	print(os.date("%Y-%m-%d %H:%M:%S").." [Error] Streaming Unlock Has No Parameter of Type, Exiting...")
 	os.exit(0)
 elseif router_self_proxy == 0 then
-	print(os.date("%Y-%m-%d %H:%M:%S").." ".."Error: Streaming Unlock Could not Work Because of Router-Self Proxy Disabled, Exiting...")
+	print(os.date("%Y-%m-%d %H:%M:%S").." [Error] Streaming Unlock Could not Work Because of Router-Self Proxy Disabled, Exiting...")
 	os.exit(0)
 elseif tonumber(self_status) > 1 then
-	print(os.date("%Y-%m-%d %H:%M:%S").." ".."Error: Multiple Scripts Running, Exiting...")
+	print(os.date("%Y-%m-%d %H:%M:%S").." [Error] Multiple Scripts Running, Exiting...")
 	os.exit(0)
 end
 
@@ -148,9 +148,9 @@ function unlock_auto_select()
 				--test now proxy
 				region = proxy_unlock_test()
 				if table_include(groups, now_name) then
-					now = os.date("%Y-%m-%d %H:%M:%S").." "..type.." "..gorup_i18.."【"..group_show.."】"
+					now = os.date("%Y-%m-%d %H:%M:%S").." [Info] "..type.." "..gorup_i18.."【"..group_show.."】"
 				else
-					now = os.date("%Y-%m-%d %H:%M:%S").." "..type.." "..gorup_i18.."【"..group_show.." ➟ "..now_name.."】"
+					now = os.date("%Y-%m-%d %H:%M:%S").." [Info] "..type.." "..gorup_i18.."【"..group_show.." ➟ "..now_name.."】"
 				end
 				if status ~= 2 and status ~= 4 then
 					region = proxy_unlock_test()
@@ -244,7 +244,7 @@ function unlock_auto_select()
 						end
 					end
 					if #(value.all) == 0 then
-						print(os.date("%Y-%m-%d %H:%M:%S").." "..type.." "..gorup_i18.."【"..value.name.."】"..no_nodes_filter)
+						print(os.date("%Y-%m-%d %H:%M:%S").." [Info] "..type.." "..gorup_i18.."【"..value.name.."】"..no_nodes_filter)
 						break
 					end
 					--loop proxy test
@@ -274,16 +274,16 @@ function unlock_auto_select()
 										end
 									end
 									if #(proxies) == 0 then
-										print(os.date("%Y-%m-%d %H:%M:%S").." "..type.." "..gorup_i18.."【"..group_show.."】"..no_nodes_filter)
+										print(os.date("%Y-%m-%d %H:%M:%S").." [Info] "..type.." "..gorup_i18.."【"..group_show.."】"..no_nodes_filter)
 										break
 									end
 									for p = 1, #(proxies) do
 										proxy = proxies[p]
 										if table_include(groups, proxy) then
 											group_now = get_group_now(info, proxy)
-											now = os.date("%Y-%m-%d %H:%M:%S").." "..type.." "..gorup_i18.."【"..group_show.." ➟ "..group_now.."】"
+											now = os.date("%Y-%m-%d %H:%M:%S").." [Info] "..type.." "..gorup_i18.."【"..group_show.." ➟ "..group_now.."】"
 										else
-											now = os.date("%Y-%m-%d %H:%M:%S").." "..type.." "..gorup_i18.."【"..group_show.." ➟ "..proxy.."】"
+											now = os.date("%Y-%m-%d %H:%M:%S").." [Info] "..type.." "..gorup_i18.."【"..group_show.." ➟ "..proxy.."】"
 										end
 										--skip tested proxy
 										while true do
@@ -303,7 +303,7 @@ function unlock_auto_select()
 															table.insert(full_support_list, {value.all[i], group_name, proxy, region})
 															if not all_test then
 																print(now..full_support.."【"..region.."】")
-																print(os.date("%Y-%m-%d %H:%M:%S").." "..type.." "..gorup_i18.."【"..value.name.."】"..select_success.."【"..proxy.."】"..area_i18.."【"..region.."】")
+																print(os.date("%Y-%m-%d %H:%M:%S").." [Info] "..type.." "..gorup_i18.."【"..value.name.."】"..select_success.."【"..proxy.."】"..area_i18.."【"..region.."】")
 															else
 																print(now..full_support.."【"..region.."】")
 															end
@@ -312,7 +312,7 @@ function unlock_auto_select()
 															table.insert(full_support_list, {value.all[i], group_name, proxy})
 															if not all_test then
 																print(now..full_support_no_area)
-																print(os.date("%Y-%m-%d %H:%M:%S").." "..type.." "..gorup_i18.."【"..value.name.."】"..select_success.."【"..proxy.."】")
+																print(os.date("%Y-%m-%d %H:%M:%S").." [Info] "..type.." "..gorup_i18.."【"..value.name.."】"..select_success.."【"..proxy.."】")
 															else
 																print(now..full_support_no_area)
 															end
@@ -372,16 +372,16 @@ function unlock_auto_select()
 										end
 										region = proxy_unlock_test()
 										if table_include(groups, now_name) then
-											now = os.date("%Y-%m-%d %H:%M:%S").." "..type.." "..gorup_i18.."【"..group_show.."】"
+											now = os.date("%Y-%m-%d %H:%M:%S").." [Info] "..type.." "..gorup_i18.."【"..group_show.."】"
 										else
-											now = os.date("%Y-%m-%d %H:%M:%S").." "..type.." "..gorup_i18.."【"..group_show.." ➟ "..now_name.."】"
+											now = os.date("%Y-%m-%d %H:%M:%S").." [Info] "..type.." "..gorup_i18.."【"..group_show.." ➟ "..now_name.."】"
 										end
 										if status == 2 then
 											if region ~= "" then
 												table.insert(full_support_list, {value.all[i], group_name, value.all[i], region})
 												if not all_test then
 													print(now..full_support.."【"..region.."】")
-													print(os.date("%Y-%m-%d %H:%M:%S").." "..type.." "..gorup_i18.."【"..value.name.."】"..select_success.."【"..get_group_now(info, now_name).."】"..area_i18.."【"..region.."】")
+													print(os.date("%Y-%m-%d %H:%M:%S").." [Info] "..type.." "..gorup_i18.."【"..value.name.."】"..select_success.."【"..get_group_now(info, now_name).."】"..area_i18.."【"..region.."】")
 												else
 													print(now..full_support.."【"..region.."】")
 												end
@@ -390,7 +390,7 @@ function unlock_auto_select()
 												table.insert(full_support_list, {value.all[i], group_name, value.all[i]})
 												if not all_test then
 													print(now..full_support_no_area)
-													print(os.date("%Y-%m-%d %H:%M:%S").." "..type.." "..gorup_i18.."【"..value.name.."】"..select_success.."【"..get_group_now(info, now_name).."】")
+													print(os.date("%Y-%m-%d %H:%M:%S").." [Info] "..type.." "..gorup_i18.."【"..value.name.."】"..select_success.."【"..get_group_now(info, now_name).."】")
 												else
 													print(now..full_support_no_area)
 												end
@@ -469,24 +469,24 @@ function unlock_auto_select()
 									group_now = group_now .. area_i18 .. "【"..v[4].."】"
 								end
 								if #full_support_list > 0 then
-									print(os.date("%Y-%m-%d %H:%M:%S").." "..type.." "..gorup_i18.."【"..value.name.."】"..select_all_full_support..group_now)
+									print(os.date("%Y-%m-%d %H:%M:%S").." [Info] "..type.." "..gorup_i18.."【"..value.name.."】"..select_all_full_support..group_now)
 								elseif #no_old_region_unlock > 0 then
 									if not all_test then
-										print(os.date("%Y-%m-%d %H:%M:%S").." "..type.." "..gorup_i18.."【"..value.name.."】"..select_success_no_old_region..group_now)
+										print(os.date("%Y-%m-%d %H:%M:%S").." [Info] "..type.." "..gorup_i18.."【"..value.name.."】"..select_success_no_old_region..group_now)
 									else
-										print(os.date("%Y-%m-%d %H:%M:%S").." "..type.." "..gorup_i18.."【"..value.name.."】"..select_all_no_old_region..group_now)
+										print(os.date("%Y-%m-%d %H:%M:%S").." [Info] "..type.." "..gorup_i18.."【"..value.name.."】"..select_all_no_old_region..group_now)
 									end
 								elseif #other_region_unlock > 0 then
 									if not all_test then
-										print(os.date("%Y-%m-%d %H:%M:%S").." "..type.." "..gorup_i18.."【"..value.name.."】"..select_faild_other_region..group_now)
+										print(os.date("%Y-%m-%d %H:%M:%S").." [Info] "..type.." "..gorup_i18.."【"..value.name.."】"..select_faild_other_region..group_now)
 									else
-										print(os.date("%Y-%m-%d %H:%M:%S").." "..type.." "..gorup_i18.."【"..value.name.."】"..select_all_other_region..group_now)
+										print(os.date("%Y-%m-%d %H:%M:%S").." [Info] "..type.." "..gorup_i18.."【"..value.name.."】"..select_all_other_region..group_now)
 									end
 								else
 									if not all_test then
-										print(os.date("%Y-%m-%d %H:%M:%S").." "..type.." "..gorup_i18.."【"..value.name.."】"..select_faild..group_now)
+										print(os.date("%Y-%m-%d %H:%M:%S").." [Info] "..type.." "..gorup_i18.."【"..value.name.."】"..select_faild..group_now)
 									else
-										print(os.date("%Y-%m-%d %H:%M:%S").." "..type.." "..gorup_i18.."【"..value.name.."】"..select_all_faild..group_now)
+										print(os.date("%Y-%m-%d %H:%M:%S").." [Info] "..type.." "..gorup_i18.."【"..value.name.."】"..select_all_faild..group_now)
 									end
 								end
 								close_connections()
@@ -499,7 +499,7 @@ function unlock_auto_select()
 							else
 								group_now = value.name.." ➟ "..proxy_default
 							end
-							print(os.date("%Y-%m-%d %H:%M:%S").." "..type.." "..gorup_i18.."【"..value.name.."】"..select_faild.."【"..group_now.."】")
+							print(os.date("%Y-%m-%d %H:%M:%S").." [Info] "..type.." "..gorup_i18.."【"..value.name.."】"..select_faild.."【"..group_now.."】")
 						end
 					end
 				elseif #nodes_filter(get_group_now(info, value.name), info) ~= 0 then
@@ -509,12 +509,12 @@ function unlock_auto_select()
 							if not all_test then
 								print(now..full_support.."【"..region.."】")
 							end
-							print(os.date("%Y-%m-%d %H:%M:%S").." "..type.." "..gorup_i18.."【"..value.name.."】"..select_success.."【"..get_group_now(info, value.name).."】"..area_i18.."【"..region.."】")
+							print(os.date("%Y-%m-%d %H:%M:%S").." [Info] "..type.." "..gorup_i18.."【"..value.name.."】"..select_success.."【"..get_group_now(info, value.name).."】"..area_i18.."【"..region.."】")
 						else
 							if not all_test then
 								print(now..full_support_no_area)
 							end
-							print(os.date("%Y-%m-%d %H:%M:%S").." "..type.." "..gorup_i18.."【"..value.name.."】"..select_success.."【"..get_group_now(info, value.name).."】")
+							print(os.date("%Y-%m-%d %H:%M:%S").." [Info] "..type.." "..gorup_i18.."【"..value.name.."】"..select_success.."【"..get_group_now(info, value.name).."】")
 						end
 						if not all_test then
 							break
@@ -548,7 +548,7 @@ function unlock_auto_select()
 		if status == 2 and not all_test then break end
 	end
 	if not group_match and not auto_get_group then
-		print(os.date("%Y-%m-%d %H:%M:%S").." "..type.." "..gorup_i18.."【"..key_group.."】"..no_group_find)
+		print(os.date("%Y-%m-%d %H:%M:%S").." [Info] "..type.." "..gorup_i18.."【"..key_group.."】"..no_group_find)
 	end
 	--write	cache
 	FS.writefile(unlock_cache_file, JSON.stringify(unlock_cache_info))
@@ -705,7 +705,7 @@ function table_sort_by_cache(t)
 		end
 	end
 	if #tab > 0 then
-		print(os.date("%Y-%m-%d %H:%M:%S").." "..type.." Group:".."【"..group_match_name.."】".."Cached Compliant Nodes Number:".."【"..#(tab).."】"..", Cached Non-compliant Nodes Number:".."【"..#(tab_b).."】"..", Prioritize Testing With Cached Compliant Nodes...")
+		print(os.date("%Y-%m-%d %H:%M:%S").." [Info] "..type.." Group:".."【"..group_match_name.."】".."Cached Compliant Nodes Number:".."【"..#(tab).."】"..", Cached Non-compliant Nodes Number:".."【"..#(tab_b).."】"..", Prioritize Testing With Cached Compliant Nodes...")
 	end
 	for k,v in pairs(tab_b) do table.insert(tab, v) end
 	return tab
@@ -1582,7 +1582,7 @@ function network_test()
 			return
 		end
 	end
-	print(os.date("%Y-%m-%d %H:%M:%S").." Error: Network Anomaly, Suspend Unlock Detection...")
+	print(os.date("%Y-%m-%d %H:%M:%S").." [Error] Network Anomaly, Suspend Unlock Detection...")
 end
 
 network_test()

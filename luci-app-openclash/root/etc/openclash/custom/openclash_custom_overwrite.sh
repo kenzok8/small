@@ -6,7 +6,7 @@
 # This script is called by /etc/init.d/openclash
 # Add your custom overwrite scripts here, they will be take effict after the OpenClash own srcipts
 
-LOG_OUT "Tip: Start Running Custom Overwrite Scripts..."
+LOG_TIP "Start Running Custom Overwrite Scripts..."
 LOGTIME=$(echo $(date "+%Y-%m-%d %H:%M:%S"))
 LOG_FILE="/tmp/openclash.log"
 #Config Path
@@ -42,7 +42,7 @@ CONFIG_FILE="$1"
     #2--key name
     #3--hash
     #ruby_merge_hash "$CONFIG_FILE" "['proxy-providers']" "'TW'=>{'type'=>'http', 'path'=>'./proxy_provider/TW.yaml', 'url'=>'https://gist.githubusercontent.com/raw/tw_clash', 'interval'=>3600, 'health-check'=>{'enable'=>true, 'url'=>'http://cp.cloudflare.com/generate_204', 'interval'=>300}}"
-    #ruby_merge_hash "$CONFIG_FILE" "['rule-providers']" "'Reject'=>{'type'=>'http', 'behavior'=>'classical', 'url'=>'https://testingcf.jsdelivr.net/gh/dler-io/Rules@main/Clash/Provider/Reject.yaml', 'path'=>'./rule_provider/Reject', 'interval'=>86400}"
+    #ruby_merge_hash "$CONFIG_FILE" "['rule-providers']" "'Reject'=>{'type'=>'http', 'behavior'=>'classical', 'url'=>'https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/refs/heads/master/Clash/Apple.list', 'path'=>'./rule_provider/Apple.list', 'interval'=>86400}"
 
     #Array Edit Demo
     #1--config path
@@ -51,7 +51,7 @@ CONFIG_FILE="$1"
     #4--match key value
     #5--target key name
     #6--target key value
-    #ruby_arr_edit "$CONFIG_FILE" "['proxy-groups']" "['name']" "Proxy" "['type']" "Smart"
+    #ruby_arr_edit "$CONFIG_FILE" "['proxy-groups']" "['name']" "Proxy" "['type']" "smart"
     #ruby_arr_edit "$CONFIG_FILE" "['dns']['nameserver']" "" "114.114.114.114" "" "119.29.29.29"
 
     #Array Insert Value Demo:
@@ -103,7 +103,7 @@ CONFIG_FILE="$1"
     #   begin
     #      Value = YAML.load_file('$CONFIG_FILE');
     #   rescue Exception => e
-    #      puts '${LOGTIME} Error: Load File Failed,【' + e.message + '】';
+    #      puts '${LOGTIME} [error] Load File Failed,【' + e.message + '】';
     #   end;
 
         #General
@@ -117,7 +117,7 @@ CONFIG_FILE="$1"
     #   }.join;
 
     #   rescue Exception => e
-    #      puts '${LOGTIME} Error: Set General Failed,【' + e.message + '】';
+    #      puts '${LOGTIME} [error] Set General Failed,【' + e.message + '】';
     #   ensure
     #      File.open('$CONFIG_FILE','w') {|f| YAML.dump(Value, f)};
     #   end" 2>/dev/null >> $LOG_FILE

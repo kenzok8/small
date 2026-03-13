@@ -315,12 +315,15 @@ function get_resourse_mtime(path)
         end
     end
     local file = fs.readlink(real_path) or real_path
-    local model_version = os.date("%Y-%m-%d %H:%M:%S", mtime(real_path))
-    if model_version and model_version ~= "" then
-        return model_version
-    else
-        return "Unknown"
-    end
+	local resourse_etag_version = SYS.exec(string.format("source /usr/share/openclash/openclash_etag.sh && GET_ETAG_TIMESTAMP_BY_PATH '%s'", real_path))
+    if resourse_etag_version and resourse_etag_version ~= "" then
+		return resourse_etag_version
+	end
+	local resourse_version = os.date("%Y-%m-%d %H:%M:%S", mtime(real_path))
+	if resourse_version and resourse_version ~= "" then
+        return resourse_version
+	end
+    return "Unknown"
 end
 
 function uci_get_config(section, key)

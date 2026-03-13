@@ -14,6 +14,9 @@
     --success-dark: #047857;
     --warning-color: #f59e0b;
     --error-color: #dc2626;
+    --tip-color: #f9bb51;
+    --info-color: #2563eb;
+    --watchdog-color: #b300ff;
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     --radius-sm: 6px;
@@ -40,6 +43,11 @@
     --primary-color: #3b82f6;
     --success-color: #34d399;
     --success-dark: #10b981;
+    --error-color: #ff7070;
+    --tip-color: #f9bb51;
+    --warning-color: #fa41c8;
+    --watchdog-color: #c147f5;
+    --info-color: #2563eb;
 }
 
 .oc * {
@@ -204,8 +212,8 @@
     padding: 8px 32px 8px 12px;
     border: 1px solid var(--border-light);
     border-radius: var(--radius-sm);
-    background: var(--bg-white);
-    color: var(--text-primary);
+    background: var(--bg-white) !important;
+    color: var(--text-primary) !important;
     font-size: 13px;
     appearance: none;
     cursor: pointer;
@@ -640,21 +648,21 @@
     var smart_enable_cdn = document.getElementById('SMART_ENABLE_CDN');
 
     function initDarkMode() {
-        var ocContainer = document.querySelector('.oc');
-        if (!ocContainer) return;
+        var ocContainers = document.querySelectorAll('.oc');
+        if (!ocContainers.length) return;
 
         var shouldUseDark = isDarkBackground(document.body);
 
-        if (shouldUseDark) {
-            ocContainer.setAttribute('data-darkmode', 'true');
-        } else {
-            ocContainer.removeAttribute('data-darkmode');
-        }
+        ocContainers.forEach(function(ocContainer) {
+            if (shouldUseDark) {
+                ocContainer.setAttribute('data-darkmode', 'true');
+                document.documentElement.setAttribute('data-darkmode', 'true');
+            } else {
+                ocContainer.removeAttribute('data-darkmode');
+                document.documentElement.removeAttribute('data-darkmode');
+            }
+        });
     }
-
-    document.addEventListener('DOMContentLoaded', function() {
-        initDarkMode();
-    });
 
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', initDarkMode);

@@ -43,7 +43,6 @@ btned1.write=function(h,n)
 end
 
 btndl2 = tb2:option(Button,"download2",translate("Download Config"))
-btndl2.template="openclash/other_button"
 btndl2.render=function(m,n,h)
 m.inputstyle="remove"
 Button.render(m,n,h)

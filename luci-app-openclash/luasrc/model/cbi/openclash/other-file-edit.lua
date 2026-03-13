@@ -3,7 +3,6 @@ local SYS = require "luci.sys"
 local HTTP = require "luci.http"
 local fs = require "luci.openclash"
 local file_path = ""
-local edit_file_name = "/tmp/openclash_edit_file_name"
 
 for i = 2, #(arg) do
 	file_path = file_path .. "/" .. luci.http.urlencode(arg[i])
@@ -11,16 +10,6 @@ end
 
 if not fs.isfile(file_path) and file_path ~= "" then
 	file_path = luci.http.urldecode(file_path)
-end
-
---re-get file path to save
-if NXFS.readfile(edit_file_name) ~= file_path and fs.isfile(file_path) then
-	NXFS.writefile(edit_file_name, file_path)
-else
-	if not fs.isfile(file_path) and fs.isfile(edit_file_name) then
-		file_path = NXFS.readfile(edit_file_name)
-		fs.unlink(edit_file_name)
-	end
 end
 
 m = Map("openclash", translate("File Edit"))

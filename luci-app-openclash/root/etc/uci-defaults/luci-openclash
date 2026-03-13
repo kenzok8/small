@@ -17,7 +17,6 @@ uci -q commit firewall
 
 mkdir -p /etc/openclash/config
 mkdir -p /etc/openclash/proxy_provider
-mkdir -p /etc/openclash/backup
 mkdir -p /etc/openclash/core
 mkdir -p /etc/openclash/history
 mkdir -p /usr/share/openclash/backup/overwrite
@@ -190,10 +189,8 @@ if [ -f "/tmp/openclash.bak" ]; then
 	rm -rf "/etc/openclash/custom/openclash_sniffing_ports_filter.yaml" >/dev/null 2>&1
 	rm -rf "/etc/openclash/custom/openclash_sniffing_port_filter.yaml" >/dev/null 2>&1
 	rm -rf "/etc/openclash/custom/openclash_sniffing_domain_filter.yaml" >/dev/null 2>&1
+	rm -rf "/etc/openclash/backup" >/dev/null 2>&1
 fi
-
-uci -q set openclash.config.enable=0
-uci -q commit openclash
 
 if [ -f "/usr/lib/lua/luci/model/network.lua" ]; then
    sed -i '/OpenClash Append/,/OpenClash Append End/d' "/usr/lib/lua/luci/model/network.lua" >/dev/null 2>&1

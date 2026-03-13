@@ -78,6 +78,12 @@ o = s:option(Flag, "node_resolve", translate("Node Domain Resolve"), translate("
 o.rmempty = false
 o.default = o.disbled
 
+---- disable-reuse
+o = s:option(Flag, "disable_reuse", translate("Disable Reuse"), translate("Disable Reuse The Connection"))
+o:depends("type", "tls")
+o.rmempty = false
+o.default = o.disbled
+
 ---- Force HTTP/3
 o = s:option(Flag, "http3", translate("Force HTTP/3"), translate("Force HTTP/3 to connect"))
 o:depends("type", "https")

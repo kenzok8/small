@@ -55,15 +55,20 @@
     line-height: 0;
     flex-shrink: 0;
     cursor: pointer;
+    background-color: unset;
+    border: unset;
 }
 
-.sub_setting img {
+.sub_setting svg {
     vertical-align: middle;
     display: inline-block;
-    transition: opacity 0.3s ease;
+    width: 18px;
+    height: 18px;
+    color: #414c5c;
+    padding-left: 2px;
 }
 
-.sub_setting:hover img {
+.sub_setting:hover svg {
     opacity: 0.7;
 }
 
@@ -95,14 +100,147 @@
     background-color: #ffb9b9;
 }
 
-:root[data-darkmode="true"] #icon_wrench {
-    -webkit-filter: invert(1);
-    filter: invert(1);
+.sub-info-url-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(2px);
 }
 
-:root[data-darkmode="true"] #icon_arrow {
-    -webkit-filter: invert(1);
-    filter: invert(1);
+.sub-info-url-model {
+    background: var(--bg-white, white);
+    border-radius: var(--radius-lg, 8px);
+    box-shadow: var(--shadow-md, 0 4px 12px rgba(0,0,0,0.15));
+    width: 90vw;
+    max-width: 550px;
+    min-width: 400px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--border-light, #e5e7eb);
+    max-height: 85vh;
+    transition: all var(--transition-fast, 0.2s);
+}
+
+.sub-info-url-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+    border-bottom: 1px solid var(--border-light, #e5e7eb);
+    background: var(--bg-gray, #f9fafb);
+    flex-shrink: 0;
+}
+
+.sub-info-url-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary, #1f2937);
+}
+
+.sub-info-url-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 20px;
+    border-top: 1px solid var(--border-light, #e5e7eb);
+    background: var(--bg-gray, #f9fafb);
+    flex-shrink: 0;
+    gap: 12px;
+}
+
+.sub-info-url-content {
+    padding: 24px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.sub-info-url-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.sub-info-url-form-group label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-primary, #1f2937);
+}
+
+.sub-info-url-form-textarea {
+    width: 100%;
+    min-height: 120px;
+    padding: 10px 12px;
+    border: 1px solid var(--border-light, #e5e7eb);
+    border-radius: var(--radius-sm, 4px);
+    background: var(--bg-white, white);
+    color: var(--text-primary, #1f2937);
+    font-size: 14px;
+    font-family: inherit;
+    resize: vertical;
+    transition: all var(--transition-fast, 0.2s);
+    box-sizing: border-box;
+}
+
+.sub-info-url-form-textarea:focus {
+    outline: none;
+    border-color: var(--primary-color, #3b82f6);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.sub-info-url-form-textarea::placeholder {
+    color: var(--text-secondary, #6b7280);
+}
+
+.sub-info-url-btn {
+    padding: 8px 16px;
+    border: 1px solid var(--border-light, #e5e7eb);
+    border-radius: var(--radius-sm, 4px);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all var(--transition-fast, 0.2s);
+    white-space: nowrap;
+}
+
+.sub-info-url-cancel-btn {
+    background: var(--bg-white, white);
+    color: var(--text-secondary, #6b7280);
+    border-color: var(--border-light, #e5e7eb);
+}
+
+.sub-info-url-cancel-btn:hover {
+    background: var(--hover-bg, #f3f4f6);
+    color: var(--text-primary, #1f2937);
+}
+
+.sub-info-url-submit-btn {
+    background: var(--primary-color, #3b82f6);
+    color: white;
+    border-color: var(--primary-color, #3b82f6);
+}
+
+.sub-info-url-submit-btn:hover:not(:disabled) {
+    background: var(--primary-color, #3b82f6);
+    opacity: 0.9;
+}
+
+.sub-info-url-submit-btn:disabled {
+    background: var(--bg-gray, #f9fafb);
+    color: var(--text-secondary, #6b7280);
+    border-color: var(--border-light, #e5e7eb);
+    cursor: not-allowed;
+}
+
+:root[data-darkmode="true"] .sub_setting svg {
+    color: #e0e0e0;
 }
 
 :root[data-darkmode="true"] .text_show {
@@ -125,6 +263,62 @@
 
 :root[data-darkmode="true"] .progress_bar_low {
     background-color: #cc6262;
+}
+
+:root[data-darkmode="true"] .sub-info-url-model {
+    background: var(--bg-white, #1f2937);
+    border-color: var(--border-light, #374151);
+}
+
+:root[data-darkmode="true"] .sub-info-url-header,
+:root[data-darkmode="true"] .sub-info-url-footer {
+    background: var(--bg-gray, #111827);
+    border-color: var(--border-light, #374151);
+}
+
+:root[data-darkmode="true"] .sub-info-url-title {
+    color: var(--text-primary, #f3f4f6);
+}
+
+:root[data-darkmode="true"] .sub-info-url-form-group label {
+    color: var(--text-primary, #f3f4f6);
+}
+
+:root[data-darkmode="true"] .sub-info-url-form-textarea {
+    background: var(--bg-gray, #374151);
+    border-color: var(--border-light, #4b5563);
+    color: var(--text-primary, #f3f4f6);
+}
+
+:root[data-darkmode="true"] .sub-info-url-form-textarea:focus {
+    border-color: var(--primary-color, #60a5fa);
+    box-shadow: 0 0 0 2px rgba(96, 165, 250, 0.1);
+}
+
+:root[data-darkmode="true"] .sub-info-url-form-textarea::placeholder {
+    color: var(--text-secondary, #9ca3af);
+}
+
+:root[data-darkmode="true"] .sub-info-url-cancel-btn {
+    background: var(--bg-white, #374151);
+    color: var(--text-secondary, #9ca3af);
+    border-color: var(--border-light, #4b5563);
+}
+
+:root[data-darkmode="true"] .sub-info-url-cancel-btn:hover {
+    background: var(--hover-bg, #4b5563);
+    color: var(--text-primary, #f3f4f6);
+}
+
+:root[data-darkmode="true"] .sub-info-url-submit-btn {
+    background: var(--primary-color, #3b82f6);
+    border-color: var(--primary-color, #3b82f6);
+}
+
+:root[data-darkmode="true"] .sub-info-url-submit-btn:disabled {
+    background: var(--bg-gray, #4b5563);
+    color: var(--text-secondary, #9ca3af);
+    border-color: var(--border-light, #374151);
 }
 
 @media (max-width: 1024px) {
@@ -152,10 +346,6 @@
         min-width: 200px;
     }
 
-    .sub_setting img {
-        height: 18px !important;
-    }
-
     .sub_div {
         gap: 4px;
         width: calc(100% - 16px);
@@ -170,10 +360,6 @@
 
     .progress_bar_bg {
         min-width: 180px !important;
-    }
-
-    .sub_setting img {
-        height: 16px !important;
     }
 
     .sub_div {
@@ -192,22 +378,10 @@
         min-width: 160px !important;
     }
 
-    .sub_setting img {
-        height: 14px !important;
-    }
-
     .sub_div {
         width: calc(100% - 8px);
         margin: 0 4px;
     }
-}
-
-.sub_div * {
-    flex-shrink: 0;
-}
-
-.sub_div > span:first-child {
-    flex-shrink: 1;
 }
 
 /* Multiple providers container */
@@ -272,18 +446,6 @@
     border-radius: 5px;
 }
 
-.sub_provider_fill.progress_bar_high {
-    background-color: #9edd9e;
-}
-
-.sub_provider_fill.progress_bar_medium {
-    background-color: #ffc99f;
-}
-
-.sub_provider_fill.progress_bar_low {
-    background-color: #ffb9b9;
-}
-
 .sub_provider_name {
     position: relative;
     z-index: 1;
@@ -302,18 +464,6 @@
 :root[data-darkmode="true"] .sub_provider_item {
     background-color: #333333;
     border-color: #666666;
-}
-
-:root[data-darkmode="true"] .sub_provider_fill.progress_bar_high {
-    background-color: #5da05d;
-}
-
-:root[data-darkmode="true"] .sub_provider_fill.progress_bar_medium {
-    background-color: #cc8550;
-}
-
-:root[data-darkmode="true"] .sub_provider_fill.progress_bar_low {
-    background-color: #cc6262;
 }
 
 :root[data-darkmode="true"] .sub_provider_name {
@@ -383,12 +533,20 @@
 
 <div class="sub_div">
     <span id='<%=idname%>' class="sub_tab"></span>
-    <span class="sub_setting">
-        <img id="icon_arrow" src='/luci-static/resources/openclash/img/arrow-clockwise-light.svg' height="20px" title='<%:Refresh%>' alt='<%:Refresh%>' onclick='return sub_info_refresh_<%=idname%>(this)'>
-    </span>
-    <span class="sub_setting">
-        <img id="icon_wrench" src='/luci-static/resources/openclash/img/wrench-light.svg' height="20px" title='<%:Specify URL%>' alt='<%:Specify URL%>' onclick='return set_subinfo_url_<%=idname%>(this,"<%=filename%>")'>
-    </span>
+    <button type="button" class="sub_setting" title='<%:Refresh%>' alt='<%:Refresh%>' onclick='return sub_info_refresh_<%=idname%>(this)'>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M23 4v6h-6"></path>
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+        </svg>
+    </button>
+    <button type="button" class="sub_setting" title='<%:Specify URL%>' alt='<%:Specify URL%>' onclick='return set_subinfo_url_<%=idname%>(this,"<%=filename%>")'>
+        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="4">
+            <path d="M4 6H44V36H29L24 41L19 36H4V6Z"/>
+            <path d="M23 21H25.0025" />
+            <path d="M33.001 21H34.9999"/>
+            <path d="M13.001 21H14.9999"/>
+        </svg>
+    </button>
 </div>
 
 <script type="text/javascript">//<![CDATA[
@@ -398,10 +556,21 @@ var s_<%=idname%>;
 sub_info_get_<%=idname%>();
 
 setTimeout(function(){
+    initDarkMode();
+}, 200);
+
+function initDarkMode() {
+    if (typeof isDarkBackground === 'undefined') {
+        setTimeout(function() {
+            initDarkMode();
+        }, 100);
+        return;
+    }
+    
     if (isDarkBackground(document.body)) {
         document.documentElement.setAttribute('data-darkmode', 'true');
-    };
-}, 300);
+    }
+}
 
 function progressbar_<%=idname%>(v, m, pc, np, f, t, tr) {
     var screenWidth = window.innerWidth || document.documentElement.clientWidth;
@@ -588,14 +757,12 @@ function sub_info_refresh_<%=idname%>()
 					(status.day_left)
 				);
 			}
-		}
-		else if ( x && x.status == 200 && status.sub_info == "No Sub Info Found" ) {
+		} else if ( x && x.status == 200 && status.sub_info == "No Sub Info Found" ) {
 			retry_<%=idname%> = 0;
 			localStorage.setItem("sub_info_<%=filename%>",JSON.stringify(status));
 			document.getElementById('<%=idname%>').className = "sub_tab_show";
 			document.getElementById('<%=idname%>').innerHTML = "<span><%:No Sub Info Found%></span>";
-		}
-		else {
+		} else {
 			if (document.getElementById('<%=idname%>').innerHTML == "" || retry_<%=idname%> > 2) {
 				document.getElementById('<%=idname%>').className = "sub_tab_show";
 				document.getElementById('<%=idname%>').innerHTML = "<span style=color:red><%:Sub Info Get Error%></span>";
@@ -603,13 +770,11 @@ function sub_info_refresh_<%=idname%>()
 			if (retry_<%=idname%> > 2) {
 				retry_<%=idname%> = 0;
 				localStorage.removeItem("sub_info_<%=filename%>");
-			}
-			else {
+			} else {
 				retry_<%=idname%> ++;
 				s_<%=idname%> = setTimeout("sub_info_refresh_<%=idname%>()",1000*120);
 				return
 			}
-
 		};
 		s_<%=idname%> = setTimeout("sub_info_refresh_<%=idname%>()",1000*1800);
 	});
@@ -657,29 +822,113 @@ function sub_info_get_<%=idname%>()
 };
 
 function set_subinfo_url_<%=idname%>(btn, filename) {
-	var new_url = prompt("<%:Paste the new url of subscribe infos sources here:%>", "");
-	if (filename == null || filename == "") {
-		return false;
-	}
-	if (new_url == null) {
-		return false;
-	}
-	XHR.get('<%=luci.dispatcher.build_url("admin", "services", "openclash", "set_subinfo_url")%>', {filename: filename, url: new_url}, function(x, status) {
-		if (x && x.status == 200 && status.info == "Success")
-		{
-			sub_info_refresh_<%=idname%>();
-			alert("<%:Specify subscribe infos sources url successfully!%>");
-		}
-		else if (x && x.status == 200 && status.info == "Delete success")
-		{
-			sub_info_refresh_<%=idname%>();
-			alert("<%:Delete Specify Subscribe infos sources url successfully!%>");
-		}
-		else
-		{
-			alert("<%:Specify subscribe infos sources url failed:%>\n" + status.info);
-		}
-	});
+    if (filename == null || filename == "") {
+        return false;
+    }
+
+    var dialogDiv = document.createElement('div');
+    dialogDiv.className = 'sub-info-url-overlay';
+
+    var contentDiv = document.createElement('div');
+    contentDiv.className = 'sub-info-url-model';
+
+    var headerDiv = document.createElement('div');
+    headerDiv.className = 'sub-info-url-header';
+
+    var titleDiv = document.createElement('div');
+    titleDiv.className = 'sub-info-url-title';
+    titleDiv.innerHTML = '<%:Paste the new url of subscribe infos sources here:%>';
+    headerDiv.appendChild(titleDiv);
+
+    var bodyDiv = document.createElement('div');
+    bodyDiv.className = 'sub-info-url-content';
+
+    var formGroup = document.createElement('div');
+    formGroup.className = 'sub-info-url-form-group';
+
+    var textarea = document.createElement('textarea');
+    textarea.className = 'sub-info-url-form-textarea';
+    textarea.placeholder = '<%:Enter URLs, one per line, use #name=example end for specifing display name%> (https://example.com#name=example)';
+    formGroup.appendChild(textarea);
+
+    bodyDiv.appendChild(formGroup);
+
+    var footerDiv = document.createElement('div');
+    footerDiv.className = 'sub-info-url-footer';
+
+    var cancelBtn = document.createElement('button');
+    cancelBtn.className = 'sub-info-url-btn sub-info-url-cancel-btn';
+    cancelBtn.type = 'button';
+    cancelBtn.innerHTML = '<%:Cancel%>';
+
+    var confirmBtn = document.createElement('button');
+    confirmBtn.className = 'sub-info-url-btn sub-info-url-submit-btn';
+    confirmBtn.type = 'button';
+    confirmBtn.innerHTML = '<%:Submit%>';
+
+    confirmBtn.onclick = function() {
+        var new_url = textarea.value.trim();
+        document.body.removeChild(dialogDiv);
+
+        XHR.get('<%=luci.dispatcher.build_url("admin", "services", "openclash", "set_subinfo_url")%>', {filename: filename, url: new_url}, function(x, status) {
+            if (x && x.status == 200 && status.info == "Success") {
+                sub_info_refresh_<%=idname%>();
+                alert("<%:Specify subscribe infos sources url successfully!%>");
+            }
+            else if (x && x.status == 200 && status.info == "Delete success") {
+                sub_info_refresh_<%=idname%>();
+                alert("<%:Delete Specify Subscribe infos sources url successfully!%>");
+            }
+            else {
+                alert("<%:Specify subscribe infos sources url failed:%>\n" + status.info);
+            }
+        });
+    };
+
+    cancelBtn.onclick = function() {
+        document.body.removeChild(dialogDiv);
+    };
+
+    footerDiv.appendChild(cancelBtn);
+    footerDiv.appendChild(confirmBtn);
+
+    contentDiv.appendChild(headerDiv);
+    contentDiv.appendChild(bodyDiv);
+    contentDiv.appendChild(footerDiv);
+    dialogDiv.appendChild(contentDiv);
+    document.body.appendChild(dialogDiv);
+
+    textarea.focus();
+
+    var handleSubURL = function(urlresult) {
+        var urls = '';
+        if (urlresult.type && urlresult.type === "multiple") {
+            for (var data in urlresult.providers) {
+                urls += urlresult.providers[data].url + '#name=' + urlresult.providers[data].name + '\n';
+            }
+        }
+        if (urlresult.type && urlresult.type === "single") {
+            urls = urlresult.url;
+        }
+        textarea.value = urls;
+    };
+
+    var existingData = localStorage.getItem('sub_info_' + filename);
+    if (existingData) {
+        existingData = JSON.parse(existingData);
+        if (existingData.url_result) {
+            handleSubURL(existingData.url_result);
+            return;
+        }
+    };
+
+    XHR.get('<%=luci.dispatcher.build_url("admin", "services", "openclash", "get_subscribe_info_data")%>', {
+        filename: filename
+    }, function(x, status) {
+        if (x && x.status == 200 && status) {
+            handleSubURL(status);
+        }
+    });
 };
 
 //]]></script>

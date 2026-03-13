@@ -43,8 +43,9 @@ if [ -z "$GEOSITE_CUSTOM_URL" ]; then
 else
    DOWNLOAD_URL=$GEOSITE_CUSTOM_URL
 fi
-DOWNLOAD_FILE_CURL "$DOWNLOAD_URL" "/tmp/GeoSite.dat"
-if [ "$?" -eq 0 ] && [ -s "/tmp/GeoSite.dat" ]; then
+DOWNLOAD_FILE_CURL "$DOWNLOAD_URL" "/tmp/GeoSite.dat" "$geosite_path"
+DOWNLOAD_RESULT=$?
+if [ "$DOWNLOAD_RESULT" -eq 0 ] && [ -s "/tmp/GeoSite.dat" ]; then
    LOG_OUT "GeoSite Database Download Success, Check Updated..."
    cmp -s /tmp/GeoSite.dat "$geosite_path"
    if [ "$?" -ne "0" ]; then
@@ -56,6 +57,8 @@ if [ "$?" -eq 0 ] && [ -s "/tmp/GeoSite.dat" ]; then
    else
       LOG_OUT "Updated GeoSite Database No Change, Do Nothing..."
    fi
+elif [ "$DOWNLOAD_RESULT" -eq 2 ]; then
+   LOG_OUT "Updated GeoSite Database No Change, Do Nothing..."
 else
    LOG_OUT "GeoSite Database Update Error, Please Try Again Later..."
 fi

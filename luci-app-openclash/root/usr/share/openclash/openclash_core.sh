@@ -21,7 +21,7 @@ inc_job_counter
 restart=0
 github_address_mod=$(uci_get_config "github_address_mod" || echo 0)
 if [ "$github_address_mod" = "0" ] && [ -z "$(echo $2 2>/dev/null |grep -E 'http|one_key_update')" ] && [ -z "$(echo $3 2>/dev/null |grep 'http')" ]; then
-   LOG_OUT "Tip: If the download fails, try setting the CDN in Overwrite Settings - General Settings - Github Address Modify Options"
+   LOG_TIP "If the download fails, try setting the CDN in Overwrite Settings - General Settings - Github Address Modify Options"
 fi
 if [ -n "$3" ] && [ "$2" = "one_key_update" ]; then
    github_address_mod="$3"
@@ -42,12 +42,12 @@ CPU_MODEL=$(uci_get_config "core_version")
 RELEASE_BRANCH=$(uci_get_config "release_branch" || echo "master")
 
 if [ "$github_address_mod" != "0" ]; then
-   [ ! -f "/tmp/clash_last_version" ] && /usr/share/openclash/clash_version.sh "$github_address_mod" 2>/dev/null
+   /usr/share/openclash/clash_version.sh "$github_address_mod" 2>/dev/null
 else
-   [ ! -f "/tmp/clash_last_version" ] && /usr/share/openclash/clash_version.sh 2>/dev/null
+   /usr/share/openclash/clash_version.sh 2>/dev/null
 fi
 if [ ! -f "/tmp/clash_last_version" ]; then
-   LOG_OUT "Error: 【"$CORE_TYPE"】Core Version Check Error, Please Try Again Later..."
+   LOG_ERROR "【"$CORE_TYPE"】Core Version Check Error, Please Try Again Later..."
    SLOG_CLEAN
    del_lock
    exit 0
@@ -78,7 +78,7 @@ fi
 
 if [ "$CORE_CV" != "$CORE_LV" ] || [ -z "$CORE_CV" ]; then
    if [ "$CPU_MODEL" != 0 ]; then
-      LOG_OUT "Tip:【$CORE_TYPE】Core Downloading, Please Try to Download and Upload Manually If Fails"
+      LOG_TIP "【$CORE_TYPE】Core Downloading, Please Try to Download and Upload Manually If Fails"
       if [ "$github_address_mod" != "0" ]; then
          if [ "$github_address_mod" == "https://cdn.jsdelivr.net/" ] || [ "$github_address_mod" == "https://fastly.jsdelivr.net/" ] || [ "$github_address_mod" == "https://testingcf.jsdelivr.net/" ]; then
             DOWNLOAD_URL="${github_address_mod}gh/vernesong/OpenClash@core/${CORE_URL_PATH}/clash-${CPU_MODEL}.tar.gz"
@@ -97,14 +97,14 @@ if [ "$CORE_CV" != "$CORE_LV" ] || [ -z "$CORE_CV" ]; then
 
          rm -rf "$DOWNLOAD_FILE" "$TMP_FILE" >/dev/null 2>&1
 
-         SHOW_DOWNLOAD_PROGRESS=1 DOWNLOAD_FILE_CURL "$DOWNLOAD_URL" "$DOWNLOAD_FILE"
-         download_result=$?
+         SHOW_DOWNLOAD_PROGRESS=1 DOWNLOAD_FILE_CURL "$DOWNLOAD_URL" "$DOWNLOAD_FILE" "$TARGET_CORE_PATH"
+         DOWNLOAD_RESULT=$?
 
-         if [ "$download_result" -eq 0 ]; then
+         if [ "$DOWNLOAD_RESULT" -eq 0 ]; then
             gzip -t "$DOWNLOAD_FILE" >/dev/null 2>&1
 
             if [ "$?" -eq 0 ]; then
-               LOG_OUT "Tip:【"$CORE_TYPE"】Core Download Successful, Start Update..."
+               LOG_TIP "【"$CORE_TYPE"】Core Download Successful, Start Update..."
                extract_success=true
                [ -s "$DOWNLOAD_FILE" ] && {
                   tar zxvfo "$DOWNLOAD_FILE" -C /tmp >/dev/null 2>&1 || extract_success=false
@@ -116,12 +116,12 @@ if [ "$CORE_CV" != "$CORE_LV" ] || [ -z "$CORE_CV" ]; then
 
                if [ "$extract_success" != "true" ]; then
                   if [ "$retry_count" -lt "$max_retries" ]; then
-                     LOG_OUT "Error:【$retry_count/$max_retries】【"$CORE_TYPE"】Core Update Failed..."
+                     LOG_ERROR "【$retry_count/$max_retries】【"$CORE_TYPE"】Core Update Failed..."
                      rm -rf "$TMP_FILE" >/dev/null 2>&1
                      sleep 2
                      continue
                   else
-                     LOG_OUT "Error:【"$CORE_TYPE"】Core Update Failed, Please Make Sure Enough Flash Memory Space or Selected Correct Core Platform And Try Again!"
+                     LOG_ERROR "【"$CORE_TYPE"】Core Update Failed, Please Make Sure Enough Flash Memory Space or Selected Correct Core Platform And Try Again!"
                      rm -rf "$TMP_FILE" >/dev/null 2>&1
                      SLOG_CLEAN
                      del_lock
@@ -132,50 +132,53 @@ if [ "$CORE_CV" != "$CORE_LV" ] || [ -z "$CORE_CV" ]; then
                mv "$TMP_FILE" "$TARGET_CORE_PATH" >/dev/null 2>&1
 
                if [ "$?" == "0" ]; then
-                  LOG_OUT "Tip:【"$CORE_TYPE"】Core Update Successful!"
+                  LOG_TIP "【"$CORE_TYPE"】Core Update Successful!"
                   SLOG_CLEAN
                   restart=1
                   break
                else
                   if [ "$retry_count" -lt "$max_retries" ]; then
-                     LOG_OUT "Error:【$retry_count/$max_retries】【"$CORE_TYPE"】Core Update Failed..."
+                     LOG_ERROR "【$retry_count/$max_retries】【"$CORE_TYPE"】Core Update Failed..."
                      sleep 2
                      continue
                   else
-                     LOG_OUT "Error:【"$CORE_TYPE"】Core Update Failed, Please Make Sure Enough Flash Memory Space And Try Again!"
+                     LOG_ERROR "【"$CORE_TYPE"】Core Update Failed, Please Make Sure Enough Flash Memory Space And Try Again!"
                      SLOG_CLEAN
                      break
                   fi
                fi
             else
                if [ "$retry_count" -lt "$max_retries" ]; then
-                  LOG_OUT "Error:【$retry_count/$max_retries】【"$CORE_TYPE"】Core Update Failed..."
+                  LOG_ERROR "【$retry_count/$max_retries】【"$CORE_TYPE"】Core Update Failed..."
                   sleep 2
                   continue
                else
-                  LOG_OUT "Error:【"$CORE_TYPE"】Core Update Failed, Please Check The Network or Try Again Later!"
+                  LOG_ERROR "【"$CORE_TYPE"】Core Update Failed, Please Check The Network or Try Again Later!"
                   SLOG_CLEAN
                   break
                fi
             fi
+         elif [ "$DOWNLOAD_RESULT" -eq 2 ]; then
+            LOG_TIP "【"$CORE_TYPE"】Core Has Not Been Updated, Stop Continuing Operation!"
+            SLOG_CLEAN
          else
             if [ "$retry_count" -lt "$max_retries" ]; then
-               LOG_OUT "Error:【$retry_count/$max_retries】【"$CORE_TYPE"】Core Download Failed..."
+               LOG_ERROR "【$retry_count/$max_retries】【"$CORE_TYPE"】Core Download Failed..."
                sleep 2
                continue
             else
-               LOG_OUT "Error:【"$CORE_TYPE"】Core Download Failed, Please Check The Network or Try Again Later!"
+               LOG_ERROR "【"$CORE_TYPE"】Core Download Failed, Please Check The Network or Try Again Later!"
                SLOG_CLEAN
                break
             fi
          fi
       done
    else
-      LOG_OUT "Warning: No Compiled Version Selected, Please Select In Update Page And Try Again!"
+      LOG_WARN "No Compiled Version Selected, Please Select In Update Page And Try Again!"
       SLOG_CLEAN
    fi
 else
-   LOG_OUT "Tip:【"$CORE_TYPE"】Core Has Not Been Updated, Stop Continuing Operation!"
+   LOG_TIP "【"$CORE_TYPE"】Core Has Not Been Updated, Stop Continuing Operation!"
    SLOG_CLEAN
 fi
 

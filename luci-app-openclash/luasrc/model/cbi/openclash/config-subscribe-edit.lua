@@ -17,8 +17,6 @@ m = Map(openclash, translate("Config Subscribe Edit"))
 m.pageaction = false
 m.description=translate("Convert Subscribe function of Online is Supported By subconverter Written By tindy X") ..
 "<br/>"..
-"<br/>"..translate("API By tindy X & lhie1")..
-"<br/>"..
 "<br/>"..translate("Subconverter external configuration (subscription conversion template) Description: https://github.com/tindy2013/subconverter#external-configuration-file")..
 "<br/>"..
 "<br/>"..translate("If you need to customize the external configuration file (subscription conversion template), please write it according to the instructions, upload it to the accessible location of the external network, and fill in the address correctly when using it")..
@@ -57,32 +55,6 @@ function o.validate(self, value)
 	return value
 end
 
-local sub_path = "/tmp/dler_sub"
-local info, token, get_sub, sub_info
-local token = fs.uci_get_config("config", "dler_token")
-if token then
-	get_sub = string.format("curl -sL -H 'Content-Type: application/json' --connect-timeout 2 -d '{\"access_token\":\"%s\"}' -X POST https://dler.cloud/api/v1/managed/clash -o %s", token, sub_path)
-	if not nixio.fs.access(sub_path) then
-		luci.sys.exec(get_sub)
-	else
-		if fs.readfile(sub_path) == "" or not fs.readfile(sub_path) then
-			luci.sys.exec(get_sub)
-		end
-	end
-	sub_info = fs.readfile(sub_path)
-	if sub_info then
-		sub_info = json.parse(sub_info)
-	end
-	if sub_info and sub_info.ret == 200 then
-		o:value(sub_info.smart)
-		o:value(sub_info.ss)
-		o:value(sub_info.vmess)
-		o:value(sub_info.trojan)
-	else
-		fs.unlink(sub_path)
-	end
-end
-
 ---- UA
 o = s:option(Value, "sub_ua", "User-Agent")
 o.description = font_red..bold_on..translate("Used for Downloading Subscriptions, Defaults to Clash")..bold_off..font_off
@@ -102,11 +74,10 @@ o = s:option(Value, "convert_address", translate("Convert Address"))
 o.rmempty = true
 o.description = font_red..bold_on..translate("Note: There is A Risk of Privacy Leakage in Online Convert")..bold_off..font_off
 o:depends("sub_convert", "1")
-o:value("https://api.dler.io/sub", translate("api.dler.io")..translate("(Default)"))
 o:value("https://api.wcc.best/sub", translate("api.wcc.best"))
 o:value("https://api.asailor.org/sub", translate("api.asailor.org"))
-o.default = "https://api.dler.io/sub"
-o.placeholder = "https://api.dler.io/sub"
+o.default = "https://api.wcc.best/sub"
+o.placeholder = "https://api.wcc.best/sub"
 
 ---- Template
 o = s:option(ListValue, "template", translate("Template Name"))
@@ -196,10 +167,10 @@ o.rmempty = true
 ---- de_exkey
 o = s:option(MultiValue, "de_ex_keyword", font_red..bold_on..translate("Exclude Keyword Match Default")..bold_off..font_off)
 o.rmempty = true
-o:value("过期时间")
-o:value("剩余流量")
-o:value("TG群")
-o:value("官网")
+o:value(translate("Expire"))
+o:value(translate("Traffic"))
+o:value(translate("Plan"))
+o:value(translate("Official"))
 
 local t = {
 	{Commit, Back}

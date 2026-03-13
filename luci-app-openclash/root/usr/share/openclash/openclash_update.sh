@@ -19,15 +19,15 @@ inc_job_counter
 restart=0
 
 if [ -n "$1" ] && [ "$1" != "one_key_update" ]; then
-   [ ! -f "/tmp/openclash_last_version" ] && /usr/share/openclash/openclash_version.sh "$1" 2>/dev/null
+   /usr/share/openclash/openclash_version.sh "$1" 2>/dev/null
 elif [ -n "$2" ]; then
-   [ ! -f "/tmp/openclash_last_version" ] && /usr/share/openclash/openclash_version.sh "$2" 2>/dev/null
+   /usr/share/openclash/openclash_version.sh "$2" 2>/dev/null
 else
-   [ ! -f "/tmp/openclash_last_version" ] && /usr/share/openclash/openclash_version.sh 2>/dev/null
+   /usr/share/openclash/openclash_version.sh 2>/dev/null
 fi
 
 if [ ! -f "/tmp/openclash_last_version" ]; then
-   LOG_OUT "Error: Failed to get version information, please try again later..."
+   LOG_ERROR "Failed to get version information, please try again later..."
    SLOG_CLEAN
    dec_job_counter_and_restart "$restart"
    del_lock
@@ -66,7 +66,7 @@ github_address_mod=$(uci_get_config "github_address_mod" || echo 0)
 #一键更新
 if [ "$1" = "one_key_update" ]; then
    if [ "$github_address_mod" = "0" ] && [ -z "$2" ]; then
-      LOG_OUT "Tip: If the download fails, try setting the CDN in Overwrite Settings - General Settings - Github Address Modify Options"
+      LOG_TIP "If the download fails, try setting the CDN in Overwrite Settings - General Settings - Github Address Modify Options"
    fi
    if [ -n "$2" ]; then
       /usr/share/openclash/openclash_core.sh "Meta" "$1" "$2" >/dev/null 2>&1 &
@@ -79,12 +79,12 @@ if [ "$1" = "one_key_update" ]; then
    wait
 else
    if [ "$github_address_mod" = "0" ]; then
-      LOG_OUT "Tip: If the download fails, try setting the CDN in Overwrite Settings - General Settings - Github Address Modify Options"
+      LOG_TIP "If the download fails, try setting the CDN in Overwrite Settings - General Settings - Github Address Modify Options"
    fi
 fi
 
 if [ -n "$OP_CV" ] && [ -n "$OP_LV" ] && version_compare "$OP_CV" "$OP_LV" && [ -f "$LAST_OPVER" ]; then
-   LOG_OUT "Tip: Start downloading【OpenClash - v$LAST_VER】..."
+   LOG_TIP "Start downloading【OpenClash - v$LAST_VER】..."
    if [ "$github_address_mod" != "0" ]; then
       if [ "$github_address_mod" == "https://cdn.jsdelivr.net/" ] || [ "$github_address_mod" == "https://fastly.jsdelivr.net/" ] || [ "$github_address_mod" == "https://testingcf.jsdelivr.net/" ]; then
          if [ -x "/bin/opkg" ]; then
@@ -120,16 +120,16 @@ if [ -n "$OP_CV" ] && [ -n "$OP_LV" ] && version_compare "$OP_CV" "$OP_LV" && [ 
       retry_count=$((retry_count + 1))
 
       if [ "$pkg_update_success" = "false" ]; then
-         download_result=0
+         DOWNLOAD_RESULT=0
       else
          rm -rf "$DOWNLOAD_PATH" >/dev/null 2>&1
-         LOG_OUT "Tip:【$retry_count/$max_retries】【OpenClash - v$LAST_VER】Downloading..."
-         SHOW_DOWNLOAD_PROGRESS=1 DOWNLOAD_FILE_CURL "$DOWNLOAD_URL" "$DOWNLOAD_PATH"
-         download_result=$?
+         LOG_TIP "【$retry_count/$max_retries】【OpenClash - v$LAST_VER】Downloading..."
+         SHOW_DOWNLOAD_PROGRESS=1 DOWNLOAD_FILE_CURL "$DOWNLOAD_URL" "$DOWNLOAD_PATH" "$DOWNLOAD_PATH"
+         DOWNLOAD_RESULT=$?
       fi
 
-      if [ "$download_result" -eq 0 ]; then
-         LOG_OUT "Tip:【$retry_count/$max_retries】【OpenClash - v$LAST_VER】Download successful, start pre update test..."
+      if [ "$DOWNLOAD_RESULT" -ne 1 ]; then
+         LOG_TIP "【$retry_count/$max_retries】【OpenClash - v$LAST_VER】Download successful, start pre update test..."
 
          pre_test_success=false
          pkg_update_success=true
@@ -162,18 +162,18 @@ if [ -n "$OP_CV" ] && [ -n "$OP_LV" ] && version_compare "$OP_CV" "$OP_LV" && [ 
          fi
 
          if [ "$pre_test_success" = "true" ]; then
-            LOG_OUT "Tip:【$retry_count/$max_retries】【OpenClash - v$LAST_VER】Pre update test passed, ready to update and please do not refresh the page and other operations..."
+            LOG_TIP "【$retry_count/$max_retries】【OpenClash - v$LAST_VER】Pre update test passed, ready to update and please do not refresh the page and other operations..."
             break
          else
             if [ "$retry_count" -lt "$max_retries" ]; then
-               LOG_OUT "Error:【$retry_count/$max_retries】【OpenClash - v$LAST_VER】Pre update test failed..."
+               LOG_ERROR "【$retry_count/$max_retries】【OpenClash - v$LAST_VER】Pre update test failed..."
                sleep 2
                continue
             else
                if [ -x "/bin/opkg" ]; then
-                  LOG_OUT "Error:【OpenClash - v$LAST_VER】Pre update test failed after 3 attempts, the file is saved in /tmp/openclash.ipk, please try to update manually with【opkg install /tmp/openclash.ipk】"
+                  LOG_ERROR "【OpenClash - v$LAST_VER】Pre update test failed after 3 attempts, the file is saved in /tmp/openclash.ipk, please try to update manually with【opkg install /tmp/openclash.ipk】"
                elif [ -x "/usr/bin/apk" ]; then
-                  LOG_OUT "Error:【OpenClash - v$LAST_VER】Pre update test failed after 3 attempts, the file is saved in /tmp/openclash.apk, please try to update manually with【apk add -q --force-overwrite --clean-protected --allow-untrusted /tmp/openclash.apk】"
+                  LOG_ERROR "【OpenClash - v$LAST_VER】Pre update test failed after 3 attempts, the file is saved in /tmp/openclash.apk, please try to update manually with【apk add -q --force-overwrite --clean-protected --allow-untrusted /tmp/openclash.apk】"
                fi
 
                SLOG_CLEAN
@@ -184,11 +184,11 @@ if [ -n "$OP_CV" ] && [ -n "$OP_LV" ] && version_compare "$OP_CV" "$OP_LV" && [ 
          fi
       else
          if [ "$retry_count" -lt "$max_retries" ]; then
-            LOG_OUT "Error:【$retry_count/$max_retries】【OpenClash - v$LAST_VER】Download failed..."
+            LOG_ERROR "【$retry_count/$max_retries】【OpenClash - v$LAST_VER】Download failed..."
             sleep 2
             continue
          else
-            LOG_OUT "Error:【OpenClash - v$LAST_VER】Download Failed after 3 attempts, please check the network or try again later!"
+            LOG_ERROR "【OpenClash - v$LAST_VER】Download Failed after 3 attempts, please check the network or try again later!"
             rm -rf /tmp/openclash.ipk >/dev/null 2>&1
             rm -rf /tmp/openclash.apk >/dev/null 2>&1
             SLOG_CLEAN
@@ -224,12 +224,20 @@ fi
 
 trap 'del_update_lock; exit' INT TERM EXIT
 
-LOG_OUT()
+LOG_ERROR()
 {
-   if [ -n "${1}" ]; then
-      echo -e "${1}" > $START_LOG
-      echo -e "${LOGTIME} ${1}" >> $LOG_FILE
-   fi
+	if [ -n "${1}" ]; then
+		echo -e "${1}" > $START_LOG
+		echo -e "${LOGTIME} [error] ${1}" >> $LOG_FILE
+	fi
+}
+
+LOG_TIP()
+{
+	if [ -n "${1}" ]; then
+		echo -e "${1}" > $START_LOG
+		echo -e "${LOGTIME} [tip] ${1}" >> $LOG_FILE
+	fi
 }
 
 SLOG_CLEAN()
@@ -297,16 +305,13 @@ install_missing_packages() {
    fi
 }
 
-uci -q set openclash.config.enable=0
-uci -q commit openclash
-
 install_retry_count=0
 max_install_retries=3
 install_success=false
 
 while [ $install_retry_count -lt $max_install_retries ]; do
    install_retry_count=$((install_retry_count + 1))
-   LOG_OUT "Tip:【$install_retry_count/$max_install_retries】Installing the new version, please do not refresh the page or do other operations..."
+   LOG_TIP "【$install_retry_count/$max_install_retries】Installing the new version, please do not refresh the page or do other operations..."
 
    packages_to_check="luci-compat kmod-inet-diag kmod-nft-tproxy kmod-ipt-nat iptables-mod-tproxy iptables-mod-extra ipset"
    installed_before=""
@@ -333,7 +338,7 @@ while [ $install_retry_count -lt $max_install_retries ]; do
       install_missing_packages "$installed_before"
       break
    else
-      LOG_OUT "Error:【$install_retry_count/$max_install_retries】Installation failed..."
+      LOG_ERROR "【$install_retry_count/$max_install_retries】Installation failed..."
       if [ $install_retry_count -lt $max_install_retries ]; then
          sleep 3
       fi
@@ -346,15 +351,11 @@ if [ "$install_success" = true ]; then
    elif [ -x "/usr/bin/apk" ]; then
       rm -rf /tmp/openclash.apk >/dev/null 2>&1
    fi
-   LOG_OUT "Tip: OpenClash update successful, about to restart!"
-   uci -q set openclash.config.enable=1
-   uci -q commit openclash
-   /etc/init.d/openclash restart 2>/dev/null
 else
    if [ -x "/bin/opkg" ]; then
-      LOG_OUT "Error: OpenClash update failed after 3 attempts, the file is saved in /tmp/openclash.ipk, please try to update manually with【opkg install /tmp/openclash.ipk】"
+      LOG_ERROR "OpenClash update failed after 3 attempts, the file is saved in /tmp/openclash.ipk, please try to update manually with【opkg install /tmp/openclash.ipk】"
    elif [ -x "/usr/bin/apk" ]; then
-      LOG_OUT "Error: OpenClash update failed after 3 attempts, the file is saved in /tmp/openclash.apk, please try to update manually with【apk add -q --force-overwrite --clean-protected --allow-untrusted /tmp/openclash.apk】"
+      LOG_ERROR "OpenClash update failed after 3 attempts, the file is saved in /tmp/openclash.apk, please try to update manually with【apk add -q --force-overwrite --clean-protected --allow-untrusted /tmp/openclash.apk】"
    fi
    SLOG_CLEAN
 fi
@@ -364,7 +365,7 @@ EOF
    chmod 4755 /tmp/openclash_update.sh
 
    if [ ! -f "/tmp/openclash_update.sh" ] || [ ! -s "/tmp/openclash_update.sh" ] || [ ! -x "/tmp/openclash_update.sh" ]; then
-      LOG_OUT "Error: Failed to create update script!"
+      LOG_ERROR "Failed to create update script!"
       rm -rf /tmp/openclash_update.sh
       del_lock
       exit 1
@@ -376,7 +377,7 @@ EOF
 
    while [ $retry_count -lt $max_retries ]; do
       retry_count=$((retry_count + 1))
-      LOG_OUT "Tip:【$retry_count/$max_retries】Attempting to start update service..."
+      LOG_TIP "【$retry_count/$max_retries】Attempting to start update service..."
 
       ubus call service add '{"name":"openclash_update","instances":{"update":{"command":["/tmp/openclash_update.sh"],"stdout":true,"stderr":true,"env":{"LAST_VER":"'"$LAST_VER"'"}}}}' >/dev/null 2>&1
 
@@ -387,22 +388,22 @@ EOF
          break
       else
          if [ $retry_count -lt $max_retries ]; then
-            LOG_OUT "Error:【$retry_count/$max_retries】Service start failed, retrying in 2 seconds..."
+            LOG_ERROR "【$retry_count/$max_retries】Service start failed, retrying in 2 seconds..."
             sleep 2
          fi
       fi
    done
 
    if [ "$service_started" = false ]; then
-      LOG_OUT "Error: Failed to start update service after 3 attempts, please check and try again later..."
+      LOG_ERROR "Failed to start update service after 3 attempts, please check and try again later..."
    fi
 
    (sleep 15; rm -f /tmp/openclash_update.sh) &
 else
    if [ ! -f "$LAST_OPVER" ] || [ -z "$OP_CV" ] || [ -z "$OP_LV" ]; then
-      LOG_OUT "Error: Failed to get version information, please try again later..."
+      LOG_ERROR "Failed to get version information, please try again later..."
    else
-      LOG_OUT "Tip: OpenClash has not been updated, stop continuing!"
+      LOG_TIP "OpenClash has not been updated, stop continuing!"
    fi
    SLOG_CLEAN
    dec_job_counter_and_restart "$restart"

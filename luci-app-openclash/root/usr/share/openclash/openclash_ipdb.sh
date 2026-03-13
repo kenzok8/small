@@ -43,8 +43,9 @@ if [ -z "$GEOIP_CUSTOM_URL" ]; then
 else
    DOWNLOAD_URL=$GEOIP_CUSTOM_URL
 fi
-DOWNLOAD_FILE_CURL "$DOWNLOAD_URL" "/tmp/Country.mmdb"
-if [ "$?" -eq 0 ] && [ -s "/tmp/Country.mmdb" ]; then
+DOWNLOAD_FILE_CURL "$DOWNLOAD_URL" "/tmp/Country.mmdb" "$geoip_path"
+DOWNLOAD_RESULT=$?
+if [ "$DOWNLOAD_RESULT" -eq 0 ] && [ -s "/tmp/Country.mmdb" ]; then
    LOG_OUT "Geoip Database Download Success, Check Updated..."
    cmp -s /tmp/Country.mmdb "$geoip_path"
    if [ "$?" -ne 0 ]; then
@@ -55,6 +56,8 @@ if [ "$?" -eq 0 ] && [ -s "/tmp/Country.mmdb" ]; then
    else
       LOG_OUT "Updated Geoip Database No Change, Do Nothing..."
    fi
+elif [ "$DOWNLOAD_RESULT" -eq 2 ]; then
+   LOG_OUT "Updated Geoip Database No Change, Do Nothing..."
 else
    LOG_OUT "Geoip Database Update Error, Please Try Again Later..."
 fi

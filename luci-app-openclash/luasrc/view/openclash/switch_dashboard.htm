@@ -56,7 +56,7 @@
 		btn.value = '<%:Downloading File...%>';
 		XHR.get('<%=luci.dispatcher.build_url("admin", "services", "openclash", "switch_dashboard")%>', {name: name, type : type}, function(x, status) {
 			if ( x && x.status == 200 ) {
-				if ( status.download_state == "1" ) {
+				if ( status.download_state == "0" ) {
 					if ( type == "Meta" ) {
 						if ( name == "Dashboard" ) {
 							document.getElementById("switch_dashboard_"+name).innerHTML = '<input type="button" class="btn cbi-button cbi-button-reset" value="<%:Switch Successful%> - <%:Switch To Official Version%>" onclick="return switch_dashboard(this, \'Dashboard\', \'Official\')"/>';

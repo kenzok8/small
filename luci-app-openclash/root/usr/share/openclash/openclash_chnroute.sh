@@ -40,9 +40,9 @@ fi
 
 LOG_OUT "Start Downloading The Chnroute Cidr List..."
 if [ -z "$CHNR_CUSTOM_URL" ]; then
-   DOWNLOAD_FILE_CURL "https://ispip.clang.cn/all_cn.txt" "/tmp/china_ip_route.txt"
+   DOWNLOAD_FILE_CURL "https://ispip.clang.cn/all_cn.txt" "/tmp/china_ip_route.txt" "$chnr_path"
 else
-   DOWNLOAD_FILE_CURL "$CHNR_CUSTOM_URL" "/tmp/china_ip_route.txt"
+   DOWNLOAD_FILE_CURL "$CHNR_CUSTOM_URL" "/tmp/china_ip_route.txt" "$chnr_path"
 fi
 
 if [ "$?" -eq 0 ]; then
@@ -69,6 +69,8 @@ if [ "$?" -eq 0 ]; then
    else
       LOG_OUT "Updated Chnroute Cidr List No Change, Do Nothing..."
    fi
+elif [ "$?" -eq 2 ]; then
+   LOG_OUT "Updated Chnroute Cidr List No Change, Do Nothing..."
 else
    LOG_OUT "Chnroute Cidr List Update Error, Please Try Again Later..."
 fi
@@ -76,11 +78,12 @@ fi
 #ipv6
 LOG_OUT "Start Downloading The Chnroute6 Cidr List..."
 if [ -z "$CHNR6_CUSTOM_URL" ]; then
-   DOWNLOAD_FILE_CURL "https://ispip.clang.cn/all_cn_ipv6.txt" "/tmp/china_ip6_route.txt"
+   DOWNLOAD_FILE_CURL "https://ispip.clang.cn/all_cn_ipv6.txt" "/tmp/china_ip6_route.txt" "$chnr6_path"
 else
-   DOWNLOAD_FILE_CURL "$CHNR6_CUSTOM_URL" "/tmp/china_ip6_route.txt"
+   DOWNLOAD_FILE_CURL "$CHNR6_CUSTOM_URL" "/tmp/china_ip6_route.txt" "$chnr6_path"
 fi
-if [ "$?" -eq 0 ]; then
+DOWNLOAD_RESULT=$?
+if [ "$DOWNLOAD_RESULT" -eq 0 ]; then
    LOG_OUT "Chnroute6 Cidr List Download Success, Check Updated..."
    #预处理
    if [ -n "$FW4" ]; then
@@ -104,6 +107,8 @@ if [ "$?" -eq 0 ]; then
    else
       LOG_OUT "Updated Chnroute6 Cidr List No Change, Do Nothing..."
    fi
+elif [ "$DOWNLOAD_RESULT" -eq 2 ]; then
+   LOG_OUT "Updated Chnroute6 Cidr List No Change, Do Nothing..."
 else
    LOG_OUT "Chnroute6 Cidr List Update Error, Please Try Again Later..."
 fi

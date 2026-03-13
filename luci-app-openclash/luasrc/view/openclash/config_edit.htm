@@ -1,4 +1,8 @@
 <style>
+@font-face {
+    font-family: 'Twemoji Mozilla';
+    src: url('/luci-static/resources/openclash/fonts/TwemojiMozilla-flags-B12sb_Bp.woff2') format('woff2');
+}
 .oc[data-darkmode="true"] .config-editor-model .CodeMirror {
     background: var(--bg-white);
     color: var(--text-primary);
@@ -308,6 +312,12 @@
 .oc .config-editor-model .CodeMirror.zoom-125 { font-size: 17.5px; }
 .oc .config-editor-model .CodeMirror.zoom-150 { font-size: 21px; }
 .oc .config-editor-model .CodeMirror.zoom-200 { font-size: 28px; }
+.oc .config-editor-model .CodeMirror, .oc .config-editor-model .CodeMirror-line {
+	font-family: 'Twemoji Mozilla', "Microsoft Yahei", "sans-serif", "Helvetica Neue", "Helvetica", "Hiragino Sans GB" !important;
+}
+.oc .config-editor-model .CodeMirror-hints.log {
+    font-family: 'Twemoji Mozilla', "Open Sans", "PingFangSC-Regular", "Microsoft Yahei", "WenQuanYi Micro Hei", "Helvetica Neue", "Helvetica", "Hiragino Sans GB", "sans-serif" !important;
+}
 #config-mergeview-container .CodeMirror-merge,
 #config-mergeview-container .CodeMirror-merge-pane,
 #config-mergeview-container .CodeMirror,
@@ -611,7 +621,6 @@
 <link rel="stylesheet" href="/luci-static/resources/openclash/addon/search/matchesonscrollbar.css">
 <script src="/luci-static/resources/openclash/lib/codemirror.js"></script>
 <script src="/luci-static/resources/openclash/mode/yaml/yaml.js"></script>
-<script src="/luci-static/resources/openclash/mode/lua/lua.js"></script>
 <script src="/luci-static/resources/openclash/mode/shell/shell.js"></script>
 <script src="/luci-static/resources/openclash/mode/properties/properties.js"></script>
 <script src="/luci-static/resources/openclash/addon/fold/foldcode.js"></script>
@@ -635,6 +644,16 @@
 <link rel="stylesheet" href="/luci-static/resources/openclash/addon/merge/merge.css">
 
 <script type="text/javascript">
+var levelTranslations = {
+    'info': '<%:Info%>',
+    'warning': '<%:Warning%>',
+    'error': '<%:Error%>',
+    'debug': '<%:Debug%>',
+    'tip': '<%:Tip%>',
+    'watchdog': '<%:Watchdog%>',
+	'fatal': '<%:Fatal%>'
+};
+
 var ConfigEditor = {
     overlay: null,
     model: null,

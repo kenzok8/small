@@ -6,6 +6,15 @@ local fs = require "luci.openclash"
 local sys = require "luci.sys"
 local sid = arg[1]
 local uuid = luci.sys.exec("cat /proc/sys/kernel/random/uuid")
+local file_path = ""
+
+for i = 2, #(arg) do
+	file_path = file_path .. "/" .. luci.http.urlencode(arg[i])
+end
+
+if not fs.isfile(file_path) and file_path ~= "" then
+	file_path = luci.http.urldecode(file_path)
+end
 
 font_red = [[<b style=color:red>]]
 font_off = [[</b>]]
@@ -99,7 +108,7 @@ local obfs = {
 
 m = Map(openclash, translate("Edit Server"))
 m.pageaction = false
-m.redirect = luci.dispatcher.build_url("admin/services/openclash/servers")
+m.redirect = luci.dispatcher.build_url("admin/services/openclash/servers%s" % file_path)
 
 if m.uci:get(openclash, sid) ~= "servers" then
 	luci.http.redirect(m.redirect)
@@ -129,11 +138,6 @@ for t,f in ipairs(fs.glob("/etc/openclash/config/*"))do
 		end
 	end
 end
-
-o = s:option(Flag, "manual", translate("Custom Tag"))
-o.rmempty = false
-o.default = "0"
-o.description = translate("Mark as Custom Node to Prevent Retention config from being Deleted When Enabled")
 
 o = s:option(ListValue, "type", translate("Server Node Type"))
 o:value("ss", translate("Shadowsocks"))
@@ -1174,18 +1178,18 @@ o.rmempty = true
 o.description = font_red..bold_on..translate("The added Dialer Proxy or Group Must Exist")..bold_off..font_off
 m.uci:foreach("openclash", "groups",
 function(s)
-	if s.name ~= "" and s.name ~= nil then
+	if s.name ~= "" and s.name ~= nil and (s.config == m.uci:get(openclash, sid, "config") or s.config == "all") then
 		o:value(s.name)
 	end
 end)
 
 o = s:option(DynamicList, "groups", translate("Proxy Group (Support Regex)"))
-o.description = font_red..bold_on..translate("No Need Set when Config Create, The added Proxy Groups Must Exist")..bold_off..font_off
+o.description = font_red..bold_on..translate("The added Proxy Groups Must Exist")..bold_off..font_off
 o.rmempty = true
 o:value("all", translate("All Groups"))
 m.uci:foreach("openclash", "groups",
 function(s)
-	if s.name ~= "" and s.name ~= nil then
+	if s.name ~= "" and s.name ~= nil and (s.config == m.uci:get(openclash, sid, "config") or s.config == "all") then
 		o:value(s.name)
 	end
 end)

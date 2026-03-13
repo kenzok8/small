@@ -43,8 +43,9 @@ if [ -z "$GEOASN_CUSTOM_URL" ]; then
 else
    DOWNLOAD_URL=$GEOASN_CUSTOM_URL
 fi
-DOWNLOAD_FILE_CURL "$DOWNLOAD_URL" "/tmp/GeoLite2-ASN.mmdb"
-if [ "$?" -eq 0 ] && [ -s "/tmp/GeoLite2-ASN.mmdb" ]; then
+DOWNLOAD_FILE_CURL "$DOWNLOAD_URL" "/tmp/GeoLite2-ASN.mmdb" "$geoasn_path"
+DOWNLOAD_RESULT=$?
+if [ "$DOWNLOAD_RESULT" -eq 0 ] && [ -s "/tmp/GeoLite2-ASN.mmdb" ]; then
    LOG_OUT "Geo ASN Database Download Success, Check Updated..."
    cmp -s /tmp/GeoLite2-ASN.mmdb "$geoasn_path"
    if [ "$?" -ne "0" ]; then
@@ -56,6 +57,8 @@ if [ "$?" -eq 0 ] && [ -s "/tmp/GeoLite2-ASN.mmdb" ]; then
    else
       LOG_OUT "Updated Geo ASN Database No Change, Do Nothing..."
    fi
+elif [ "$DOWNLOAD_RESULT" -eq 2 ]; then
+   LOG_OUT "Updated Geo ASN Database No Change, Do Nothing..."
 else
    LOG_OUT "Geo ASN Database Update Error, Please Try Again Later..."
 fi

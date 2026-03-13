@@ -3,15 +3,15 @@
 *{margin: 0;padding: 0;}
 
 ul{
-	list-style: none;
+    list-style: none;
 }
 
 #tab{
-	width: 100%;
-	height: 100%;
-	border: 1px solid #ddd;
-	box-shadow: 0 0 2px #ddd;
-	overflow: hidden;
+    width: 100%;
+    height: 100%;
+    border: 1px solid #ddd;
+    box-shadow: 0 0 2px #ddd;
+    overflow: hidden;
 }
 
 #tab-header {
@@ -120,7 +120,7 @@ ul{
 }
 
 #tab-content .dom{
-	display: none;
+    display: none;
 }
 
 #tab-content .dom ul li{
@@ -233,66 +233,66 @@ ul{
 }
 
 :root[data-darkmode="true"] {
-  .radio-button {
-    background: #374151;
-    box-shadow: 0 1px 2px 0 rgba(0,0,0,0.15);
-  }
-  .radio-button label {
-    background: #1f2937;
-    color: #d1d5db;
-    border-color: #4b5563;
-  }
-  .radio-button label:hover {
-    color: #3b82f6;
-    border-color: #3b82f6;
-    background: #22304a;
-  }
-  .radio-button input[type="radio"]:checked + label {
-    background: #3b82f6;
-    color: #fff;
-    border-color: #3b82f6;
-    box-shadow: 0 1px 2px 0 rgba(59,130,246,0.18);
-  }
+    .radio-button {
+        background: #374151;
+        box-shadow: 0 1px 2px 0 rgba(0,0,0,0.15);
+    }
+    .radio-button label {
+        background: #1f2937;
+        color: #d1d5db;
+        border-color: #4b5563;
+    }
+    .radio-button label:hover {
+        color: #3b82f6;
+        border-color: #3b82f6;
+        background: #22304a;
+    }
+    .radio-button input[type="radio"]:checked + label {
+        background: #3b82f6;
+        color: #fff;
+        border-color: #3b82f6;
+        box-shadow: 0 1px 2px 0 rgba(59,130,246,0.18);
+    }
 }
 </style>
 
 <body>
-	<div id="tab" class="cbi-section">
-		<div id="tab-header">
-			<ul class="cbi-tabmenu">
-				<li name="tab-header" class="cbi-tab"><a href="#"><%:OpenClash Log%></a></li>
-				<li name="tab-header" class="cbi-tab-disabled"><a href="#"><%:Core Log%></a></li>
-			</ul>
-		</div>
-		<div id="tab-content">
-			<div class="dom" style="display: block;">
-				<textarea id="cbid.openclash.config.clog" class="cbi-input-textarea" style="width: 100%;display:inline" data-update="change" rows="32" cols="60" readonly="readonly" ></textarea>
-			</div>
-			<div class="dom">
-				<textarea id="core_log" class="cbi-input-textarea" style="width: 100%;display:inline" data-update="change" rows="32" cols="60" readonly="readonly" ></textarea>
-				<div class="radio-button">
-					<input type="radio" id="info" name="radios" value="info" checked onclick="return switch_log_level(this.value)"/>
-					<label for="info">Info</label>
-					<input type="radio" id="warning" name="radios" value="warning" onclick="return switch_log_level(this.value)"/>
-					<label for="warning">Warning</label>
-					<input type="radio" id="error" name="radios" value="error" onclick="return switch_log_level(this.value)"/>
-					<label for="error">Error</label>
-					<input type="radio" id="debug" name="radios" value="debug" onclick="return switch_log_level(this.value)"/>
-					<label for="debug">Debug</label>
-					<input type="radio" id="silent" name="radios" value="silent" onclick="return switch_log_level(this.value)"/>
-					<label for="silent">Silent</label>
-				</div>
-			</div>
-		</div>
-	</div>
+    <div id="tab" class="cbi-section">
+        <div id="tab-header">
+            <ul class="cbi-tabmenu">
+                <li name="tab-header" class="cbi-tab"><a href="#"><%:OpenClash Log%></a></li>
+                <li name="tab-header" class="cbi-tab-disabled"><a href="#"><%:Core Log%></a></li>
+            </ul>
+        </div>
+        <div id="tab-content">
+            <div class="dom" style="display: block;">
+                <textarea id="cbid.openclash.config.clog" class="cbi-input-textarea" style="width: 100%;display:inline" data-update="change" rows="32" cols="60" readonly="readonly" ></textarea>
+            </div>
+            <div class="dom">
+                <textarea id="core_log" class="cbi-input-textarea" style="width: 100%;display:inline" data-update="change" rows="32" cols="60" readonly="readonly" ></textarea>
+                <div class="radio-button">
+                    <input type="radio" id="info" name="radios" value="info" checked onclick="return switch_log_level(this.value)"/>
+                    <label for="info"><%:Info%></label>
+                    <input type="radio" id="warning" name="radios" value="warning" onclick="return switch_log_level(this.value)"/>
+                    <label for="warning"><%:Warning%></label>
+                    <input type="radio" id="error" name="radios" value="error" onclick="return switch_log_level(this.value)"/>
+                    <label for="error"><%:Error%></label>
+                    <input type="radio" id="debug" name="radios" value="debug" onclick="return switch_log_level(this.value)"/>
+                    <label for="debug"><%:Debug%></label>
+                    <input type="radio" id="silent" name="radios" value="silent" onclick="return switch_log_level(this.value)"/>
+                    <label for="silent"><%:Silent%></label>
+                </div>
+            </div>
+        </div>
+    </div>
 
 <fieldset style="text-align: center; width: 100%" class="cbi-section">
-  <div class="btn-group">
-    <input type="button" class="btn cbi-button cbi-button-apply" id="stop_refresh_button" value="<%:Stop Refresh%>" onclick=" return stop_refresh() "/>
-    <input type="button" class="btn cbi-button cbi-button-apply" id="start_refresh_button" value="<%:Start Refresh%>" onclick=" return start_refresh() "/>
-    <input type="button" class="btn cbi-button cbi-button-apply" id="del_log_button" value="<%:Clean%>" onclick=" return del_log() " />
-    <input type="button" class="btn cbi-button cbi-button-apply" id="down_log_button" value="<%:Download Log%>" onclick=" return download_log() " />
-  </div>
+    <div class="btn-group">
+        <input type="button" class="btn cbi-button cbi-button-apply" id="stop_refresh_button" value="<%:Stop Refresh%>" onclick=" return stop_refresh() "/>
+        <input type="button" class="btn cbi-button cbi-button-apply" id="start_refresh_button" value="<%:Start Refresh%>" onclick=" return start_refresh() "/>
+        <input type="button" class="btn cbi-button cbi-button-apply" id="del_log_button" value="<%:Clean%>" onclick=" return del_log() " />
+        <input type="button" class="btn cbi-button cbi-button-apply" id="down_log_button" value="<%:Download Log%>" onclick=" return download_log() " />
+    </div>
 </fieldset>
 </body>
 
@@ -304,46 +304,60 @@ var lv = document.getElementById('cbid.openclash.config.clog');
 var cl = document.getElementById('core_log');
 var animatingOC = false;
 var animatingCore = false;
+var coreWebSocket = null;
+var coreLogBuffer = [];
+var currentLogLevel = 'info';
+var wsRetryDelay = 2000;
+var wsRetryTimer = null;
+var isPolling = false;
+var core_refresh = true;
+
+function setLogTab(log_level) {
+    var radio = document.getElementsByName("radios");
+    for (i=0; i<radio.length; i++) {
+        if (radio[i].value == log_level && ! radio[i].checked) {
+            radio[i].checked = true;
+        }
+    }
+};
 
 function get_log_level() {
-	XHR.get('<%=luci.dispatcher.build_url("admin", "services", "openclash", "log_level")%>', null, function(x, status) {
-	if (x && x.status == 200 && status.log_level != "") {
-		var radio = document.getElementsByName("radios");
-		for (i=0; i<radio.length; i++) {
-			if (radio[i].value == status.log_level && ! radio[i].checked) {
-				radio[i].checked = true;
-			}
-		}
-	}
-	});
-	s=setTimeout("get_log_level()",5000);
+    XHR.get('<%=luci.dispatcher.build_url("admin", "services", "openclash", "log_level")%>', null, function(x, status) {
+        if (x && x.status == 200 && status.log_level != "") {
+            currentLogLevel = status.log_level;
+            setLogTab(currentLogLevel);
+            coreLogWebSocket();
+        }
+    });
 };
-	
+    
 function switch_log_level(value)
 {
-	clearTimeout(s);
-	XHR.get('<%=luci.dispatcher.build_url("admin", "services", "openclash", "switch_log")%>', {log_level: value}, function(x, status) {
-		if (x && x.status == 200) {
-    	alert(' <%:Log Level%>: ' + value + ' <%:switching succeeded!%>');
-    	get_log_level();
-		}
-		else {
-			alert(' <%:Log Level%>: ' + value + ' <%:switching failed!%>');
-			get_log_level();
-		}
-	});
+    if (!coreWebSocket || coreWebSocket.readyState !== WebSocket.OPEN) {
+        XHR.get('<%=luci.dispatcher.build_url("admin", "services", "openclash", "switch_log")%>', {log_level: value}, function(x, status) {
+            if (!x || x.status != 200) {
+                alert(' <%:Log Level%>: ' + value + ' <%:switching failed!%>');
+                return
+            }
+        });
+    }
+
+    currentLogLevel = value;
+    setLogTab(currentLogLevel);
+    coreLogWebSocket();
 };
 
-
 function stop_refresh() {
-	clearTimeout(r);
-	return
+    clearTimeout(r);
+    coreLogWebSocketStop();
+    return
 };
 
 function start_refresh() {
-	clearTimeout(r);
-	r=setTimeout("poll_log()",1000*2);
-	return
+    clearTimeout(r);
+    coreLogWebSocket();
+    r=setTimeout("poll_log()",1000);
+    return
 };
 
 function createAndDownloadFile(fileName, content) {
@@ -360,8 +374,8 @@ function download_log(){
     var timestamp = dt.getFullYear()+"-"+(dt.getMonth()+1)+"-"+dt.getDate()+"-"+dt.getHours()+"-"+dt.getMinutes()+"-"+dt.getSeconds();
 
     var oc_content = "";
-    if (typeof oc_editor !== 'undefined' && oc_editor) {
-        oc_content = oc_editor.getValue();
+    if (typeof editor_oc !== 'undefined' && editor_oc) {
+        oc_content = editor_oc.getValue();
     } else if (lv && lv.value) {
         oc_content = lv.value;
     } else if (lv && lv.innerHTML) {
@@ -369,8 +383,8 @@ function download_log(){
     }
 
     var core_content = "";
-    if (typeof core_editor !== 'undefined' && core_editor) {
-        core_content = core_editor.getValue();
+    if (typeof editor_core !== 'undefined' && editor_core) {
+        core_content = editor_core.getValue();
     } else if (cl && cl.value) {
         core_content = cl.value;
     } else if (cl && cl.innerHTML) {
@@ -378,7 +392,7 @@ function download_log(){
     }
 
     oc_content = oc_content.split('\n').filter(function(line) { 
-        return line.indexOf("】订阅的下载链接为【") === -1 && line.indexOf("】Downloading URL【") === -1; 
+        return line.indexOf("】<%:Downloading URL%>【") === -1; 
     }).join('\n');
 
     if (!oc_content.trim() && !core_content.trim()) {
@@ -398,26 +412,135 @@ function download_log(){
 };
 
 function del_log() {
-	XHR.get('<%=luci.dispatcher.build_url("admin", "services", "openclash", "del_log")%>',null,function(x, data){
-		lv.innerHTML="";
-		cl.innerHTML="";
-		log_len = 0;
-		oc_editor.setValue(lv.value);
-		core_editor.setValue(cl.value);
-		core_editor.refresh();
-		oc_editor.refresh();
-	});
-	return
+    XHR.get('<%=luci.dispatcher.build_url("admin", "services", "openclash", "del_log")%>',null,function(x, data){
+        lv.innerHTML="";
+        cl.innerHTML="";
+        coreLogBuffer = [];
+        log_len = 0;
+        editor_oc.setValue(lv.value);
+        editor_core.setValue(cl.value);
+        editor_core.refresh();
+        editor_oc.refresh();
+    });
+    return
 };
 
 function p(s) {
-	return s < 10 ? '0' + s: s;
+    return s < 10 ? '0' + s: s;
 };
+
+function getWebSocketConnectionInfo(callback) {
+    XHR.get('<%=luci.dispatcher.build_url("admin", "services", "openclash", "status")%>', null, function(x, status) {
+        if (x && x.status == 200 && status) {
+            callback(status);
+        } else {
+            callback(null);
+        }
+    });
+}
+
+function coreLogWebSocketStop() {
+    if (wsRetryTimer) {
+        clearTimeout(wsRetryTimer);
+        wsRetryTimer = null;
+    }
+
+    var ws = coreWebSocket;
+    coreWebSocket = null;
+
+    if (!ws) return;
+
+    ["onopen", "onmessage", "onerror", "onclose"].forEach(function(event) {
+        try {
+            ws[event] = null;
+        } catch (e) {}
+    });
+
+    try {
+        if (ws.readyState !== WebSocket.CLOSED && ws.readyState !== WebSocket.CLOSING) {
+            ws.close();
+        }
+    } catch (e) {}
+
+    coreLogBuffer = [];
+}
+
+function coreLogWebSocketRetry() {
+    wsRetryTimer = setTimeout(function() {
+        coreLogWebSocket();
+    }, wsRetryDelay);
+}
+
+function coreLogWebSocket() {
+    coreLogWebSocketStop();
+
+    getWebSocketConnectionInfo(function(status) {
+        if (!status || !status.daip || !status.cn_port || !status.clash) {
+            return;
+        }
+
+        var protocol = window.location.protocol === "https:" ? "wss://" : "ws://";
+        var host, port;
+
+        if (status.daip && window.location.hostname === status.daip) {
+            host = status.daip;
+            port = status.cn_port;
+        } else if (status.daip && window.location.hostname !== status.daip && 
+                   status.db_foward_domain && status.db_foward_port) {
+            host = status.db_foward_domain;
+            port = status.db_foward_port;
+        } else {
+            host = status.daip;
+            port = status.cn_port;
+        }
+
+        var token = status.dase;
+        var level = currentLogLevel;
+        var wsUrl = protocol + host + ":" + port + "/logs?token=" + token + "&level=" + level;
+
+        try {
+            coreWebSocket = new WebSocket(wsUrl);
+            coreWebSocket.onopen = function() {
+                coreLogBuffer = [];
+            };
+
+            coreWebSocket.onmessage = function(event) {
+                if (event.data) {
+                    try {
+                        var msgData = JSON.parse(event.data);
+                        if (msgData && msgData.payload) {
+                            var now = new Date();
+                            var timestamp = now.getFullYear() + "-" + p(now.getMonth() + 1) + "-" + p(now.getDate()) + " " + 
+                                           p(now.getHours()) + ":" + p(now.getMinutes()) + ":" + p(now.getSeconds());
+                            var type = msgData.type || 'info';
+                            var translatedType = levelTranslations[type] || type;
+                            coreLogBuffer.push(timestamp + " [" + translatedType + "] " + msgData.payload);
+                        }
+                    } catch (e) {
+                        coreLogWebSocketRetry();
+                    }
+                }
+            };
+
+            coreWebSocket.onerror = function(error) {
+                coreLogWebSocketRetry();
+            };
+
+            coreWebSocket.onclose = function(event) {
+                coreWebSocket = null;
+                if (!event.wasClean) {
+                    coreLogWebSocketRetry();
+                }
+            };
+        } catch (e) {
+            coreLogWebSocketRetry();
+        }
+    });
+}
 
 function line_tolocal(str) {
     var trans_local = new Array();
     var local_count = 0;
-
 
     str.trim().split('\n').forEach(function(v, i) {
         var regex = /(time=)"([^"]*)"/g;
@@ -428,13 +551,15 @@ function line_tolocal(str) {
                 var dt = new Date(res[2]);
 
                 if (!isNaN(dt.getTime())) {
-                    if (v.indexOf("level=") != -1) {
-                        var log_info = v.substring(res[2].length + 7);
-                    } else {
-                        var log_info = v.substring(res[2].length + 2);
-                    }
-                    trans_local[local_count] = dt.getFullYear() + "-" + p(dt.getMonth() + 1) + "-" + p(dt.getDate()) + " " + 
-                                          p(dt.getHours()) + ":" + p(dt.getMinutes()) + ":" + p(dt.getSeconds()) + log_info;
+                    var timestamp = dt.getFullYear() + "-" + p(dt.getMonth() + 1) + "-" + p(dt.getDate()) + " " + 
+                                   p(dt.getHours()) + ":" + p(dt.getMinutes()) + ":" + p(dt.getSeconds());
+                    
+                    var levelMatch = v.match(/level=(\w+)/);
+                    var level = levelMatch ? levelMatch[1] : 'info';
+                    var translatedLevel = levelTranslations[level] || level;
+                    var msgMatch = v.match(/msg="(.*)"/);
+                    var msg = msgMatch ? msgMatch[1] : '';
+                    trans_local[local_count] = timestamp + " [" + translatedLevel + "] " + msg;
                     local_count++;
                 } else {
                     trans_local[local_count] = v;
@@ -500,7 +625,7 @@ function smoothlyDisplayLogs(newLines, target, isEditor, currentContent, isActiv
         isAtTop = (target.scrollTop < 20);
     }
 
-    if ((target === oc_editor && animatingOC) || (target === core_editor && animatingCore) || !isActiveTab) {
+    if ((target === editor_oc && animatingOC) || (target === editor_core && animatingCore) || !isActiveTab) {
         var content = "";
         var lines = newLines.slice().reverse();
         for (var i = 0; i < lines.length; i++) {
@@ -557,7 +682,7 @@ function smoothlyDisplayLogs(newLines, target, isEditor, currentContent, isActiv
         return;
     }
 
-    if (target === oc_editor || target === lv) {
+    if (target === editor_oc || target === lv) {
         animatingOC = true;
     } else {
         animatingCore = true;
@@ -596,7 +721,7 @@ function smoothlyDisplayLogs(newLines, target, isEditor, currentContent, isActiv
 
     function displayNextBatch() {
         if (currentBatchCount >= logLines.length) {
-            if (target === oc_editor || target === lv) {
+            if (target === editor_oc || target === lv) {
                 animatingOC = false;
             } else {
                 animatingCore = false;
@@ -661,7 +786,7 @@ function smoothlyDisplayLogs(newLines, target, isEditor, currentContent, isActiv
         if (currentBatchCount < logLines.length) {
             setTimeout(displayNextBatch, interval);
         } else {
-            if (target === oc_editor || target === lv) {
+            if (target === editor_oc || target === lv) {
                 animatingOC = false;
             } else {
                 animatingCore = false;
@@ -691,15 +816,54 @@ function smoothlyDisplayLogs(newLines, target, isEditor, currentContent, isActiv
 }
 
 function poll_log(){
+    var activeTabId = 0;
+    var titles = document.getElementsByName('tab-header');
+    var core_logs = [];
+    var oc_logs = [];
+    var currentCoreContent = "";
+    var currentContent = "";
+    var bufferToProcess = [];
+
+    for(var i=0; i<titles.length; i++){
+        if(titles[i].className === 'cbi-tab') {
+            activeTabId = i;
+            break;
+        }
+    }
+
+    if (coreWebSocket && coreWebSocket.readyState == WebSocket.OPEN) {
+        if (coreLogBuffer.length > 0) {
+            core_refresh = false;
+            bufferToProcess = coreLogBuffer;
+            coreLogBuffer = [];
+            core_logs = line_tolocal(bufferToProcess.join('\n'));
+            if (editor_core) {
+                currentCoreContent = editor_core.getValue();
+                smoothlyDisplayLogs(core_logs, editor_core, true, currentCoreContent, activeTabId === 1);
+            } else if (cl) {
+                currentCoreContent = cl.innerHTML;
+                smoothlyDisplayLogs(core_logs, cl, false, currentCoreContent, activeTabId === 1);
+            }
+        }
+    }
+
+    if (isPolling) {
+        r = setTimeout("poll_log()", 1000);
+        return;
+    }
+    
+    isPolling = true;
+
     XHR.get('<%=luci.dispatcher.build_url("admin", "services", "openclash", "refresh_log")%>', 
         { 
-            log_len: log_len
+            log_len: log_len, core_refresh: core_refresh
         },
         function(x, status) {
             if (x && x.status == 200) {
                 if (status) {
                     if (!status.update) {
-                        r = setTimeout("poll_log()", 2000);
+                        isPolling = false;
+                        r = setTimeout("poll_log()", 1000);
                         return;
                     }
 
@@ -707,45 +871,37 @@ function poll_log(){
                         log_len = status.len;
                     }
 
-                    var activeTabId = 0;
-                    var titles = document.getElementsByName('tab-header');
-                    for(var i=0; i<titles.length; i++){
-                        if(titles[i].className === 'cbi-tab') {
-                            activeTabId = i;
-                            break;
-                        }
-                    }
-
                     if (status.oc_log && status.oc_log !== "") {
-                        var oc_logs = line_tolocal(status.oc_log);
+                        oc_logs = line_tolocal(status.oc_log);
 
-                        if (oc_logs && oc_logs.length > 0) {
-                            if (oc_editor) {
-                                var currentContent = oc_editor.getValue();
-                                smoothlyDisplayLogs(oc_logs, oc_editor, true, currentContent, activeTabId === 0);
+                        if (oc_logs.length > 0) {
+                            if (editor_oc) {
+                                currentContent = editor_oc.getValue();
+                                smoothlyDisplayLogs(oc_logs, editor_oc, true, currentContent, activeTabId === 0);
                             } else if (lv) {
-                                var currentContent = lv.innerHTML;
+                                currentContent = lv.innerHTML;
                                 smoothlyDisplayLogs(oc_logs, lv, false, currentContent, activeTabId === 0);
                             }
                         }
                     }
 
                     if (status.core_log && status.core_log !== "") {
-                        var core_logs = line_tolocal(status.core_log);
+                        core_logs = line_tolocal(status.core_log);
 
-                        if (core_logs && core_logs.length > 0) {
-                            if (core_editor) {
-                                var currentCoreContent = core_editor.getValue();
-                                smoothlyDisplayLogs(core_logs, core_editor, true, currentCoreContent, activeTabId === 1);
+                        if (core_logs.length > 0) {
+                            if (editor_core) {
+                                currentCoreContent = editor_core.getValue();
+                                smoothlyDisplayLogs(core_logs, editor_core, true, currentCoreContent, activeTabId === 1);
                             } else if (cl) {
-                                var currentCoreContent = cl.innerHTML;
+                                currentCoreContent = cl.innerHTML;
                                 smoothlyDisplayLogs(core_logs, cl, false, currentCoreContent, activeTabId === 1);
                             }
                         }
                     }
                 }
             }
-            r = setTimeout("poll_log()", 2000);
+            isPolling = false;
+            r = setTimeout("poll_log()", 1000);
         }
     );
 };
@@ -767,13 +923,13 @@ window.onload = function(){
                 tab.className = 'cbi-tab';
                 divs[tab.id].style.display = 'block';
 
-                if(tab.id == 0 && typeof oc_editor !== 'undefined') {
+                if(tab.id == 0 && typeof editor_oc !== 'undefined') {
                     setTimeout(function(){
-                        oc_editor.refresh();
+                        editor_oc.refresh();
                     }, 10);
-                } else if(tab.id == 1 && typeof core_editor !== 'undefined') {
+                } else if(tab.id == 1 && typeof editor_core !== 'undefined') {
                     setTimeout(function(){
-                        core_editor.refresh();
+                        editor_core.refresh();
                     }, 10);
                 }
             };

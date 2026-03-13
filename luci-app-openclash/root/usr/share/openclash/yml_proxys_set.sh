@@ -16,16 +16,13 @@ del_lock() {
 
 SERVER_FILE="/tmp/yaml_servers.yaml"
 PROXY_PROVIDER_FILE="/tmp/yaml_provider.yaml"
-servers_if_update=$(uci_get_config "servers_if_update")
-config_auto_update=$(uci_get_config "auto_update")
 CONFIG_FILE=$(uci_get_config "config_path")
 CONFIG_NAME=$(echo "$CONFIG_FILE" |awk -F '/' '{print $5}' 2>/dev/null)
-UPDATE_CONFIG_FILE=$(uci_get_config "config_update_path")
+UPDATE_CONFIG_FILE=$1
 UPDATE_CONFIG_NAME=$(echo "$UPDATE_CONFIG_FILE" |awk -F '/' '{print $5}' 2>/dev/null)
 UCI_DEL_LIST="uci -q del_list openclash.config.new_servers_group"
 UCI_ADD_LIST="uci -q add_list openclash.config.new_servers_group"
 UCI_SET="uci -q set openclash.config."
-MIX_PROXY=$(uci_get_config "mix_proxies")
 servers_name="/tmp/servers_name.list"
 proxy_provider_name="/tmp/provider_name.list"
 set_lock
@@ -51,20 +48,6 @@ if [ -z "$CONFIG_NAME" ]; then
    CONFIG_NAME="config.yaml"
 fi
 
-yml_other_rules_del()
-{
-	 local section="$1"
-   local enabled config
-   config_get_bool "enabled" "$section" "enabled" "1"
-   config_get "config" "$section" "config" ""
-   config_get "rule_name" "$section" "rule_name" ""
-
-   if [ "$enabled" = "0" ] || [ "$config" != "$2" ] || [ "$rule_name" != "$3" ]; then
-      return
-   else
-      uci -q set openclash."$section".enabled=0
-   fi
-}
 #写入代理集到配置文件
 yml_proxy_provider_set()
 {
@@ -105,11 +88,7 @@ yml_proxy_provider_set()
       return
    fi
 
-   if [ ! -z "$if_game_proxy" ] && [ "$if_game_proxy" != "$name" ] && [ "$if_game_proxy_type" = "proxy-provider" ]; then
-      return
-   fi
-
-   if [ "$MIX_PROXY" != "1" ] && [ ! -z "$config" ] && [ "$config" != "$CONFIG_NAME" ] && [ "$config" != "all" ]; then
+   if [ ! -z "$config" ] && [ "$config" != "$CONFIG_NAME" ] && [ "$config" != "all" ]; then
       return
    fi
 
@@ -363,11 +342,7 @@ yml_servers_set()
      fi
    fi
 
-   if [ ! -z "$if_game_proxy" ] && [ "$if_game_proxy" != "$name" ] && [ "$if_game_proxy_type" = "proxy" ]; then
-      return
-   fi
-
-   if [ "$MIX_PROXY" != "1" ] && [ ! -z "$config" ] && [ "$config" != "$CONFIG_NAME" ] && [ "$config" != "all" ]; then
+   if [ ! -z "$config" ] && [ "$config" != "$CONFIG_NAME" ] && [ "$config" != "all" ]; then
       return
    fi
 
@@ -1637,25 +1612,6 @@ EOF
 fi
 }
 
-new_servers_group_set()
-{
-   local section="$1"
-   local enabled name
-   config_get_bool "enabled" "$section" "enabled" "1"
-   config_get "name" "$section" "name" ""
-
-   if [ "$enabled" = "0" ]; then
-      return
-   fi
-
-   if [ -z "$name" ] || [ "$(echo $name.yaml)" != "$CONFIG_NAME" ]; then
-      return
-   fi
-
-   new_servers_group_set=1
-
-}
-
 yml_servers_name_get()
 {
 	 local section="$1"
@@ -1677,14 +1633,10 @@ yml_proxy_provider_name_get()
 }
 
 #创建配置文件
-if_game_proxy="$1"
-if_game_proxy_type="$2"
-#创建对比文件防止重复
 config_load "openclash"
 config_foreach yml_servers_name_get "servers"
 config_foreach yml_proxy_provider_name_get "proxy-provider"
-#判断是否启用保留配置
-config_foreach new_servers_group_set "config_subscribe"
+
 #proxy-provider
 LOG_OUT "Start Writing【$CONFIG_NAME】Proxy-providers Setting..."
 echo "proxy-providers:" >$PROXY_PROVIDER_FILE
@@ -1698,8 +1650,6 @@ fi
 rm -rf $proxy_provider_name
 
 #proxy
-rule_sources=$(uci_get_config "rule_sources")
-create_config=$(uci_get_config "create_config")
 LOG_OUT "Start Writing【$CONFIG_NAME】Proxies Setting..."
 echo "proxies:" >$SERVER_FILE
 config_foreach yml_servers_set "servers"
@@ -1712,551 +1662,23 @@ else
 fi
 rm -rf $servers_name
 
-#一键创建配置文件
-if [ "$rule_sources" = "lhie1" ] && [ "$servers_if_update" != "1" ] && [ -z "$if_game_proxy" ]; then
-LOG_OUT "Creating By Using lhie1 Rules..."
-echo "proxy-groups:" >>$SERVER_FILE
-cat >> "$SERVER_FILE" <<-EOF
-  - name: Auto - UrlTest
-    type: url-test
-EOF
-if [ -f "/tmp/Proxy_Server" ]; then
-cat >> "$SERVER_FILE" <<-EOF
-    proxies:
-EOF
-fi
-cat /tmp/Proxy_Server >> $SERVER_FILE 2>/dev/null
-if [ -f "/tmp/Proxy_Provider" ]; then
-cat >> "$SERVER_FILE" <<-EOF
-    use:
-EOF
-fi
-cat /tmp/Proxy_Provider >> $SERVER_FILE 2>/dev/null
-cat >> "$SERVER_FILE" <<-EOF
-    url: http://cp.cloudflare.com/generate_204
-    interval: "600"
-    tolerance: "150"
-  - name: Proxy
-    type: select
-    proxies:
-      - Auto - UrlTest
-      - DIRECT
-EOF
-cat /tmp/Proxy_Server >> $SERVER_FILE 2>/dev/null
-if [ -f "/tmp/Proxy_Provider" ]; then
-cat >> "$SERVER_FILE" <<-EOF
-    use:
-EOF
-fi
-cat /tmp/Proxy_Provider >> $SERVER_FILE 2>/dev/null
-cat >> "$SERVER_FILE" <<-EOF
-  - name: Domestic
-    type: select
-    proxies:
-      - DIRECT
-      - Proxy
-  - name: Others
-    type: select
-    proxies:
-      - Proxy
-      - DIRECT
-      - Domestic
-  - name: Microsoft
-    type: select
-    proxies:
-      - Proxy
-      - DIRECT
-EOF
-cat >> "$SERVER_FILE" <<-EOF
-  - name: AI Suite
-    type: select
-    proxies:
-      - Proxy
-      - DIRECT
-EOF
-cat /tmp/Proxy_Server >> $SERVER_FILE 2>/dev/null
-if [ -f "/tmp/Proxy_Provider" ]; then
-cat >> "$SERVER_FILE" <<-EOF
-    use:
-EOF
-fi
-cat /tmp/Proxy_Provider >> $SERVER_FILE 2>/dev/null
-cat >> "$SERVER_FILE" <<-EOF
-  - name: Apple
-    type: select
-    proxies:
-      - Proxy
-      - DIRECT
-EOF
-cat /tmp/Proxy_Server >> $SERVER_FILE 2>/dev/null
-if [ -f "/tmp/Proxy_Provider" ]; then
-cat >> "$SERVER_FILE" <<-EOF
-    use:
-EOF
-fi
-cat /tmp/Proxy_Provider >> $SERVER_FILE 2>/dev/null
-cat >> "$SERVER_FILE" <<-EOF
-  - name: Apple TV
-    type: select
-    proxies:
-      - Proxy
-      - DIRECT
-EOF
-cat /tmp/Proxy_Server >> $SERVER_FILE 2>/dev/null
-if [ -f "/tmp/Proxy_Provider" ]; then
-cat >> "$SERVER_FILE" <<-EOF
-    use:
-EOF
-fi
-cat /tmp/Proxy_Provider >> $SERVER_FILE 2>/dev/null
-cat >> "$SERVER_FILE" <<-EOF
-  - name: Google FCM
-    type: select
-    proxies:
-      - Proxy
-      - DIRECT
-EOF
-cat /tmp/Proxy_Server >> $SERVER_FILE 2>/dev/null
-if [ -f "/tmp/Proxy_Provider" ]; then
-cat >> "$SERVER_FILE" <<-EOF
-    use:
-EOF
-fi
-cat /tmp/Proxy_Provider >> $SERVER_FILE 2>/dev/null
-cat >> "$SERVER_FILE" <<-EOF
-  - name: Scholar
-    type: select
-    proxies:
-      - DIRECT
-      - Proxy
-EOF
-cat /tmp/Proxy_Server >> $SERVER_FILE 2>/dev/null
-if [ -f "/tmp/Proxy_Provider" ]; then
-cat >> "$SERVER_FILE" <<-EOF
-    use:
-EOF
-fi
-cat /tmp/Proxy_Provider >> $SERVER_FILE 2>/dev/null
-cat >> "$SERVER_FILE" <<-EOF
-  - name: Bilibili
-    type: select
-    proxies:
-      - CN Mainland TV
-      - DIRECT
-EOF
-cat /tmp/Proxy_Server >> $SERVER_FILE 2>/dev/null
-if [ -f "/tmp/Proxy_Provider" ]; then
-cat >> "$SERVER_FILE" <<-EOF
-    use:
-EOF
-fi
-cat /tmp/Proxy_Provider >> $SERVER_FILE 2>/dev/null
-cat >> "$SERVER_FILE" <<-EOF
-  - name: Bahamut
-    type: select
-    proxies:
-      - Global TV
-      - DIRECT
-EOF
-cat /tmp/Proxy_Server >> $SERVER_FILE 2>/dev/null
-if [ -f "/tmp/Proxy_Provider" ]; then
-cat >> "$SERVER_FILE" <<-EOF
-    use:
-EOF
-fi
-cat /tmp/Proxy_Provider >> $SERVER_FILE 2>/dev/null
-cat >> "$SERVER_FILE" <<-EOF
-  - name: HBO Max
-    type: select
-    proxies:
-      - Global TV
-      - DIRECT
-EOF
-cat /tmp/Proxy_Server >> $SERVER_FILE 2>/dev/null
-if [ -f "/tmp/Proxy_Provider" ]; then
-cat >> "$SERVER_FILE" <<-EOF
-    use:
-EOF
-fi
-cat /tmp/Proxy_Provider >> $SERVER_FILE 2>/dev/null
-cat >> "$SERVER_FILE" <<-EOF
-  - name: Pornhub
-    type: select
-    proxies:
-      - Global TV
-      - DIRECT
-EOF
-cat /tmp/Proxy_Server >> $SERVER_FILE 2>/dev/null
-if [ -f "/tmp/Proxy_Provider" ]; then
-cat >> "$SERVER_FILE" <<-EOF
-    use:
-EOF
-fi
-cat /tmp/Proxy_Provider >> $SERVER_FILE 2>/dev/null
-cat >> "$SERVER_FILE" <<-EOF
-  - name: Netflix
-    type: select
-    proxies:
-      - Global TV
-      - DIRECT
-EOF
-cat /tmp/Proxy_Server >> $SERVER_FILE 2>/dev/null
-if [ -f "/tmp/Proxy_Provider" ]; then
-cat >> "$SERVER_FILE" <<-EOF
-    use:
-EOF
-fi
-cat /tmp/Proxy_Provider >> $SERVER_FILE 2>/dev/null
-cat >> "$SERVER_FILE" <<-EOF
-  - name: Disney Plus
-    type: select
-    proxies:
-      - Global TV
-      - DIRECT
-EOF
-cat /tmp/Proxy_Server >> $SERVER_FILE 2>/dev/null
-if [ -f "/tmp/Proxy_Provider" ]; then
-cat >> "$SERVER_FILE" <<-EOF
-    use:
-EOF
-fi
-cat /tmp/Proxy_Provider >> $SERVER_FILE 2>/dev/null
-cat >> "$SERVER_FILE" <<-EOF
-  - name: Youtube
-    type: select
-    disable-udp: true
-    proxies:
-      - Global TV
-      - DIRECT
-EOF
-cat /tmp/Proxy_Server >> $SERVER_FILE 2>/dev/null
-if [ -f "/tmp/Proxy_Provider" ]; then
-cat >> "$SERVER_FILE" <<-EOF
-    use:
-EOF
-fi
-cat /tmp/Proxy_Provider >> $SERVER_FILE 2>/dev/null
-cat >> "$SERVER_FILE" <<-EOF
-  - name: Discovery Plus
-    type: select
-    proxies:
-      - Global TV
-      - DIRECT
-EOF
-cat /tmp/Proxy_Server >> $SERVER_FILE 2>/dev/null
-if [ -f "/tmp/Proxy_Provider" ]; then
-cat >> "$SERVER_FILE" <<-EOF
-    use:
-EOF
-fi
-cat /tmp/Proxy_Provider >> $SERVER_FILE 2>/dev/null
-cat >> "$SERVER_FILE" <<-EOF
-  - name: DAZN
-    type: select
-    proxies:
-      - Global TV
-      - DIRECT
-EOF
-cat /tmp/Proxy_Server >> $SERVER_FILE 2>/dev/null
-if [ -f "/tmp/Proxy_Provider" ]; then
-cat >> "$SERVER_FILE" <<-EOF
-    use:
-EOF
-fi
-cat /tmp/Proxy_Provider >> $SERVER_FILE 2>/dev/null
-cat >> "$SERVER_FILE" <<-EOF
-  - name: Spotify
-    type: select
-    proxies:
-      - Global TV
-      - DIRECT
-EOF
-cat /tmp/Proxy_Server >> $SERVER_FILE 2>/dev/null
-if [ -f "/tmp/Proxy_Provider" ]; then
-cat >> "$SERVER_FILE" <<-EOF
-    use:
-EOF
-fi
-cat /tmp/Proxy_Provider >> $SERVER_FILE 2>/dev/null
-cat >> "$SERVER_FILE" <<-EOF
-  - name: Steam
-    type: select
-    proxies:
-      - Proxy
-      - DIRECT
-EOF
-cat /tmp/Proxy_Server >> $SERVER_FILE 2>/dev/null
-if [ -f "/tmp/Proxy_Provider" ]; then
-cat >> "$SERVER_FILE" <<-EOF
-    use:
-EOF
-fi
-cat /tmp/Proxy_Provider >> $SERVER_FILE 2>/dev/null
-cat >> "$SERVER_FILE" <<-EOF
-  - name: TikTok
-    type: select
-    proxies:
-      - Proxy
-      - DIRECT
-EOF
-cat /tmp/Proxy_Server >> $SERVER_FILE 2>/dev/null
-if [ -f "/tmp/Proxy_Provider" ]; then
-cat >> "$SERVER_FILE" <<-EOF
-    use:
-EOF
-fi
-cat /tmp/Proxy_Provider >> $SERVER_FILE 2>/dev/null
-cat >> "$SERVER_FILE" <<-EOF
-  - name: miHoYo
-    type: select
-    proxies:
-      - DIRECT
-      - Proxy
-EOF
-cat /tmp/Proxy_Server >> $SERVER_FILE 2>/dev/null
-if [ -f "/tmp/Proxy_Provider" ]; then
-cat >> "$SERVER_FILE" <<-EOF
-    use:
-EOF
-fi
-cat /tmp/Proxy_Provider >> $SERVER_FILE 2>/dev/null
-cat >> "$SERVER_FILE" <<-EOF
-  - name: AdBlock
-    type: select
-    proxies:
-      - REJECT
-      - DIRECT
-      - Proxy
-  - name: HTTPDNS
-    type: select
-    proxies:
-      - REJECT
-      - DIRECT
-      - Proxy
-EOF
-cat /tmp/Proxy_Server >> $SERVER_FILE 2>/dev/null
-if [ -f "/tmp/Proxy_Provider" ]; then
-cat >> "$SERVER_FILE" <<-EOF
-    use:
-EOF
-fi
-cat /tmp/Proxy_Provider >> $SERVER_FILE 2>/dev/null
-cat >> "$SERVER_FILE" <<-EOF
-  - name: CN Mainland TV
-    type: select
-    proxies:
-      - DIRECT
-      - Proxy
-EOF
-cat /tmp/Proxy_Server >> $SERVER_FILE 2>/dev/null
-if [ -f "/tmp/Proxy_Provider" ]; then
-cat >> "$SERVER_FILE" <<-EOF
-    use:
-EOF
-fi
-cat /tmp/Proxy_Provider >> $SERVER_FILE 2>/dev/null
-cat >> "$SERVER_FILE" <<-EOF
-  - name: Asian TV
-    type: select
-    proxies:
-      - Proxy
-      - DIRECT
-EOF
-cat /tmp/Proxy_Server >> $SERVER_FILE 2>/dev/null
-if [ -f "/tmp/Proxy_Provider" ]; then
-cat >> "$SERVER_FILE" <<-EOF
-    use:
-EOF
-fi
-cat /tmp/Proxy_Provider >> $SERVER_FILE 2>/dev/null
-cat >> "$SERVER_FILE" <<-EOF
-  - name: Global TV
-    type: select
-    proxies:
-      - Proxy
-      - DIRECT
-EOF
-cat /tmp/Proxy_Server >> $SERVER_FILE 2>/dev/null
-if [ -f "/tmp/Proxy_Provider" ]; then
-cat >> "$SERVER_FILE" <<-EOF
-    use:
-EOF
-fi
-cat /tmp/Proxy_Provider >> $SERVER_FILE 2>/dev/null
-cat >> "$SERVER_FILE" <<-EOF
-  - name: Speedtest
-    type: select
-    proxies:
-      - Proxy
-      - DIRECT
-EOF
-cat /tmp/Proxy_Server >> $SERVER_FILE 2>/dev/null
-if [ -f "/tmp/Proxy_Provider" ]; then
-cat >> "$SERVER_FILE" <<-EOF
-    use:
-EOF
-fi
-cat /tmp/Proxy_Provider >> $SERVER_FILE 2>/dev/null
-cat >> "$SERVER_FILE" <<-EOF
-  - name: Telegram
-    type: select
-    proxies:
-      - Proxy
-      - DIRECT
-EOF
-cat /tmp/Proxy_Server >> $SERVER_FILE 2>/dev/null
-if [ -f "/tmp/Proxy_Provider" ]; then
-cat >> "$SERVER_FILE" <<-EOF
-    use:
-EOF
-fi
-cat /tmp/Proxy_Provider >> $SERVER_FILE 2>/dev/null
-cat >> "$SERVER_FILE" <<-EOF
-  - name: Crypto
-    type: select
-    proxies:
-      - Proxy
-      - DIRECT
-EOF
-cat /tmp/Proxy_Server >> $SERVER_FILE 2>/dev/null
-if [ -f "/tmp/Proxy_Provider" ]; then
-cat >> "$SERVER_FILE" <<-EOF
-    use:
-EOF
-fi
-cat /tmp/Proxy_Provider >> $SERVER_FILE 2>/dev/null
-cat >> "$SERVER_FILE" <<-EOF
-  - name: Discord
-    type: select
-    proxies:
-      - Proxy
-      - DIRECT
-EOF
-cat /tmp/Proxy_Server >> $SERVER_FILE 2>/dev/null
-if [ -f "/tmp/Proxy_Provider" ]; then
-cat >> "$SERVER_FILE" <<-EOF
-    use:
-EOF
-fi
-cat /tmp/Proxy_Provider >> $SERVER_FILE 2>/dev/null
-cat >> "$SERVER_FILE" <<-EOF
-  - name: PayPal
-    type: select
-    proxies:
-      - DIRECT
-      - Proxy
-EOF
-cat /tmp/Proxy_Server >> $SERVER_FILE 2>/dev/null
-if [ -f "/tmp/Proxy_Provider" ]; then
-cat >> "$SERVER_FILE" <<-EOF
-    use:
-EOF
-fi
-cat /tmp/Proxy_Provider >> $SERVER_FILE 2>/dev/null
-config_load "openclash"
-config_foreach yml_other_rules_del "other_rules" "$CONFIG_NAME" "lhie1"
-uci_name_tmp=$(uci -q add openclash other_rules)
-uci_set="uci -q set openclash.$uci_name_tmp."
-${UCI_SET}rule_source="1"
-${uci_set}enable="1"
-${uci_set}rule_name="lhie1"
-${uci_set}config="$CONFIG_NAME"
-${uci_set}GlobalTV="Global TV"
-${uci_set}AsianTV="Asian TV"
-${uci_set}MainlandTV="CN Mainland TV"
-${uci_set}Proxy="Proxy"
-${uci_set}Youtube="Youtube"
-${uci_set}Bilibili="Bilibili"
-${uci_set}Bahamut="Bahamut"
-${uci_set}HBOMax="HBO Max"
-${uci_set}Pornhub="Pornhub"
-${uci_set}Apple="Apple"
-${uci_set}AppleTV="Apple TV"
-${uci_set}GoogleFCM="Google FCM"
-${uci_set}Scholar="Scholar"
-${uci_set}Microsoft="Microsoft"
-${uci_set}AI_Suite="AI Suite"
-${uci_set}Netflix="Netflix"
-${uci_set}Discovery="Discovery Plus"
-${uci_set}DAZN="DAZN"
-${uci_set}Disney="Disney Plus"
-${uci_set}Spotify="Spotify"
-${uci_set}Steam="Steam"
-${uci_set}TikTok="TikTok"
-${uci_set}miHoYo="miHoYo"
-${uci_set}AdBlock="AdBlock"
-${uci_set}HTTPDNS="HTTPDNS"
-${uci_set}Speedtest="Speedtest"
-${uci_set}Telegram="Telegram"
-${uci_set}Crypto="Crypto"
-${uci_set}Discord="Discord"
-${uci_set}PayPal="PayPal"
-${uci_set}Domestic="Domestic"
-${uci_set}Others="Others"
 
-[ "$config_auto_update" -eq 1 ] && [ "$new_servers_group_set" -eq 1 ] && {
-	${UCI_SET}servers_update="1"
-	${UCI_DEL_LIST}="all" >/dev/null 2>&1
-	${UCI_DEL_LIST}="Auto - UrlTest" >/dev/null 2>&1 && ${UCI_ADD_LIST}="Auto - UrlTest" >/dev/null 2>&1
-	${UCI_DEL_LIST}="Proxy" >/dev/null 2>&1 && ${UCI_ADD_LIST}="Proxy" >/dev/null 2>&1
-	${UCI_DEL_LIST}="Youtube" >/dev/null 2>&1 && ${UCI_ADD_LIST}="Youtube" >/dev/null 2>&1
-	${UCI_DEL_LIST}="Bilibili" >/dev/null 2>&1 && ${UCI_ADD_LIST}="Bilibili" >/dev/null 2>&1
-	${UCI_DEL_LIST}="Bahamut" >/dev/null 2>&1 && ${UCI_ADD_LIST}="Bahamut" >/dev/null 2>&1
-	${UCI_DEL_LIST}="HBO Max" >/dev/null 2>&1 && ${UCI_ADD_LIST}="HBO Max" >/dev/null 2>&1
-	${UCI_DEL_LIST}="Pornhub" >/dev/null 2>&1 && ${UCI_ADD_LIST}="Pornhub" >/dev/null 2>&1
-	${UCI_DEL_LIST}="Asian TV" >/dev/null 2>&1 && ${UCI_ADD_LIST}="Asian TV" >/dev/null 2>&1
-    ${UCI_DEL_LIST}="CN Mainland TV" >/dev/null 2>&1 && ${UCI_ADD_LIST}="CN Mainland TV" >/dev/null 2>&1
-	${UCI_DEL_LIST}="Global TV" >/dev/null 2>&1 && ${UCI_ADD_LIST}="Global TV" >/dev/null 2>&1
-	${UCI_DEL_LIST}="Netflix" >/dev/null 2>&1 && ${UCI_ADD_LIST}="Netflix" >/dev/null 2>&1
-	${UCI_DEL_LIST}="Discovery Plus" >/dev/null 2>&1 && ${UCI_ADD_LIST}="Discovery Plus" >/dev/null 2>&1
-	${UCI_DEL_LIST}="DAZN" >/dev/null 2>&1 && ${UCI_ADD_LIST}="DAZN" >/dev/null 2>&1
-    ${UCI_DEL_LIST}="AI Suite" >/dev/null 2>&1 && ${UCI_ADD_LIST}="AI Suite" >/dev/null 2>&1
-    ${UCI_DEL_LIST}="Apple TV" >/dev/null 2>&1 && ${UCI_ADD_LIST}="Apple TV" >/dev/null 2>&1
-	${UCI_DEL_LIST}="Google FCM" >/dev/null 2>&1 && ${UCI_ADD_LIST}="Google FCM" >/dev/null 2>&1
-	${UCI_DEL_LIST}="Scholar" >/dev/null 2>&1 && ${UCI_ADD_LIST}="Scholar" >/dev/null 2>&1
-	${UCI_DEL_LIST}="Disney Plus" >/dev/null 2>&1 && ${UCI_ADD_LIST}="Disney Plus" >/dev/null 2>&1
-	${UCI_DEL_LIST}="Spotify" >/dev/null 2>&1 && ${UCI_ADD_LIST}="Spotify" >/dev/null 2>&1
-	${UCI_DEL_LIST}="Steam" >/dev/null 2>&1 && ${UCI_ADD_LIST}="Steam" >/dev/null 2>&1
-    ${UCI_DEL_LIST}="TikTok" >/dev/null 2>&1 && ${UCI_ADD_LIST}="TikTok" >/dev/null 2>&1
-    ${UCI_DEL_LIST}="miHoYo" >/dev/null 2>&1 && ${UCI_ADD_LIST}="miHoYo" >/dev/null 2>&1
-	${UCI_DEL_LIST}="Telegram" >/dev/null 2>&1 && ${UCI_ADD_LIST}="Telegram" >/dev/null 2>&1
-    ${UCI_DEL_LIST}="Crypto" >/dev/null 2>&1 && ${UCI_ADD_LIST}="Crypto" >/dev/null 2>&1
-    ${UCI_DEL_LIST}="Discord" >/dev/null 2>&1 && ${UCI_ADD_LIST}="Discord" >/dev/null 2>&1
-	${UCI_DEL_LIST}="PayPal" >/dev/null 2>&1 && ${UCI_ADD_LIST}="PayPal" >/dev/null 2>&1
-	${UCI_DEL_LIST}="Speedtest" >/dev/null 2>&1 && ${UCI_ADD_LIST}="Speedtest" >/dev/null 2>&1
-    ${UCI_DEL_LIST}="Others" >/dev/null 2>&1 && ${UCI_ADD_LIST}="Others" >/dev/null 2>&1
-}
+LOG_OUT "Proxies, Proxy-providers, Groups Edited Successful, Updating Config File【$CONFIG_NAME】..."
+config_hash=$(ruby -ryaml -rYAML -I "/usr/share/openclash" -E UTF-8 -e "Value = YAML.load_file('$CONFIG_FILE'); puts Value" 2>/dev/null)
+if [ "$config_hash" != "false" ] && [ -n "$config_hash" ]; then
+    ruby_cover "$CONFIG_FILE" "['proxies']" "$SERVER_FILE" "proxies"
+    ruby_cover "$CONFIG_FILE" "['proxy-providers']" "$PROXY_PROVIDER_FILE" "proxy-providers"
+    ruby_cover "$CONFIG_FILE" "['proxy-groups']" "/tmp/yaml_groups.yaml" "proxy-groups"
+else
+    cat "$SERVER_FILE" "$PROXY_PROVIDER_FILE" "/tmp/yaml_groups.yaml" > "$CONFIG_FILE" 2>/dev/null
 fi
 
-if [ "$create_config" != "0" ] && [ "$servers_if_update" != "1" ] && [ -z "$if_game_proxy" ]; then
-   echo "rules:" >>$SERVER_FILE
-   LOG_OUT "Config File【$CONFIG_NAME】Created Successful, Updating Proxies, Proxy-providers, Groups..."
-   cat "$PROXY_PROVIDER_FILE" > "$CONFIG_FILE" 2>/dev/null
-   cat "$SERVER_FILE" >> "$CONFIG_FILE" 2>/dev/null
-   /usr/share/openclash/yml_groups_get.sh >/dev/null 2>&1
-elif [ -z "$if_game_proxy" ]; then
-   LOG_OUT "Proxies, Proxy-providers, Groups Edited Successful, Updating Config File【$CONFIG_NAME】..."
-   config_hash=$(ruby -ryaml -rYAML -I "/usr/share/openclash" -E UTF-8 -e "Value = YAML.load_file('$CONFIG_FILE'); puts Value" 2>/dev/null)
-   if [ "$config_hash" != "false" ] && [ -n "$config_hash" ]; then
-      ruby_cover "$CONFIG_FILE" "['proxies']" "$SERVER_FILE" "proxies"
-      ruby_cover "$CONFIG_FILE" "['proxy-providers']" "$PROXY_PROVIDER_FILE" "proxy-providers"
-      ruby_cover "$CONFIG_FILE" "['proxy-groups']" "/tmp/yaml_groups.yaml" "proxy-groups"
-   else
-      cat "$SERVER_FILE" "$PROXY_PROVIDER_FILE" "/tmp/yaml_groups.yaml" > "$CONFIG_FILE" 2>/dev/null
-   fi
-fi
-
-if [ -z "$if_game_proxy" ]; then
-   rm -rf $SERVER_FILE 2>/dev/null
-   rm -rf $PROXY_PROVIDER_FILE 2>/dev/null
-   rm -rf /tmp/yaml_groups.yaml 2>/dev/null
-   LOG_OUT "Config File【$CONFIG_NAME】Write Successful!"
-   SLOG_CLEAN
-fi
+rm -rf $SERVER_FILE 2>/dev/null
+rm -rf $PROXY_PROVIDER_FILE 2>/dev/null
+rm -rf /tmp/yaml_groups.yaml 2>/dev/null
 rm -rf /tmp/Proxy_Server 2>/dev/null
 rm -rf /tmp/Proxy_Provider 2>/dev/null
+
+LOG_OUT "Config File【$CONFIG_NAME】Write Successful!"
+SLOG_CLEAN
 del_lock
-${UCI_SET}enable=1 2>/dev/null
-[ "$(uci_get_config "servers_if_update")" == "0" ] && [ -z "$if_game_proxy" ] && /etc/init.d/openclash restart >/dev/null 2>&1
-${UCI_SET}servers_if_update=0
-uci -q commit openclash

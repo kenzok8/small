@@ -15,7 +15,7 @@ del_lock() {
 
 CONFIG_FILE=$(uci_get_config "config_path")
 CONFIG_NAME=$(echo "$CONFIG_FILE" |awk -F '/' '{print $5}' 2>/dev/null)
-UPDATE_CONFIG_FILE=$(uci_get_config "config_update_path")
+UPDATE_CONFIG_FILE=$1
 UPDATE_CONFIG_NAME=$(echo "$UPDATE_CONFIG_FILE" |awk -F '/' '{print $5}' 2>/dev/null)
 LOG_FILE="/tmp/openclash.log"
 set_lock
@@ -41,115 +41,17 @@ if [ -z "$CONFIG_NAME" ]; then
    CONFIG_NAME="config.yaml"
 fi
 
-BACKUP_FILE="/etc/openclash/backup/$(echo "$CONFIG_FILE" |awk -F '/' '{print $5}' 2>/dev/null)"
-
-if [ ! -s "$CONFIG_FILE" ] && [ ! -s "$BACKUP_FILE" ]; then
+if [ ! -s "$CONFIG_FILE" ]; then
    del_lock
    exit 0
-elif [ ! -s "$CONFIG_FILE" ] && [ -s "$BACKUP_FILE" ]; then
-   mv "$BACKUP_FILE" "$CONFIG_FILE"
 fi
-
-CFG_FILE="/etc/config/openclash"
-match_servers="/tmp/match_servers.list"
-match_provider="/tmp/match_provider.list"
-servers_update=$(uci_get_config "servers_update")
-servers_if_update=$(uci_get_config "servers_if_update")
-
-cfg_new_servers_groups_check()
-{
-
-   if [ -z "$1" ]; then
-      return
-   fi
-
-   config_foreach cfg_group_name "groups" "$1"
-}
-
-cfg_group_name()
-{
-   local section="$1"
-   local name config
-   config_get "name" "$section" "name" ""
-   config_get "config" "$section" "config" ""
-
-   if [ -z "$config" ]; then
-      return
-   fi
-
-   if [ "$config" != "$CONFIG_NAME" ] && [ "$config" != "all" ]; then
-      return
-   fi
-
-   if [ -z "$name" ]; then
-	    return
-   fi
-
-   if [ "$name" = "$2" ]; then
-      if [ -z "$new_server_add_group" ]; then
-         new_server_add_group="$name"
-      else
-         new_server_add_group="$new_server_add_group|||$name"
-      fi
-   fi
-}
-
-#判断当前配置文件策略组信息是否包含指定策略组
-config_load "openclash"
-config_list_foreach "config" "new_servers_group" cfg_new_servers_groups_check
-
-if [ "$(uci_get_config "new_servers_group")" = "all" ]; then
-   if [ -z "$new_server_add_group" ]; then
-      new_server_add_group="all"
-   else
-      new_server_add_group="all|||$new_server_add_group"
-   fi
-fi
-
-yml_provider_name_get()
-{
-   local section="$1"
-   local name config
-   config_get "name" "$section" "name" ""
-   config_get "config" "$section" "config" ""
-   if [ -n "$name" ] && [ "$config" = "$CONFIG_NAME" ]; then
-      echo "$provider_nums.$name" >>"$match_provider"
-   fi
-   provider_nums=$(( $provider_nums + 1 ))
-}
-
-yml_servers_name_get()
-{
-	local section="$1"
-   local name config
-   config_get "name" "$section" "name" ""
-   config_get "config" "$section" "config" ""
-   if [ -n "$name" ] && [ "$config" = "$CONFIG_NAME" ]; then
-      echo "$server_num.$name" >>"$match_servers"
-   fi
-   server_num=$(( $server_num + 1 ))
-}
-
-LOG_OUT "Start Getting【$CONFIG_NAME】Proxy-providers Setting..."
-
-echo "" >"$match_provider"
-provider_nums=0
-config_load "openclash"
-config_foreach yml_provider_name_get "proxy-provider"
-	   
-LOG_OUT "Start Getting【$CONFIG_NAME】Proxies Setting..."
-
-echo "" >"$match_servers"
-server_num=0
-config_load "openclash"
-config_foreach yml_servers_name_get "servers"
 
 #获取代理集信息
 ruby -ryaml -rYAML -I "/usr/share/openclash" -E UTF-8 -e "
    begin
       Value = YAML.load_file('$CONFIG_FILE');
    rescue Exception => e
-      YAML.LOG('Error: Load File Failed,【' + e.message + '】');
+      YAML.LOG_ERROR('Load File Failed,【' + e.message + '】');
    end;
 
    threads = [];
@@ -176,37 +78,16 @@ ruby -ryaml -rYAML -I "/usr/share/openclash" -E UTF-8 -e "
       threads_pr << Thread.new {
          begin
             YAML.LOG('Start Getting【${CONFIG_NAME} - ' + y['type'].to_s + ' - ' + x.to_s + '】Proxy-provider Setting...');
-            #代理集存在时获取代理集编号
-            cmd = 'grep -F \'.' + x + '\' ${match_provider} 2>/dev/null |awk -F \".\" \'{print \$1}\'';
-            provider_nums = %x(#{cmd}).chomp;
-            if not provider_nums.empty? then
-               cmd = 'sed -i \"/^' + provider_nums + '\./c\\#match#\" $match_provider 2>/dev/null';
-               system(cmd);
-               uci_set='set openclash.@proxy-provider[' + provider_nums + '].';
-               uci_add='add_list openclash.@proxy-provider[' + provider_nums + '].';
-               uci_del='uci -q delete openclash.@proxy-provider[' + provider_nums + '].';
-               if not provider_nums then
-                  uci_commands << uci_set + 'manual=0';
-               end;
-               uci_commands << uci_set + 'type=\"' + y['type'].to_s + '\"';
-               uci_name_tmp_prv[index] = 'uci -q delete openclash.' + uci_name_tmp_prv[index];
-            else
-               #代理集不存在时添加新代理集
-               uci_set='set openclash.' + uci_name_tmp_prv[index] + '.';
-               uci_add='add_list openclash.' + uci_name_tmp_prv[index] + '.';
-               uci_del='uci -q delete openclash.' + uci_name_tmp_prv[index] + '.';
-
-               if '$new_server_add_group'.to_s.strip.empty? and '$servers_if_update' == '1' and '$servers_update' == 1 then
-                  uci_commands << uci_set + 'enabled=0';
-               else
-                  uci_commands << uci_set + 'enabled=1';
-               end;
-               uci_commands << uci_set + 'manual=0';
-               uci_commands << uci_set + 'config=\"$CONFIG_NAME\"';
-               next unless x && y['type'];
-               uci_commands << uci_set + 'name=\"' + x.to_s + '\"';
-               uci_commands << uci_set + 'type=\"' + y['type'].to_s + '\"';
-            end;
+            #代理集不存在时添加新代理集
+            uci_set='set openclash.' + uci_name_tmp_prv[index] + '.';
+            uci_add='add_list openclash.' + uci_name_tmp_prv[index] + '.';
+            uci_del='uci -q delete openclash.' + uci_name_tmp_prv[index] + '.';
+            uci_commands << uci_set + 'enabled=1';
+            uci_commands << uci_set + 'manual=0';
+            uci_commands << uci_set + 'config=\"$CONFIG_NAME\"';
+            next unless x && y['type'];
+            uci_commands << uci_set + 'name=\"' + x.to_s + '\"';
+            uci_commands << uci_set + 'type=\"' + y['type'].to_s + '\"';
 
             threads_prv << Thread.new{
                #path
@@ -269,36 +150,28 @@ ruby -ryaml -rYAML -I "/usr/share/openclash" -E UTF-8 -e "
 
             threads_prv << Thread.new{
                #加入策略组
-               if '$servers_if_update' == '1' and ! '$new_server_add_group'.to_s.strip.empty? and '$servers_update' == '1' and provider_nums.empty? then
-                  #新代理集且设置默认策略组时加入指定策略组
-                  new_provider_groups = '$new_server_add_group'.to_s.split('|||').map(&:strip).reject(&:empty?);
-                  new_provider_groups.each do |x|
-                     uci_commands << uci_add + 'groups=\"^' + x + '$\"'
-                  end
-               elsif '$servers_if_update' != '1' then
-                  threads_agr = [];
-                  cmd = uci_del + 'groups >/dev/null 2>&1';
-                  system(cmd);
-                  Value['proxy-groups'].each{
-                  |z|
-                     threads_agr << Thread.new {
-                        if z.key?('use') then
-                           z['use'].each{
-                           |v|
-                           if v == x then
-                              uci_commands << uci_add + 'groups=\"^' + z['name'] + '$\"'
-                              break
-                           end
-                           }
+               threads_agr = [];
+               cmd = uci_del + 'groups >/dev/null 2>&1';
+               system(cmd);
+               Value['proxy-groups'].each{
+               |z|
+                  threads_agr << Thread.new {
+                     if z.key?('use') then
+                        z['use'].each{
+                        |v|
+                        if v == x then
+                           uci_commands << uci_add + 'groups=\"^' + z['name'] + '$\"'
+                           break
                         end
-                     };
+                        }
+                     end
                   };
-                  threads_agr.each(&:join);
-               end;
+               };
+               threads_agr.each(&:join);
             };
             threads_prv.each(&:join);
          rescue Exception => e
-            YAML.LOG('Error: Resolve Proxy-providers Failed,【${CONFIG_NAME} - ' + x + ': ' + e.message + '】');
+            YAML.LOG_ERROR('Resolve Proxy-providers Failed,【${CONFIG_NAME} - ' + x + ': ' + e.message + '】');
          ensure
             queue.pop
          end;
@@ -311,36 +184,16 @@ ruby -ryaml -rYAML -I "/usr/share/openclash" -E UTF-8 -e "
       threads_pr << Thread.new {
          begin
             YAML.LOG('Start Getting【${CONFIG_NAME} - ' + x['type'].to_s + ' - ' + x['name'].to_s + '】Proxy Setting...');
-            #节点存在时获取节点编号
-            cmd = 'grep -F \'.' + x['name'].to_s + '\' ${match_servers} 2>/dev/null |awk -F \".\" \'{print \$1}\'';
-            server_num = %x(#{cmd}).chomp;
-            if not server_num.empty? then
-               #更新已有节点
-               cmd = 'sed -i \"/^' + server_num + '\./c\\#match#\" $match_servers 2>/dev/null';
-               system(cmd);
-               uci_set='set openclash.@servers[' + server_num + '].';
-               uci_add='add_list openclash.@servers[' + server_num + '].';
-               uci_del='uci -q delete openclash.@servers[' + server_num + '].';
-               if not server_num then
-                  uci_commands << uci_set + 'manual=0';
-               end;
-               uci_name_tmp[index] = 'uci -q delete openclash.' + uci_name_tmp[index];
-            else
-               #添加新节点
-               uci_set='set openclash.' + uci_name_tmp[index] + '.';
-               uci_add='add_list openclash.' + uci_name_tmp[index] + '.';
-               uci_del='uci -q delete openclash.' + uci_name_tmp[index] + '.';
-               if '$new_server_add_group'.to_s.strip.empty? and '$servers_if_update' == '1' and '$servers_update' == 1 then
-                  uci_commands << uci_set + 'enabled=0';
-               else
-                  uci_commands << uci_set + 'enabled=1';
-               end;
-               uci_commands << uci_set + 'manual=0';
-               uci_commands << uci_set + 'config=\"$CONFIG_NAME\"';
-               next unless x['name'] && x['type'];
-               if x.key?('name') then
-                  uci_commands << uci_set + 'name=\"' + x['name'].to_s + '\"';
-               end;
+            #添加新节点
+            uci_set='set openclash.' + uci_name_tmp[index] + '.';
+            uci_add='add_list openclash.' + uci_name_tmp[index] + '.';
+            uci_del='uci -q delete openclash.' + uci_name_tmp[index] + '.';
+            uci_commands << uci_set + 'enabled=1';
+            uci_commands << uci_set + 'manual=0';
+            uci_commands << uci_set + 'config=\"$CONFIG_NAME\"';
+            next unless x['name'] && x['type'];
+            if x.key?('name') then
+               uci_commands << uci_set + 'name=\"' + x['name'].to_s + '\"';
             end;
 
             threads << Thread.new{
@@ -1574,36 +1427,28 @@ ruby -ryaml -rYAML -I "/usr/share/openclash" -E UTF-8 -e "
             #加入策略组
             threads << Thread.new{
                #加入策略组
-               if '$servers_if_update' == '1' and ! '$new_server_add_group'.to_s.strip.empty? and '$servers_update' == '1' and server_num.empty? then
-                  #新代理且设置默认策略组时加入指定策略组
-                  new_server_groups = '$new_server_add_group'.to_s.split('|||').map(&:strip).reject(&:empty?);
-                  new_server_groups.each do |x|
-                     uci_commands << uci_add + 'groups=\"^' + x + '$\"'
-                  end
-               elsif '$servers_if_update' != '1' then
-                  threads_gr = [];
-                  cmd = uci_del + 'groups >/dev/null 2>&1';
-                  system(cmd);
-                  Value['proxy-groups'].each{
-                  |z|
-                     threads_gr << Thread.new{
-                        if z.key?('proxies') then
-                           z['proxies'].each{
-                           |v|
-                           if v == x['name'] then
-                              uci_commands << uci_add + 'groups=\"^' + z['name'] + '$\"'
-                              break
-                           end
-                           }
-                        end;
-                     };
+               threads_gr = [];
+               cmd = uci_del + 'groups >/dev/null 2>&1';
+               system(cmd);
+               Value['proxy-groups'].each{
+               |z|
+                  threads_gr << Thread.new{
+                     if z.key?('proxies') then
+                        z['proxies'].each{
+                        |v|
+                        if v == x['name'] then
+                           uci_commands << uci_add + 'groups=\"^' + z['name'] + '$\"'
+                           break
+                        end
+                        }
+                     end;
                   };
-                  threads_gr.each(&:join);
-               end;
+               };
+               threads_gr.each(&:join);
             };
             threads.each(&:join);
          rescue Exception => e
-            YAML.LOG('Error: Resolve Proxies Failed,【${CONFIG_NAME} - '+ x['type'] + ' - ' + x['name'] + ': ' + e.message + '】');
+            YAML.LOG_ERROR('Resolve Proxies Failed,【${CONFIG_NAME} - '+ x['type'] + ' - ' + x['name'] + ': ' + e.message + '】');
          ensure
             queue.pop
          end;
@@ -1632,40 +1477,6 @@ ruby -ryaml -rYAML -I "/usr/share/openclash" -E UTF-8 -e "
    system('uci -q commit openclash');
 " >> $LOG_FILE
 
-#删除订阅中已不存在的代理集
-if [ "$servers_if_update" = "1" ]; then
-   LOG_OUT "Deleting【$CONFIG_NAME】Proxy-providers That no Longer Exists in Subscription"
-   sed -i '/#match#/d' "$match_provider" 2>/dev/null
-   cat $match_provider 2>/dev/null|awk -F '.' '{print $1}' |sort -rn |while read line
-   do
-   if [ -z "$line" ]; then
-         continue
-      fi
-      if [ "$(uci get openclash.@proxy-provider["$line"].manual)" = "0" ] && [ "$(uci get openclash.@proxy-provider["$line"].config)" = "$CONFIG_NAME" ]; then
-         uci delete openclash.@proxy-provider["$line"] 2>/dev/null
-      fi
-   done
-fi
-
-#删除订阅中已不存在的节点
-if [ "$servers_if_update" = "1" ]; then
-     LOG_OUT "Deleting【$CONFIG_NAME】Proxies That no Longer Exists in Subscription"
-     sed -i '/#match#/d' "$match_servers" 2>/dev/null
-     cat $match_servers |awk -F '.' '{print $1}' |sort -rn |while read -r line
-     do
-        if [ -z "$line" ]; then
-           continue
-        fi
-        if [ "$(uci -q get openclash.@servers["$line"].manual)" = "0" ] && [ "$(uci -q get openclash.@servers["$line"].config)" = "$CONFIG_NAME" ]; then
-           uci -q delete openclash.@servers["$line"]
-        fi
-     done 2>/dev/null
-fi
-
-uci -q set openclash.config.servers_if_update=0
-uci -q commit openclash
 LOG_OUT "Config File【$CONFIG_NAME】Read Successful!"
 SLOG_CLEAN
-rm -rf /tmp/match_servers.list 2>/dev/null
-rm -rf /tmp/match_provider.list 2>/dev/null
 del_lock

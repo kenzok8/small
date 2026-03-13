@@ -56,7 +56,6 @@ s:tab("dns", "DNS "..translate("Settings"))
 s:tab("meta", translate("Meta Settings"))
 s:tab("smart", translate("Smart Settings"))
 s:tab("rules", translate("Rules Setting"))
-s:tab("developer", translate("Developer Settings"))
 
 ----- General Settings
 o = s:taboption("settings", ListValue, "interface_name", translate("Bind Network Interface"))
@@ -444,10 +443,6 @@ o = s:taboption("smart", DummyValue, "flush_smart_cache", translate("Flush Smart
 o.template = "openclash/flush_smart_cache"
 
 ---- Rules Settings
-o = s:taboption("rules", Flag, "rule_source", translate("Enable Other Rules"))
-o.description = translate("Use Other Rules")
-o.default = 0
-
 o = s:taboption("rules", Flag, "enable_rule_proxy", translate("Rule Match Proxy Mode"))
 o.description = translate("Append Some Rules to Config, Allow Only Traffic Proxies that Match the Rule, Prevent BT/P2P Passing")
 o.default = 0
@@ -496,36 +491,20 @@ function custom_rules_2.write(self, section, value)
 	end
 end
 
----- developer
-o = s:taboption("developer", Value, "ymchange_custom")
-o.template = "cbi/tvalue"
-o.description = translate("Custom Config Overwrite Scripts Which Will Run After Plugin Own Completely, Please Be Careful, The Wrong Changes May Lead to Exceptions")
-o.rows = 30
-o.wrap = "off"
-
-function o.cfgvalue(self, section)
-	return NXFS.readfile("/etc/openclash/custom/openclash_custom_overwrite.sh") or ""
-end
-function o.write(self, section, value)
-	if value then
-		value = value:gsub("\r\n?", "\n")
-		local old_value = NXFS.readfile("/etc/openclash/custom/openclash_custom_overwrite.sh")
-		if value ~= old_value then
-			NXFS.writefile("/etc/openclash/custom/openclash_custom_overwrite.sh", value)
-		end
-	end
-end
-
 -- [[ Edit Custom DNS ]] --
 ds = m:section(TypedSection, "dns_servers", translate("Add Custom DNS Servers")..translate("(Take Effect After Choose Above)"))
 ds.anonymous = true
 ds.addremove = true
 ds.sortable = true
-ds.template = "openclash/tblsection_dns"
+ds.template = "openclash/tblsection"
 ds.extedit = luci.dispatcher.build_url("admin/services/openclash/custom-dns-edit/%s")
-function ds.create(...)
-	local sid = TypedSection.create(...)
+function ds.create(self, section)
+	local sid = TypedSection.create(self, section)
 	if sid then
+		local name = luci.http.formvalue("cbi.cts.tagname.".. self.config .. "." .. self.sectiontype)
+		if name and #name > 0 then
+			self.map.uci:set("openclash", sid, "group", name)
+		end
 		luci.http.redirect(ds.extedit % sid)
 		return
 	end
@@ -541,9 +520,9 @@ end
 
 ---- group
 o = ds:option(ListValue, "group", translate("DNS Server Group"))
-o:value("nameserver", translate("NameServer "))
-o:value("fallback", translate("FallBack "))
-o:value("default", translate("Default-NameServer"))
+o:value("nameserver", translate("nameserver "))
+o:value("fallback", translate("fallback "))
+o:value("default", translate("default-nameserver"))
 o.default = "nameserver"
 o.rempty = false
 
@@ -572,53 +551,6 @@ o.rempty = false
 o = ds:option(Flag, "disable_ipv6", translate("Disable-IPv6"))
 o.rmempty = false
 o.default = o.disbled
-
--- [[ Other Rules Manage ]]--
-ss = m:section(TypedSection, "other_rules", translate("Other Rules Edit")..translate("(Take Effect After Choose Above)"))
-ss.anonymous = true
-ss.addremove = true
-ss.sortable = true
-ss.template = "cbi/tblsection"
-ss.extedit = luci.dispatcher.build_url("admin/services/openclash/other-rules-edit/%s")
-function ss.create(...)
-	local sid = TypedSection.create(...)
-	if sid then
-		luci.http.redirect(ss.extedit % sid)
-		return
-	end
-end
-ss.render = function(self, ...)
-	Map.render(self, ...)
-	if type(optimize_cbi_ui) == "function" then
-		optimize_cbi_ui()
-	end
-end
-
-o = ss:option(Flag, "enabled", translate("Enable"))
-o.rmempty = false
-o.default = o.enabled
-o.cfgvalue = function(...)
-	return Flag.cfgvalue(...) or "1"
-end
-
-o = ss:option(DummyValue, "config", translate("Config File"))
-function o.cfgvalue(...)
-	return Value.cfgvalue(...) or translate("None")
-end
-
-o = ss:option(DummyValue, "rule_name", translate("Other Rules Name"))
-function o.cfgvalue(...)
-	if Value.cfgvalue(...) == "lhie1" then
-		return translate("lhie1 Rules")
-	else
-		return translate("None")
-	end
-end
-
-o = ss:option(DummyValue, "Note", translate("Note"))
-function o.cfgvalue(...)
-	return Value.cfgvalue(...) or translate("None")
-end
 
 -- [[ Edit Authentication ]] --
 s = m:section(TypedSection, "authentication", translate("Set Authentication of SOCKS5/HTTP(S)"))

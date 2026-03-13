@@ -1,9 +1,6 @@
 默认（附带用于Clash的AdGuard DNS）,default_with_clash_adg.yml,https://gist.githubusercontent.com/tindy2013/1fa08640a9088ac8652dbd40c5d2715b/raw/default_with_clash_adg.yml
 无Urltest,no_urltest.ini,https://gist.githubusercontent.com/tindy2013/1fa08640a9088ac8652dbd40c5d2715b/raw/no_urltest.ini
 带Urltest,urltest.ini,https://gist.githubusercontent.com/tindy2013/1fa08640a9088ac8652dbd40c5d2715b/raw/urltest.ini
-ConnersHua 神机规则 Pro,connershua_pro.ini,https://gist.githubusercontent.com/tindy2013/1fa08640a9088ac8652dbd40c5d2715b/raw/connershua_new.ini
-lhie1 洞主规则（使用 Clash 分组规则）,lhie1_clash.ini,https://gist.githubusercontent.com/vernesong/4c27ed54ab2a5fedd9c4011389ac11ed/raw/lhie1_clash.ini
-lhie1 洞主规则完整版,lhie1_dler.ini,https://gist.githubusercontent.com/vernesong/4c27ed54ab2a5fedd9c4011389ac11ed/raw/lhie1_dler.ini
 ACL4SSR 规则标准版,ACL4SSR.ini,https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR.ini
 ACL4SSR 规则 AdblockPlus,ACL4SSR_AdblockPlus.ini,https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_AdblockPlus.ini
 ACL4SSR 规则 BackCN,ACL4SSR_BackCN.ini,https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/config/ACL4SSR_BackCN.ini

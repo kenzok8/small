@@ -785,7 +785,6 @@
                                     <label for="convert-address-input"><%:Convert Address%>:</label>
                                     <div class="form-select-wrapper">
                                         <select id="convert-address-input" class="form-select">
-                                            <option value="https://api.dler.io/sub">api.dler.io (<%:Default%>)</option>
                                             <option value="https://api.wcc.best/sub">api.wcc.best</option>
                                             <option value="https://api.asailor.org/sub">api.asailor.org</option>
                                             <option value="custom"><%:Custom%></option>
@@ -901,24 +900,24 @@
                                 <label for="exclude-default-select"><%:Exclude Keyword Match Default%>:</label>
                                 <div class="form-checkbox-group">
                                     <label class="form-checkbox">
-                                        <input type="checkbox" id="exclude-expire" value="过期时间">
+                                        <input type="checkbox" id="exclude-expire" value="<%:Expire%>">
                                         <span class="checkmark"></span>
-                                        <%:Expire Time%>
+                                        <%:Expire%>
                                     </label>
                                     <label class="form-checkbox">
-                                        <input type="checkbox" id="exclude-traffic" value="剩余流量">
+                                        <input type="checkbox" id="exclude-traffic" value="<%:Traffic%>">
                                         <span class="checkmark"></span>
-                                        <%:Remaining Traffic%>
+                                        <%:Traffic%>
                                     </label>
                                     <label class="form-checkbox">
-                                        <input type="checkbox" id="exclude-tg" value="TG群">
+                                        <input type="checkbox" id="exclude-plan" value="<%:Plan%>">
                                         <span class="checkmark"></span>
-                                        <%:TG Group%>
+                                        <%:Plan%>
                                     </label>
                                     <label class="form-checkbox">
-                                        <input type="checkbox" id="exclude-website" value="官网">
+                                        <input type="checkbox" id="exclude-website" value="<%:Official%>">
                                         <span class="checkmark"></span>
-                                        <%:Official Website%>
+                                        <%:Official%>
                                     </label>
                                 </div>
                             </div>
@@ -1160,7 +1159,7 @@ var ConfigUploader = {
     resetAdvancedOptions: function() {
         document.getElementById('sub-convert-enable').checked = false;
         document.getElementById('sub-convert-options').style.display = 'none';
-        document.getElementById('convert-address-input').value = 'https://api.dler.io/sub';
+        document.getElementById('convert-address-input').selectedIndex = 0;
         document.getElementById('convert-address-custom').style.display = 'none';
         document.getElementById('convert-address-custom').value = '';
 
@@ -1184,7 +1183,7 @@ var ConfigUploader = {
         document.getElementById('exclude-keyword-input').value = '';
         document.getElementById('exclude-expire').checked = false;
         document.getElementById('exclude-traffic').checked = false;
-        document.getElementById('exclude-tg').checked = false;
+        document.getElementById('exclude-plan').checked = false;
         document.getElementById('exclude-website').checked = false;
     },
 
@@ -1249,7 +1248,7 @@ var ConfigUploader = {
                 document.getElementById('sub-convert-options').style.display = 'block';
 
                 if (data.convert_address) {
-                    if (data.convert_address === 'https://api.dler.io/sub' || data.convert_address === 'https://api.wcc.best/sub' || data.convert_address === 'https://api.asailor.org/sub') {
+                    if (data.convert_address === 'https://api.wcc.best/sub' || data.convert_address === 'https://api.asailor.org/sub') {
                         document.getElementById('convert-address-input').value = data.convert_address;
                         if (data.convert_address === 'custom') {
                             document.getElementById('convert-address-custom').style.display = 'block';
@@ -1303,10 +1302,10 @@ var ConfigUploader = {
             }
             if (data.de_ex_keyword) {
                 var defaults = data.de_ex_keyword.split(' ');
-                document.getElementById('exclude-expire').checked = defaults.indexOf('过期时间') !== -1;
-                document.getElementById('exclude-traffic').checked = defaults.indexOf('剩余流量') !== -1;
-                document.getElementById('exclude-tg').checked = defaults.indexOf('TG群') !== -1;
-                document.getElementById('exclude-website').checked = defaults.indexOf('官网') !== -1;
+                document.getElementById('exclude-expire').checked = defaults.indexOf(document.getElementById('exclude-expire').value) !== -1;
+                document.getElementById('exclude-traffic').checked = defaults.indexOf(document.getElementById('exclude-traffic').value) !== -1;
+                document.getElementById('exclude-plan').checked = defaults.indexOf(document.getElementById('exclude-plan').value) !== -1;
+                document.getElementById('exclude-website').checked = defaults.indexOf(document.getElementById('exclude-website').value) !== -1;
             }
         }
     },
@@ -1520,7 +1519,7 @@ var ConfigUploader = {
         var advancedEnabled = document.getElementById('advanced-options-enable').checked;
         var subConvert = advancedEnabled && document.getElementById('sub-convert-enable').checked;
 
-        var convertAddress = 'https://api.dler.io/sub';
+        var convertAddress = '';
         var template = '';
         var emoji = false;
         var udp = false;
@@ -1548,13 +1547,13 @@ var ConfigUploader = {
             keywords = document.getElementById('keyword-input').value;
             excludeKeywords = document.getElementById('exclude-keyword-input').value;
 
-            if (document.getElementById('exclude-expire').checked) excludeDefaults.push('过期时间');
-            if (document.getElementById('exclude-traffic').checked) excludeDefaults.push('剩余流量');
-            if (document.getElementById('exclude-tg').checked) excludeDefaults.push('TG群');
-            if (document.getElementById('exclude-website').checked) excludeDefaults.push('官网');
+            if (document.getElementById('exclude-expire').checked) excludeDefaults.push(document.getElementById('exclude-expire').value);
+            if (document.getElementById('exclude-traffic').checked) excludeDefaults.push(document.getElementById('exclude-traffic').value);
+            if (document.getElementById('exclude-plan').checked) excludeDefaults.push(document.getElementById('exclude-plan').value);
+            if (document.getElementById('exclude-website').checked) excludeDefaults.push(document.getElementById('exclude-website').value);
 
             if (convertAddress === 'custom') {
-                convertAddress = convertAddressCustom.trim() || 'https://api.dler.io/sub';
+                convertAddress = convertAddressCustom.trim();
             }
 
             if (template === '0') {

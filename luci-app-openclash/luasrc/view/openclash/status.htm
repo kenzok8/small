@@ -14,10 +14,11 @@
     --primary-color: #3b82f6;
     --success-color: #059669;
     --success-dark: #047857;
-    --warning-color: #f59e0b;
+    --tip-color: #f59e0b;
     --error-color: #dc2626;
-    --warning-log: #ff00bb;
-    --watch-log: #b300ff;
+    --warning-color: #ff00bb;
+    --watchdog-color: #b300ff;
+    --info-color: #3b82f6;
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
     --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
     --radius-sm: 6px;
@@ -50,9 +51,10 @@
     --success-color: #34d399;
     --success-dark: #10b981;
     --error-color: #ff7070;
-    --warning-color: #f9bb51;
-    --warning-log: #fa41c8;
-    --watch-log: #c147f5;
+    --tip-color: #f9bb51;
+    --warning-color: #fa41c8;
+    --watchdog-color: #c147f5;
+    --info-color: #3b82f6;
 }
 
 .oc[data-darkmode="true"] .plugin-toggle-slider {
@@ -94,7 +96,7 @@
 }
 
 .oc[data-darkmode="true"] .subscription-progress-fill.medium {
-    background: var(--warning-color);
+    background: var(--tip-color);
 }
 
 .oc[data-darkmode="true"] .subscription-progress-fill.low {
@@ -942,7 +944,7 @@
 }
 
 .oc .subscription-progress-fill.medium {
-    background: var(--warning-color);
+    background: var(--tip-color);
 }
 
 .oc .subscription-progress-fill.low {
@@ -2248,14 +2250,10 @@
             DISCONNECTED: 2,
             ERROR: 3
         },
-        retryAttempts: {},
-        maxRetries: 3,
-        reconnectDelay: 2000,
+        reconnectDelay: 5000,
         heartbeatInterval: 30000,
         heartbeatTimers: {},
         _ws_connect: false,
-        _ws_error: false,
-        _ws_retry: 0,
         _allowedCloseCodes: [1000, 1001, 1005, 1006],
 
         isSupported: function() {
@@ -2283,8 +2281,6 @@
                     lastActivity: Date.now(),
                     options: options
                 };
-
-                this.retryAttempts[type] = 0;
 
                 if (ws.addEventListener) {
                     ws.addEventListener('open', this.handleOpen.bind(this, type));
@@ -2362,8 +2358,6 @@
                 this.closeConnection(types[i]);
             }
             this._ws_connect = false;
-            this._ws_error = false;
-            this._ws_retry = 0;
         },
 
         handleMessage: function(type, event) {
@@ -2389,13 +2383,13 @@
                 connection.state = this.connectionStates.CONNECTED;
                 connection.lastActivity = Date.now();
             }
-            this.retryAttempts[type] = 0;
             this.startHeartbeat(type);
 
-            if (type === 'traffic' || Object.keys(this.connections).length === 3) {
+            if (Object.keys(this.connections).length === 3) {
                 this._ws_connect = true;
-                this._ws_error = false;
-                this._ws_retry = 0;
+                if (NetworkStatsManager.isEnabled) {
+                    NetworkStatsManager.stop();
+                }
             }
         },
 
@@ -2404,15 +2398,14 @@
             if (connection) {
                 connection.state = this.connectionStates.ERROR;
             }
-            this._ws_error = true;
             this.stopHeartbeat(type);
-
-            if (type === 'traffic') {
-                this.enableFallbackMode();
-            }
+            this.enableFallbackMode();
         },
 
         handleClose: function(type, event) {
+            // if not connected, start log display because core maybe restart
+            LogManager.startLogDisplay();
+
             var connection = this.connections[type];
             if (connection) {
                 connection.state = this.connectionStates.DISCONNECTED;
@@ -2429,7 +2422,6 @@
             if (connection) {
                 connection.state = this.connectionStates.ERROR;
             }
-            this._ws_error = true;
             this.enableFallbackMode();
         },
 
@@ -2437,25 +2429,22 @@
             var self = this;
             var connection = this.connections[type];
 
-            if (!connection || this.retryAttempts[type] >= this.maxRetries) {
+            if (!connection) {
                 this.enableFallbackMode();
                 return;
             }
-
-            this.retryAttempts[type] = (this.retryAttempts[type] || 0) + 1;
-            var delay = this.reconnectDelay * Math.pow(1.5, this.retryAttempts[type] - 1);
 
             setTimeout(function() {
                 if (self.connections[type] && self.connections[type].state !== self.connectionStates.CONNECTED) {
                     self.createConnection(type, connection.url, connection.messageHandler, connection.options);
                 }
-            }, delay);
+            }, this.reconnectDelay);
         },
 
         enableFallbackMode: function() {
             this._ws_connect = false;
             this.closeAll();
-            if (typeof NetworkStatsManager !== "undefined" && !NetworkStatsManager.isEnabled) {
+            if (!NetworkStatsManager.isEnabled) {
                 NetworkStatsManager.start();
             }
         },
@@ -2480,14 +2469,6 @@
                 }
             }
             return false;
-        },
-
-        resetRetryCount: function(type) {
-            if (type) {
-                this.retryAttempts[type] = 0;
-            } else {
-                this.retryAttempts = {};
-            }
         }
     };
 
@@ -2575,7 +2556,7 @@
 
                     this.updateSubscriptionDisplay(currentConfigFile, currentFileInfo);
 
-                    if (currentConfigFile && SubscriptionManager.currentConfigFile !== currentConfigFile) {
+                    if (SubscriptionManager.currentConfigFile !== currentConfigFile) {
                         SubscriptionManager.currentConfigFile = currentConfigFile;
                         SubscriptionManager.getSubscriptionInfo();
                     }
@@ -2967,7 +2948,7 @@
 
         loadSubscriptionInfo: function() {
             var currentConfig = ConfigFileManager.getCurrentConfig() || ConfigFileManager.getSelectedConfig();
-            if (currentConfig && currentConfig !== this.currentConfigFile) {
+            if (currentConfig !== this.currentConfigFile) {
                 this.currentConfigFile = currentConfig;
                 this.getSubscriptionInfo();
             }
@@ -3376,7 +3357,6 @@
         },
 
         bindEvents: function() {
-            var self = this;
             var textarea = document.getElementById('subscription-url-textarea');
             var overlay = document.getElementById('subscription-url-overlay');
 
@@ -3444,24 +3424,38 @@
             });
         },
 
+        handleSubURL: function(urlresult) {
+            var textarea = document.getElementById('subscription-url-textarea');
+            if (!textarea) return;
+
+            var urls = '';
+            if (urlresult.type && urlresult.type === "multiple") {
+                for (var data in urlresult.providers) {
+                    urls += urlresult.providers[data].url + '#name=' + urlresult.providers[data].name + '\n';
+                }
+            }
+            if (urlresult.type && urlresult.type === "single") {
+                urls = urlresult.url;
+            }
+            textarea.value = urls;
+        },
+
         loadUrls: function() {
             var self = this;
+            var existingData = localStorage.getItem('sub_info_' + this.filename);
+            if (existingData) {
+                existingData = JSON.parse(existingData);
+                if (existingData.url_result) {
+                    this.handleSubURL(existingData.url_result);
+                    return;
+                }
+            };
+
             XHR.get('<%=luci.dispatcher.build_url("admin", "services", "openclash", "get_subscribe_info_data")%>', {
                 filename: this.filename
             }, function(x, status) {
                 if (x && x.status == 200 && status) {
-                    var textarea = document.getElementById('subscription-url-textarea');
-                    if (textarea) {
-                        var urls = '';
-                        if (status.url) {
-                            if (typeof status.url === 'string') {
-                                urls = status.url;
-                            } else if (Array.isArray(status.url)) {
-                                urls = status.url.join('\n');
-                            }
-                        }
-                        textarea.value = urls;
-                    }
+                    self.handleSubURL(status);
                 }
             });
         }
@@ -3489,9 +3483,9 @@
 
             StateManager.clearCache('<%=luci.dispatcher.build_url("admin", "services", "openclash", "startlog")%>');
 
-            if (DOMCache.oclog) {
+            if (DOMCache.oclog && initialMessage) {
                 DOMCache.oclog.style.display = 'inline-flex';
-                DOMCache.oclog.innerHTML = '<b style="color:var(--warning-color)">' + (initialMessage || '<%:Processing...%>') + '</b>';
+                DOMCache.oclog.innerHTML = '<b style="color:var(--tip-color)">' + initialMessage + '</b>';
             }
 
             this.isPolling = true;
@@ -3591,17 +3585,11 @@
 
         checkForErrors: function(log) {
             if (!log) return false;
-            if (log.match(/level=fatal|level=error|FTL \[Config]/)) {
+            if (log.match(/level=(fatal|error)/)) {
                 XHR.get('<%=luci.dispatcher.build_url("admin", "services", "openclash", "del_start_log")%>', null, function(x) {});
 
-                var errorMsg;
-                if (log.match(/level=(fatal|error)/)) {
-                    var msgParts = log.split('msg=');
-                    errorMsg = msgParts.length > 1 ? msgParts[1].replace(/"/g, '') : log;
-                } else { // FTL [Config]
-                    var ftlParts = log.split('FTL [Config] ');
-                    errorMsg = ftlParts.length > 1 ? ftlParts[1] : log;
-                }
+                var msgParts = log.split('msg=');
+                var errorMsg = msgParts.length > 1 ? msgParts[1].replace(/"/g, '') : log;
 
                 setTimeout(function() {
                     alert('<%:OpenClash Start Failed%>:\n\n' + errorMsg);
@@ -3621,6 +3609,7 @@
             var color = this.getLogColor(cleanLog);
             var displayText = this.formatLogText(cleanLog);
 
+            DOMCache.oclog.style.display = 'inline-flex';
             DOMCache.oclog.innerHTML = '<b style="color:' + color + '">' + displayText + '</b>';
         },
 
@@ -3629,19 +3618,13 @@
         },
 
         getLogColor: function(log) {
-            if (log.includes("Tip:") || log.includes("提示：")) {
-                return 'var(--warning-color)';
-            } else if (log.includes("Error:") || log.includes("错误：") || log.includes("level=error")) {
-                return 'var(--error-color)';
-            } else if (log.includes("Warning:") || log.includes("警告：") || log.includes("level=warning")) {
-                return 'var(--warning-log)';
-            } else if (log.includes("Watchdog:") || log.includes("守护程序：")) {
-                return 'var(--watch-log)';
-            } else if (log.match(/level=info|Success|Started|Ready/)) {
-                return 'var(--success-color)';
-            } else {
-                return 'var(--text-secondary)';
+            for (var levelKey in window.levelTranslations) {
+                var translatedText = '[' + window.levelTranslations[levelKey] + ']';
+                if (log.includes(translatedText)) {
+                    return "var(--" + levelKey + "-color)";
+                }
             }
+            return "var(--info-color)";
         },
 
         formatLogText: function(log) {
@@ -3695,12 +3678,12 @@
             StateManager.cachedXHRGet('<%=luci.dispatcher.build_url("admin", "services", "openclash", "toolbar_show_sys")%>', function(x, status) {
                 if (x && x.status == 200 && x.responseText != "") {
                     self.retryCount = 0;
-                    var cpuColor = status.cpu <= 50 ? "var(--success-color)" : (status.cpu <= 80 ? "var(--warning-color)" : "var(--error-color)");
+                    var cpuColor = status.cpu <= 50 ? "var(--success-color)" : (status.cpu <= 80 ? "var(--tip-color)" : "var(--error-color)");
                     var cpuValue = status.cpu <= 100 ? status.cpu + " %" : "0 %";
                     document.getElementById("cpu_t").innerHTML = "<font style=\"color:"+cpuColor+"\">"+cpuValue+"</font>";
 
                     var loadValue = parseFloat(status.load_avg) || 0;
-                    var loadColor = loadValue <= 50 ? "var(--success-color)" : (loadValue <= 80 ? "var(--warning-color)" : "var(--error-color)");
+                    var loadColor = loadValue <= 50 ? "var(--success-color)" : (loadValue <= 80 ? "var(--tip-color)" : "var(--error-color)");
                     document.getElementById("load_a").innerHTML = "<font style=\"color:"+loadColor+"\">"+status.load_avg+" %</font>";
                 } else {
                     self.handleError();
@@ -3782,12 +3765,12 @@
             ];
 
             if (!SystemStatusManager.isEnabled) {
-                var cpuColor = status.cpu <= 50 ? "var(--success-color)" : (status.cpu <= 80 ? "var(--warning-color)" : "var(--error-color)");
+                var cpuColor = status.cpu <= 50 ? "var(--success-color)" : (status.cpu <= 80 ? "var(--tip-color)" : "var(--error-color)");
                 var cpuValue = status.cpu <= 100 ? status.cpu + " %" : "0 %";
                 updates.push({element: document.getElementById("cpu_t"), content: "<font style=\"color:"+cpuColor+"\">"+cpuValue+"</font>"});
 
                 var loadValue = parseFloat(status.load_avg) || 0;
-                var loadColor = loadValue <= 50 ? "var(--success-color)" : (loadValue <= 80 ? "var(--warning-color)" : "var(--error-color)");
+                var loadColor = loadValue <= 50 ? "var(--success-color)" : (loadValue <= 80 ? "var(--tip-color)" : "var(--error-color)");
                 updates.push({element: document.getElementById("load_a"), content: "<font style=\"color:"+loadColor+"\">"+status.load_avg+" %</font>"});
             }
 
@@ -4143,19 +4126,13 @@
 
             if (status.clash && status.daip) {
                 if (!WSManager.hasActiveConnections()) {
-                    if (!WSManager._ws_error || WSManager._ws_retry < 3) {
-                        if (initializeWebSocketConnections(status)) {
-                            WSManager._ws_retry++;
-                        }
-                    } else {
-                        WSManager.enableFallbackMode();
-                    }
+                    initializeWebSocketConnections(status);
                 } else {
-                    if (NetworkStatsManager && NetworkStatsManager.isEnabled) {
+                    if (NetworkStatsManager.isEnabled) {
                         NetworkStatsManager.stop();
                     }
 
-                    if (SystemStatusManager && !SystemStatusManager.isEnabled) {
+                    if (!SystemStatusManager.isEnabled) {
                         SystemStatusManager.start();
                     }
                 }
@@ -4232,14 +4209,14 @@
         var isChineseUser = userLang.indexOf('zh') === 0;
 
         var tips = [
-            '<%:Tip: You can modify the profile on the profile page (for content that is not taken over)%>',
-            '<%:Tip: do not write configuration files? Try to create one click on the server page%>',
-            '<%:Tip: some website are abnormal? Try switching modes or using third-party rules%>',
-            '<%:Tip: using the fake IP mode can get a faster access experience%>',
-            '<%:Tip: the nameserver group must have at least one server set when using custom DNS%>',
-            '<%:Tip: after started, please wait patiently until the connection is normal%>',
-            '<%:Tip: if you don not use IPv6, please turn off the DHCP service of IPv6, otherwise the connection will be abnormal%>',
-            '<%:Tip: you can update the version in the settings page%>',
+            '<%:You can modify the profile on the profile page (for content that is not taken over)%>',
+            '<%:do not write configuration files? Try to create one click on the server page%>',
+            '<%:some website are abnormal? Try switching modes or using third-party rules%>',
+            '<%:using the fake IP mode can get a faster access experience%>',
+            '<%:the nameserver group must have at least one server set when using custom DNS%>',
+            '<%:after started, please wait patiently until the connection is normal%>',
+            '<%:if you don not use IPv6, please turn off the DHCP service of IPv6, otherwise the connection will be abnormal%>',
+            '<%:you can update the version in the settings page%>',
             '<%:Note: It is not recommended to enable IPv6 and related services for routing. Most of the network connection problems reported so far are related to it%>',
             '<%:Note: Turning on secure DNS in the browser will cause abnormal shunting, please be careful to turn it off%>',
             '<%:Note: Some software will modify the device HOSTS, which will cause abnormal shunt, please pay attention to check%>',
@@ -4503,12 +4480,6 @@
         if (winOpen == null || typeof(winOpen) == 'undefined') {
             window.location.href = url;
         }
-    }
-
-    function ws_terror() {
-        WSManager._ws_error = true;
-
-        NetworkStatsManager.start();
     }
 
     function ws_tmessage(event) {
@@ -4938,7 +4909,7 @@
             }
         });
         return false;
-        }
+    }
 
     function copySecret() {
         var secret = StateManager.current_status.dase || '';
@@ -4969,6 +4940,10 @@
             var mixPort = StateManager.cached_proxy_info.mixed_port || '7893';
             var proxyIp = StateManager.current_status.daip;
             var proxyText = proxyIp + ':' + mixPort;
+            if (StateManager.cached_proxy_info.auth_user && StateManager.cached_proxy_info.auth_pass) {
+                proxyText = StateManager.cached_proxy_info.auth_user + ':' + StateManager.cached_proxy_info.auth_pass + '@' + proxyText;
+            }
+            proxyText = 'http://' + proxyText;
             copyToClipboard(proxyText, '<%:Mix proxy address copied:%> ');
         } else {
             alert('<%:Proxy info not available, please try again later%>');
@@ -5062,13 +5037,8 @@
                 client_href: currentUrl.href
             }, function(x, data) {
                 if (x && x.status == 200 && data.pac_url) {
-                    if (data.error && data.error.indexOf("warning:") === 0) {
-                        var warningMsg = data.error.replace("warning: ", "");
-                        var warningTranslations = {
-                            'No authentication configured, please be aware of the risk of information leakage!': '<%:No authentication configured, please be aware of the risk of information leakage!%>'
-                        };
-                        var translatedWarning = warningTranslations[warningMsg] || warningMsg;
-                        alert('<%:Warning:%> ' + translatedWarning);
+                    if (data.error && data.error !== "") {
+                        alert(data.error);
                     }
                     copyToClipboard(data.pac_url, '<%:PAC file URL copied:%> ');
                 } else if (data.error) {
@@ -5392,11 +5362,11 @@
             filename: filename
         }, function(x, status) {
             if (x.status == 200) {
-                if (typeof ConfigUploader !== 'undefined' && ConfigUploader.showEditSubscribe) {
+                if (ConfigUploader && ConfigUploader.showEditSubscribe) {
                     ConfigUploader.showEditSubscribe(status, filename);
                 } else {
                     setTimeout(function() {
-                        if (typeof ConfigUploader !== 'undefined' && ConfigUploader.showEditSubscribe) {
+                        if (ConfigUploader && ConfigUploader.showEditSubscribe) {
                             ConfigUploader.showEditSubscribe(status, filename);
                         } else {
                             alert('<%:Config editor not ready, please try again%>');
@@ -5418,11 +5388,11 @@
             return false;
         }
 
-        if (typeof ConfigEditor !== 'undefined' && ConfigEditor.show) {
+        if (ConfigEditor.show) {
             ConfigEditor.show(currentConfig);
         } else {
             setTimeout(function() {
-                if (typeof ConfigEditor !== 'undefined' && ConfigEditor.show) {
+                if (ConfigEditor.show) {
                     ConfigEditor.show(currentConfig);
                 } else {
                     alert('<%:Config editor not ready, please try again%>');
@@ -5434,11 +5404,11 @@
     }
 
     function editOverwrite() {
-        if (typeof ConfigEditor !== 'undefined' && ConfigEditor.showOverwrite) {
+        if (ConfigEditor.showOverwrite) {
             ConfigEditor.showOverwrite();
         } else {
             setTimeout(function() {
-                if (typeof ConfigEditor !== 'undefined' && ConfigEditor.showOverwrite) {
+                if (ConfigEditor.showOverwrite) {
                     ConfigEditor.showOverwrite();
                 } else {
                     alert('<%:Config editor not ready, please try again%>');

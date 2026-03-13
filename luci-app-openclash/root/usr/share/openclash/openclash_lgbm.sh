@@ -34,8 +34,9 @@ if [ -z "$LGBM_CUSTOM_URL" ]; then
 else
    DOWNLOAD_URL=$LGBM_CUSTOM_URL
 fi
-DOWNLOAD_FILE_CURL "$DOWNLOAD_URL" "/tmp/Model.bin"
-if [ "$?" -eq 0 ] && [ -s "/tmp/Model.bin" ]; then
+DOWNLOAD_FILE_CURL "$DOWNLOAD_URL" "/tmp/Model.bin" "$lgbm_path"
+DOWNLOAD_RESULT=$?
+if [ "$DOWNLOAD_RESULT" -eq 0 ] && [ -s "/tmp/Model.bin" ]; then
    LOG_OUT "LightGBM Model Download Success, Check Updated..."
    cmp -s /tmp/Model.bin "$lgbm_path"
    if [ "$?" -ne "0" ]; then
@@ -47,6 +48,8 @@ if [ "$?" -eq 0 ] && [ -s "/tmp/Model.bin" ]; then
    else
       LOG_OUT "Updated LightGBM Model No Change, Do Nothing..."
    fi
+elif [ "$DOWNLOAD_RESULT" -eq 2 ]; then
+   LOG_OUT "Updated LightGBM Model No Change, Do Nothing..."
 else
    LOG_OUT "LightGBM Model Update Error, Please Try Again Later..."
 fi

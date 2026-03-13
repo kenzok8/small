@@ -43,8 +43,9 @@ if [ -z "$GEOIP_CUSTOM_URL" ]; then
 else
    DOWNLOAD_URL=$GEOIP_CUSTOM_URL
 fi
-DOWNLOAD_FILE_CURL "$DOWNLOAD_URL" "/tmp/GeoIP.dat"
-if [ "$?" -eq 0 ] && [ -s "/tmp/GeoIP.dat" ]; then
+DOWNLOAD_FILE_CURL "$DOWNLOAD_URL" "/tmp/GeoIP.dat" "$geoip_path"
+DOWNLOAD_RESULT=$?
+if [ "$DOWNLOAD_RESULT" -eq 0 ] && [ -s "/tmp/GeoIP.dat" ]; then
    LOG_OUT "GeoIP Dat Download Success, Check Updated..."
    cmp -s /tmp/GeoIP.dat "$geoip_path"
    if [ "$?" -ne "0" ]; then
@@ -56,6 +57,8 @@ if [ "$?" -eq 0 ] && [ -s "/tmp/GeoIP.dat" ]; then
    else
       LOG_OUT "Updated GeoIP Dat No Change, Do Nothing..."
    fi
+elif [ "$DOWNLOAD_RESULT" -eq 2 ]; then
+   LOG_OUT "Updated GeoIP Dat No Change, Do Nothing..."
 else
    LOG_OUT "GeoIP Dat Update Error, Please Try Again Later..."
 fi

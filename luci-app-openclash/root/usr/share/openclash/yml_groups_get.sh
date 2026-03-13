@@ -13,13 +13,9 @@ del_lock() {
    rm -rf "/tmp/lock/openclash_groups_get.lock"
 }
 
-CFG_FILE="/etc/config/openclash"
-other_group_file="/tmp/yaml_other_group.yaml"
-servers_update=$(uci_get_config "servers_update")
-servers_if_update=$(uci_get_config "servers_if_update")
 CONFIG_FILE=$(uci_get_config "config_path")
 CONFIG_NAME=$(echo "$CONFIG_FILE" |awk -F '/' '{print $5}' 2>/dev/null)
-UPDATE_CONFIG_FILE=$(uci_get_config "config_update_path")
+UPDATE_CONFIG_FILE=$1
 UPDATE_CONFIG_NAME=$(echo "$UPDATE_CONFIG_FILE" |awk -F '/' '{print $5}' 2>/dev/null)
 LOG_FILE="/tmp/openclash.log"
 set_lock
@@ -45,95 +41,36 @@ if [ -z "$CONFIG_NAME" ]; then
    CONFIG_NAME="config.yaml"
 fi
 
-BACKUP_FILE="/etc/openclash/backup/$(echo "$CONFIG_FILE" |awk -F '/' '{print $5}' 2>/dev/null)"
-
-if [ ! -s "$CONFIG_FILE" ] && [ ! -s "$BACKUP_FILE" ]; then
+if [ ! -s "$CONFIG_FILE" ]; then
    del_lock
    exit 0
-elif [ ! -s "$CONFIG_FILE" ] && [ -s "$BACKUP_FILE" ]; then
-   mv "$BACKUP_FILE" "$CONFIG_FILE"
 fi
 
 LOG_OUT "Start Getting【$CONFIG_NAME】Groups Setting..."
+LOG_OUT "Deleting Old Configuration..."
 
-/usr/share/openclash/yml_groups_name_get.sh
-if [ $? -ne 0 ]; then
-	LOG_OUT "Read Error, Config File【$CONFIG_NAME】Abnormal!"
-	uci -q commit openclash
-	SLOG_CLEAN
-	del_lock
-	exit 0
-fi
-
-#判断当前配置文件是否有策略组信息
-cfg_group_name()
+del_options()
 {
    local section="$1"
    local config
    config_get "config" "$section" "config" ""
 
-   if [ -z "$config" ]; then
-      return
+   if [ "$config" = "$CONFIG_NAME" ]; then
+      uci -q delete openclash."$section"
    fi
-
-   [ "$config" = "$CONFIG_NAME" ] || [ "$config" = "all" ] && {
-      config_group_exist=1
-   }
-}
-
-#删除不必要的配置
-cfg_delete()
-{
-   LOG_OUT "Deleting Old Configuration..."
-#删除策略组
-   group_num=$(grep "^config groups$" "$CFG_FILE" |wc -l)
-   for ((i=$group_num;i>=0;i--))
-	 do
-	    if [ "$(uci -q get openclash.@groups["$i"].config)" = "$CONFIG_NAME" ]; then
-	       uci -q delete openclash.@groups["$i"]
-	       uci -q commit openclash
-	    fi
-	 done
-#删除启用的节点
-   server_num=$(grep "^config servers$" "$CFG_FILE" |wc -l)
-   for ((i=$server_num;i>=0;i--))
-	 do
-	    if [ "$(uci -q get openclash.@servers["$i"].config)" = "$CONFIG_NAME" ]; then
-	    	 if [ "$(uci -q get openclash.@servers["$i"].enabled)" = "1" ] && [ "$(uci -q get openclash.@servers["$i"].manual)" = "0" ]; then
-	          uci -q delete openclash.@servers["$i"]
-	          uci -q commit openclash
-	       fi
-	    fi
-	 done
-#删除启用的代理集
-   provider_num=$(grep "^config proxy-provider$" "$CFG_FILE" 2>/dev/null |wc -l)
-   for ((i=$provider_num;i>=0;i--))
-	 do
-	    if [ "$(uci -q get openclash.@proxy-provider["$i"].config)" = "$CONFIG_NAME" ]; then
-	       if [ "$(uci -q get openclash.@proxy-provider["$i"].enabled)" = "1" ] && [ "$(uci -q get openclash.@proxy-provider["$i"].manual)" = "0" ]; then
-	          uci -q delete openclash.@proxy-provider["$i"]
-	          uci -q commit openclash
-	       fi
-	    fi
-	 done
 }
 
 config_load "openclash"
-config_foreach cfg_group_name "groups"
-
-if [ "$servers_if_update" -eq 1 ] && [ "$servers_update" -eq 1 ] && [ "$config_group_exist" -eq 1 ]; then
-   /usr/share/openclash/yml_proxys_get.sh
-   del_lock
-   exit 0
-fi
-
-cfg_delete
+config_foreach del_options "groups" 
+config_foreach del_options "servers"
+config_foreach del_options "proxy-provider"
+uci -q commit openclash
 
 ruby -ryaml -rYAML -I "/usr/share/openclash" -E UTF-8 -e "
    begin
       Value = YAML.load_file('$CONFIG_FILE');
    rescue Exception => e
-      YAML.LOG('Error: Load File Failed,【' + e.message + '】');
+      YAML.LOG_ERROR('Load File Failed,【' + e.message + '】');
    end;
 
    threads_g = [];
@@ -148,7 +85,7 @@ ruby -ryaml -rYAML -I "/usr/share/openclash" -E UTF-8 -e "
       proxy-groups = [];
    end;
 
-	Value_1 = File.readlines('/tmp/Proxy_Group').map!{|x| x.strip};
+   CONFIG_GROUP = (['DIRECT', 'REJECT', 'GLOBAL', 'REJECT-DROP', 'PASS', 'COMPATIBLE'] + (Value['proxy-groups']&.map { |x| x['name'] } || [])).uniq;
    Value['proxy-groups'].each_with_index do |x, index|
       uci_name_tmp << %x{uci -q add openclash groups 2>&1}.chomp
       queue.push(nil)
@@ -181,8 +118,6 @@ ruby -ryaml -rYAML -I "/usr/share/openclash" -E UTF-8 -e "
             uci_commands << uci_set + 'config=\"' + '${CONFIG_NAME}' + '\"'
             #old_name
             uci_commands << uci_set + 'old_name=\"' + x['name'] + '\"'
-            #old_name_cfg
-            uci_commands << uci_set + 'old_name_cfg=\"' + x['name'] + '\"'
          };
 
          threads_g << Thread.new {
@@ -274,7 +209,7 @@ ruby -ryaml -rYAML -I "/usr/share/openclash" -E UTF-8 -e "
             if x.key?('proxies') then 
                x['proxies'].each{
                |y|
-                  if Value_1.include?(y) then
+                  if CONFIG_GROUP.include?(y) then
                      uci_commands << uci_add + 'other_group=\"^' + y.to_s + '$\"'
                   end
                }
@@ -289,7 +224,7 @@ ruby -ryaml -rYAML -I "/usr/share/openclash" -E UTF-8 -e "
           };
          threads_g.each(&:join);
       rescue Exception => e
-         YAML.LOG('Error: Resolve Groups Failed,【${CONFIG_NAME} - ' + x['type'] + ' - ' + x['name'] + ': ' + e.message + '】');
+         YAML.LOG_ERROR('Resolve Groups Failed,【${CONFIG_NAME} - ' + x['type'] + ' - ' + x['name'] + ': ' + e.message + '】');
       ensure
          queue.pop
       end;
@@ -314,5 +249,5 @@ ruby -ryaml -rYAML -I "/usr/share/openclash" -E UTF-8 -e "
    system('rm -rf /tmp/yaml_other_group.yaml 2>/dev/null');
 " 2>/dev/null >> $LOG_FILE
 
-/usr/share/openclash/yml_proxys_get.sh
+/usr/share/openclash/yml_proxys_get.sh "$CONFIG_FILE" >/dev/null 2>&1
 del_lock

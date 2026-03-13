@@ -1,12 +1,25 @@
 #!/bin/bash
 . /usr/share/openclash/log.sh
+. /usr/share/openclash/openclash_etag.sh
 
 DOWNLOAD_FILE_CURL() {
     [ -z "$1" ] || [ -z "$2" ] && return 1
     DOWNLOAD_URL=$1
     DOWNLOAD_PATH=$2
-    DOWNLOAD_UA=$3
+    FILE_PATH=$3
+    DOWNLOAD_UA=$4
     [ -z "$DOWNLOAD_UA" ] && DOWNLOAD_UA="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
+
+    CURL_OUTPUT=$(curl -sLI --connect-timeout 5 -m 10 --speed-time 5 --speed-limit 1 --retry 2 \
+        -H "User-Agent: ${DOWNLOAD_UA}" "$DOWNLOAD_URL" 2>&1)
+
+    NEW_ETAG=$(echo "$CURL_OUTPUT" | grep -i "^etag:" | cut -d' ' -f2- | tr -d '\r\n' | sed 's/^"//;s/"$//')
+    HTTP_CODE=$(echo "$CURL_OUTPUT" | grep -i "^HTTP" | tail -1 | cut -d' ' -f2)
+    CACHED_ETAG=$(GET_ETAG_BY_PATH "$FILE_PATH")
+
+    if [ "$HTTP_CODE" = "200" ] && [ -n "$NEW_ETAG" ] && [ "$NEW_ETAG" = "$CACHED_ETAG" ] && [ -e "$FILE_PATH" ]; then
+        return 2
+    fi
 
     if [ "$SHOW_DOWNLOAD_PROGRESS" = "1" ] || [ "$SHOW_DOWNLOAD_PROGRESS" = "true" ]; then
         TEMP_LOG="/tmp/curl_log_$$"
@@ -58,8 +71,6 @@ DOWNLOAD_FILE_CURL() {
             rm -rf $DOWNLOAD_PATH
             SLOG_CLEAN
             return 1
-        else
-            return 0
         fi
     else
         CURL_OUTPUT=$(curl -w "\n%{http_code}" -SsL --connect-timeout 30 -m 60 --speed-time 30 --speed-limit 1 --retry 2 -H "User-Agent: ${DOWNLOAD_UA}" "$DOWNLOAD_URL" -o "$DOWNLOAD_PATH" 2>&1)
@@ -72,8 +83,12 @@ DOWNLOAD_FILE_CURL() {
             rm -rf $DOWNLOAD_PATH
             SLOG_CLEAN
             return 1
-        else
-            return 0
         fi
     fi
+
+    if [ -n "$NEW_ETAG" ] && [ "$HTTP_CODE" = "200" ]; then
+        SAVE_ETAG_TO_CACHE "$DOWNLOAD_URL" "$NEW_ETAG" "$FILE_PATH"
+    fi
+
+    return 0
 }

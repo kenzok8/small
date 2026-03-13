@@ -51,7 +51,7 @@ fi
 
 if [ -n "$(pidof clash)" ] && [ -f "$CONFIG_FILE" ]; then
    if [ "$small_flash_memory" == "1" ] || [ -n "$(echo $core_version |grep mips)" ] || [ -n "$(echo $DISTRIB_ARCH |grep mips)" ] || [ -n "$(opkg status libc 2>/dev/null |grep 'Architecture' |awk -F ': ' '{print $2}' |grep mips)" ] || [ -n "$(apk list libc 2>/dev/null |grep mips)" ]; then
-   CACHE_PATH="/tmp/etc/openclash/cache.db"
+      CACHE_PATH="/tmp/etc/openclash/cache.db"
       if [ -f "$CACHE_PATH" ]; then
          cmp -s "$CACHE_PATH" "$HISTORY_PATH"
          if [ "$?" -ne "0" ]; then
