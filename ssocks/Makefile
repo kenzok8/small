@@ -15,9 +15,7 @@ PKG_VERSION:=0.0.15
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=https://codeload.github.com/kenzok8/ssocks/tar.gz/
-PKG_SOURCE_VERSION:=$(PKG_VERSION)
-PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
+PKG_SOURCE_URL:=https://codeload.github.com/kenzok8/ssocks/tar.gz/$(PKG_VERSION)?
 PKG_HASH:=1ec5709d88cd708859c90baba84b9ccdc757a9b345ad73dc48fd6b1d338a7247
 
 PKG_LICENSE:=MIT

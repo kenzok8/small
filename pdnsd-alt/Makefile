@@ -9,9 +9,7 @@ PKG_VERSION:=1.2.9b-par.1
 PKG_RELEASE:=1
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=https://codeload.github.com/kenzok8/pdnsd/tar.gz/
-PKG_SOURCE_VERSION:=$(PKG_VERSION)
-PKG_SOURCE_SUBDIR:=pdnsd-$(PKG_VERSION)
+PKG_SOURCE_URL:=https://codeload.github.com/kenzok8/pdnsd/tar.gz/$(PKG_VERSION)?
 PKG_HASH:=b7c3bfa6f0bca8556cd8040cad79054a97d65e4a291082b2f08e83446155200a
 
 PKG_BUILD_PARALLEL:=1
