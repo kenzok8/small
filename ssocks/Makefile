@@ -11,14 +11,14 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=ssocks
-PKG_VERSION:=0.0.14
-PKG_RELEASE:=3
+PKG_VERSION:=0.0.15
+PKG_RELEASE:=1
 
-PKG_SOURCE_PROTO:=git
-PKG_SOURCE_URL:=https://github.com/tostercx/ssocks.git
-PKG_SOURCE_DATE:=2020-07-09
-PKG_SOURCE_VERSION:=c2024789c1ee076d171fd6061d7c133302216ea7
-PKG_MIRROR_HASH:=2e9d1a2e6b47303389410952867d204e03054763d024a22a838a9707c2daca03
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+PKG_SOURCE_URL:=https://codeload.github.com/kenzok8/ssocks/tar.gz/
+PKG_SOURCE_VERSION:=$(PKG_VERSION)
+PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
+PKG_HASH:=1ec5709d88cd708859c90baba84b9ccdc757a9b345ad73dc48fd6b1d338a7247
 
 PKG_LICENSE:=MIT
 PKG_LICENSE_FILES:=LICENSE
@@ -33,7 +33,7 @@ define Package/ssocks/template
 	SECTION:=net
 	CATEGORY:=Network
 	TITLE:=sSocks
-	URL:=https://github.com/tostercx/ssocks
+	URL:=https://github.com/kenzok8/ssocks
 	DEPENDS:=+libopenssl
 endef
 
