@@ -10,7 +10,7 @@ PKG_VERSION:=0.0.5
 PKG_RELEASE:=1
 
 PKG_SOURCE_PROTO:=git
-PKG_SOURCE_URL:=https://github.com/shadowsocks/simple-obfs.git
+PKG_SOURCE_URL:=https://github.com/kenzok8/simple-obfs.git
 PKG_SOURCE_DATE:=2019-08-17
 PKG_SOURCE_VERSION:=486bebd9208539058e57e23a12f23103016e09b4
 PKG_MIRROR_HASH:=bc97eba511b86a089ab4bcf0ac78d9e4a39c59046d5cde77b79a118245daa0ba
@@ -30,7 +30,7 @@ define Package/simple-obfs/template
   SECTION:=net
   CATEGORY:=Network
   TITLE:=A simple obfuscating tool
-  URL:=https://github.com/shadowsocks/simple-obfs
+  URL:=https://github.com/kenzok8/simple-obfs
   DEPENDS:=+libpthread +libev
 endef
 
