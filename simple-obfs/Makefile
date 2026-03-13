@@ -25,7 +25,10 @@ include $(INCLUDE_DIR)/package.mk
 
 define Build/Prepare
 	$(call Build/Prepare/Default)
-	[ -f $(PKG_BUILD_DIR)/libcork/configure.ac ] || git clone --depth 1 https://github.com/shadowsocks/libcork.git $(PKG_BUILD_DIR)/libcork
+	if [ ! -f $(PKG_BUILD_DIR)/libcork/Makefile.am ]; then \
+		git clone https://github.com/shadowsocks/libcork.git $(PKG_BUILD_DIR)/libcork; \
+		cd $(PKG_BUILD_DIR)/libcork && git checkout f02984545061c924808e4b9ea7cc6749a41f1979; \
+	fi
 	(cd $(PKG_BUILD_DIR); ./autogen.sh)
 endef
 
