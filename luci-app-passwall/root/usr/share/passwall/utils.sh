@@ -338,7 +338,7 @@ eval_set_val() {
 eval_unset_val() {
 	for i in $@; do
 		for j in $i; do
-			eval unset j
+			eval unset $j
 		done
 	done
 }

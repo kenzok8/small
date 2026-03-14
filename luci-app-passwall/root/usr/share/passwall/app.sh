@@ -1775,7 +1775,7 @@ acl_app() {
 				[ -n "$tcp_node" ] && {
 					local protocol=$(config_n_get $tcp_node protocol)
 					[ "$protocol" = "_shunt" ] && [ "$udp_node" != "default" ] && {
-						udp_node = "tcp"
+						udp_node="tcp"
 					}
 				}
 				if [ "$udp_node" = "default" ]; then
