@@ -8,17 +8,17 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=trojan
 PKG_VERSION:=1.16.0
-PKG_RELEASE:=3
+PKG_RELEASE:=2
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
-PKG_SOURCE_URL:=https://codeload.github.com/trojan-gfw/trojan/tar.gz/refs/tags/v$(PKG_VERSION)
+PKG_SOURCE_URL:=https://codeload.github.com/trojan-gfw/trojan/tar.gz/v$(PKG_VERSION)?
 PKG_HASH:=86cdb2685bb03a63b62ce06545c41189952f1ec4a0cd9147450312ed70956cbc
 
 PKG_BUILD_PARALLEL:=1
 PKG_BUILD_DEPENDS:=openssl
 
 PKG_LICENSE:=GPL-3.0
-PKG_LICENSE_FILES:=LICENSE
+PKG_LICENSE_FILE:=LICENSE
 PKG_MAINTAINER:=GreaterFire
 
 include $(INCLUDE_DIR)/package.mk
