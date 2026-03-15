@@ -132,8 +132,18 @@ o.default = 0
 o.rmempty = true
 o.rewrite_option = o.option
 
-o = s:option(DynamicList, _n("tls_alpn"), translate("TLS ALPN"))
+o = s:option(ListValue, _n("tls_alpn"), translate("TLS ALPN"))
 o.rmempty = true
+o.default = ""
+o:value("", translate("Default"))
+o:value("h3")
+o:value("h2")
+o:value("h3,h2")
+o:value("http/1.1")
+o:value("h2,http/1.1")
+o:value("h3,h2,http/1.1")
+o:value("spdy/3.1")
+o:value("h3,spdy/3.1")
 o.rewrite_option = o.option
 
 api.luci_types(arg[1], m, s, type_name, option_prefix)

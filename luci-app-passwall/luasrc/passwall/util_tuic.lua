@@ -25,11 +25,18 @@ function gen_config(var)
 				-- certificates = node.tuic_certificate and { node.tuic_certpath } or nil,
 				udp_relay_mode = node.tuic_udp_relay_mode,
 				congestion_control = node.tuic_congestion_control,
-				heartbeat = node.tuic_heartbeat .. "s",
-				timeout = node.tuic_timeout .. "s",
-				gc_interval = node.tuic_gc_interval .. "s",
-				gc_lifetime = node.tuic_gc_lifetime .. "s",
-				alpn = node.tuic_tls_alpn,
+				heartbeat = (tonumber(node.tuic_heartbeat) or 3) .. "s",
+				timeout = (tonumber(node.tuic_timeout) or 8) .. "s",
+				gc_interval = (tonumber(node.tuic_gc_interval) or 3) .. "s",
+				gc_lifetime = (tonumber(node.tuic_gc_lifetime) or 15) .. "s",
+				alpn = (node.tuic_tls_alpn and node.tuic_tls_alpn ~= "") and (function()
+					local alpn = {}
+					string.gsub(node.tuic_tls_alpn, '[^,]+', function(w)
+						table.insert(alpn, w)
+					end)
+					if #alpn > 0 then return alpn end
+					return nil
+				end)() or nil,
 				disable_sni = (node.tuic_disable_sni == "1"),
 				zero_rtt_handshake = (node.tuic_zero_rtt_handshake == "1"),
 				send_window = tonumber(node.tuic_send_window),
