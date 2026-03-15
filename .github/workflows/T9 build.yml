@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     name: build ${{ matrix.arch }}-${{ matrix.sdk }}
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
@@ -44,7 +44,7 @@ jobs:
           - x86_64
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@main
         with:
           fetch-depth: 0
 
