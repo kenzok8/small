@@ -8,9 +8,9 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=trojan
 PKG_VERSION:=1.16.9
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
-PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
+PKG_SOURCE:=Trojan-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/kenzok8/Trojan/tar.gz/v$(PKG_VERSION)?
 PKG_HASH:=f011e7424e89d3f1c529ea160478957e1a6527c39015b8960803b1a858d0287b
 
