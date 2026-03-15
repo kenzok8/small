@@ -1348,7 +1348,7 @@ local function processData(szType, content, add_mode, group)
 		else
 			result.tls_allowInsecure = allowInsecure_default and "1" or "0"
 		end
-		result.hysteria_alpn = params.alpn
+		result.alpn = params.alpn
 		result.hysteria_up_mbps = params.upmbps
 		result.hysteria_down_mbps = params.downmbps
 		result.hysteria_hop = params.mport

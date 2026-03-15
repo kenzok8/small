@@ -154,6 +154,9 @@ function gen_outbound(flag, node, tag, proxy_table)
 		}
 
 		local tls = nil
+		if node.protocol == "hysteria" or node.protocol == "hysteria2" or node.protocol == "tuic" then
+			node.tls = "1"
+		end
 		if node.tls == "1" then
 			local alpn = nil
 			if node.alpn and node.alpn ~= "default" then
@@ -403,20 +406,7 @@ function gen_outbound(flag, node, tag, proxy_table)
 				recv_window_conn = tonumber(node.hysteria_recv_window_conn),
 				recv_window = tonumber(node.hysteria_recv_window),
 				disable_mtu_discovery = (node.hysteria_disable_mtu_discovery == "1") and true or false,
-				tls = {
-					enabled = true,
-					server_name = node.tls_serverName,
-					insecure = (node.tls_allowInsecure == "1") and true or false,
-					fragment = fragment,
-					record_fragment = record_fragment,
-					alpn = (node.hysteria_alpn and node.hysteria_alpn ~= "") and {
-						node.hysteria_alpn
-					} or nil,
-					ech = (node.ech == "1") and {
-						enabled = true,
-						config = node.ech_config and split(node.ech_config:gsub("\\n", "\n"), "\n") or {}
-					} or nil
-				}
+				tls = tls
 			}
 		end
 
@@ -437,27 +427,15 @@ function gen_outbound(flag, node, tag, proxy_table)
 				udp_over_stream = false,
 				zero_rtt_handshake = (node.tuic_zero_rtt_handshake == "1") and true or false,
 				heartbeat = (tonumber(node.tuic_heartbeat) or 3) .. "s",
-				tls = {
-					enabled = true,
-					disable_sni = (node.tls_disable_sni == "1") and true or false,
-					server_name = node.tls_serverName,
-					insecure = (node.tls_allowInsecure == "1") and true or false,
-					fragment = fragment,
-					record_fragment = record_fragment,
-					alpn = (node.tuic_alpn and node.tuic_alpn ~= "") and (function()
-						local alpn = {}
-						string.gsub(node.tuic_alpn, '[^,]+', function(w)
-							table.insert(alpn, w)
-						end)
-						if #alpn > 0 then return alpn end
-						return nil
-					end)() or nil,
-					ech = (node.ech == "1") and {
-						enabled = true,
-						config = node.ech_config and split(node.ech_config:gsub("\\n", "\n"), "\n") or {}
-					} or nil
-				}
+				tls = tls
 			}
+			if node.tuic_alpn and node.tuic_alpn ~= "default" then
+				local alpn = {}
+				string.gsub(node.tuic_alpn, '[^,]+', function(w)
+					table.insert(alpn, w)
+				end)
+				if #alpn > 0 then protocol_table.tls.alpn = alpn end
+			end
 		end
 
 		if node.protocol == "hysteria2" then
@@ -484,17 +462,7 @@ function gen_outbound(flag, node, tag, proxy_table)
 					password = node.hysteria2_obfs_password
 				} or nil,
 				password = node.hysteria2_auth_password or nil,
-				tls = {
-					enabled = true,
-					server_name = node.tls_serverName,
-					insecure = (node.tls_allowInsecure == "1") and true or false,
-					fragment = fragment,
-					record_fragment = record_fragment,
-					ech = (node.ech == "1") and {
-						enabled = true,
-						config = node.ech_config and split(node.ech_config:gsub("\\n", "\n"), "\n") or {}
-					} or nil
-				}
+				tls = tls
 			}
 		end
 
@@ -538,6 +506,14 @@ function gen_config_server(node)
 		enabled = true,
 		certificate_path = node.tls_certificateFile,
 		key_path = node.tls_keyFile,
+		alpn = (node.alpn and node.alpn ~= "default") and (function()
+			local alpn = {}
+			string.gsub(node.alpn, '[^,]+', function(w)
+				table.insert(alpn, w)
+			end)
+			if #alpn > 0 then return alpn end
+			return nil
+		end)() or nil
 	}
 
 	if node.tls == "1" and node.reality == "1" then
@@ -741,9 +717,6 @@ function gen_config_server(node)
 	end
 
 	if node.protocol == "hysteria" then
-		tls.alpn = (node.hysteria_alpn and node.hysteria_alpn ~= "") and {
-			node.hysteria_alpn
-		} or nil
 		protocol_table = {
 			up = node.hysteria_up_mbps .. " Mbps",
 			down = node.hysteria_down_mbps .. " Mbps",
@@ -775,7 +748,7 @@ function gen_config_server(node)
 					password = node.password
 				}
 			end
-			tls.alpn = (node.tuic_alpn and node.tuic_alpn ~= "") and (function()
+			tls.alpn = (node.tuic_alpn and node.tuic_alpn ~= "default") and (function()
 				local alpn = {}
 				string.gsub(node.tuic_alpn, '[^,]+', function(w)
 					table.insert(alpn, w)
