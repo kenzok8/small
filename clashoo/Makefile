@@ -1,8 +1,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=clashoo
-PKG_SHORT_SHA:=d60b336
-PKG_COMMIT_DATE:=2026.05.18
+PKG_SHORT_SHA:=cb652dd
+PKG_COMMIT_DATE:=2026.05.19
 
 PKG_VERSION:=$(PKG_COMMIT_DATE)~$(PKG_SHORT_SHA)
 PKG_RELEASE:=1
@@ -12,8 +12,8 @@ PKG_SOURCE_SUBDIR:=$(PKG_NAME)-alpha-$(PKG_SHORT_SHA)
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-alpha-$(PKG_SHORT_SHA)
 PKG_SOURCE_PROTO:=git
 PKG_SOURCE_URL:=https://github.com/MetaCubeX/mihomo.git
-PKG_SOURCE_VERSION:=d60b336dfc3eeed142eab0399fc01684f9d5f1af
-PKG_MIRROR_HASH:=9e66a5353bb1d427cfd10baf02cff32a9dbed23c43904b0ddefec12950a0eeee
+PKG_SOURCE_VERSION:=cb652ddb7da807c239a261bc7c5200139dac9af2
+PKG_MIRROR_HASH:=133df2e32dcf48bbdde7aa6e37a51cc6c9ddc8fb0c08cbdb3d8267e6ef0a9554
 PKG_BUILD_VERSION:=alpha-$(PKG_SHORT_SHA)
 
 PKG_LICENSE:=GPL3.0+
@@ -91,7 +91,11 @@ if [ -z "${IPKG_INSTROOT}" ]; then
 	rm -f /usr/share/clashoo/cuslist.sh /usr/share/clashoo/groups.sh /usr/share/clashoo/load_groups.sh /usr/share/clashoo/panel_diag.sh
 	rm -f /usr/share/clashoo/rmlist.sh /usr/share/clashoo/uplist.sh /usr/share/clashoo/rpc_restart_async.sh /usr/share/clashoo/rpc_update_china_ip_async.sh
 	rm -rf /usr/share/clashoo/create
-	/etc/init.d/clashoo disable 2>/dev/null
+	if [ "$(uci -q get clashoo.config.enable 2>/dev/null)" = "1" ]; then
+		/etc/init.d/clashoo enable 2>/dev/null || true
+	else
+		/etc/init.d/clashoo disable 2>/dev/null || true
+	fi
 fi
 exit 0
 endef
