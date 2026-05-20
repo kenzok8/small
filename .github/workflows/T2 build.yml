@@ -58,6 +58,10 @@ jobs:
           NO_REFRESH_CHECK: true
           IGNORE_ERRORS: true
           INDEX: 1
+          # 24.10 SDK 仅带 Go 1.23，编不了 sing-box 1.13+（需 Go 1.24.7）。
+          # 用自维护的 golang feed 统一替换为 Go 1.26.3。
+          GOLANG_REPO: https://github.com/kenzok8/golang
+          GOLANG_BRANCH: '1.26'
 
       - name: Store packages
         uses: actions/upload-artifact@v7.0.0
