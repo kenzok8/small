@@ -1,8 +1,4 @@
 <div align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=kenzok8&show_icons=true&theme=default&hide_border=true&cache_seconds=86400" alt="kenzok8 github stats" height="165">
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=kenzok8&layout=compact&theme=default&hide_border=true&cache_seconds=86400" alt="kenzok8 top langs" height="165">
-</div>
-<div align="center">
 <h1 align="center">small</h1>
 <img src="https://img.shields.io/github/issues/kenzok8/small?color=green">
 <img src="https://img.shields.io/github/stars/kenzok8/small?color=yellow">
