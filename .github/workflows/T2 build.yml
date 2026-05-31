@@ -19,7 +19,7 @@ jobs:
       fail-fast: false
       matrix:
         sdk:
-          - 24.10.5
+          - 24.10
           - 25.12.0
         arch:
           - aarch64_cortex-a53
@@ -52,7 +52,7 @@ jobs:
       - name: Build
         uses: immortalwrt/gh-action-sdk@master
         env:
-          ARCH: ${{ matrix.arch }}-${{ matrix.sdk }}
+          ARCH: ${{ matrix.arch }}-openwrt-${{ matrix.sdk }}
           FEEDNAME: packages_ci
           PACKAGES: ${{ steps.packages.outputs.packages }}
           NO_REFRESH_CHECK: true
@@ -85,8 +85,10 @@ jobs:
           cp ${{ matrix.arch }}-${{ matrix.sdk }}.zip release-assets/
           echo -e "**文件说明** 🎈:\n" >> release.txt
           echo -e "1. 默认ssr与passwall的插件与依赖整合包\n" >> release.txt
-          echo -e "2. OpenWrt 24.10 使用：\`opkg install *.ipk\`\n" >> release.txt
-          echo -e "3. OpenWrt 25.12 使用：\`apk add --allow-untrusted ./*.apk\`\n" >> release.txt
+          case "${{ matrix.sdk }}" in
+            25.*) echo -e "2. immortalwrt ${{ matrix.sdk }} 使用：\`apk add --allow-untrusted ./*.apk\`\n" >> release.txt ;;
+            *)    echo -e "2. immortalwrt ${{ matrix.sdk }} 使用：\`opkg install *.ipk\`\n" >> release.txt ;;
+          esac
           echo -e "4. 默认压缩包里包含ssr passwall bypass passwall2 插件\n" >> release.txt
           echo -e "5. 如果单独安装ssr与依赖，\`rm -rf {*passwall*,*bypass*,*homeproxy*}\`\n" >> release.txt
           
