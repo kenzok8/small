@@ -19,7 +19,7 @@ jobs:
       fail-fast: false
       matrix:
         sdk:
-          - 24.10.4
+          - 24.10.5
           - 25.12.0
         arch:
           - aarch64_cortex-a53
@@ -65,12 +65,12 @@ jobs:
             echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
           elif [ "$input" == "1" ]; then
             SINCE_DAYS=1
-            PACKAGES=$(git log --since="${SINCE_DAYS} days ago" --name-only --pretty=format: | grep -v '^$' | awk -F'/' '{print $1}' | sort -u | grep -v '^\.\|^$' | tr '\n' ' ' | sed 's/ $//')
+            PACKAGES=$(git log --since="${SINCE_DAYS} days ago" --name-only --pretty=format: | grep -v '^$' | awk -F'/' '{print $1}' | sort -u | grep -v '^\.\|^$' | while read pkg; do [ -f "$pkg/Makefile" ] && echo "$pkg"; done | tr '\n' ' ' | sed 's/ $//')
             echo "最近1天更新的包: $PACKAGES"
             echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
           elif [ "$input" == "2" ]; then
             SINCE_DAYS=2
-            PACKAGES=$(git log --since="${SINCE_DAYS} days ago" --name-only --pretty=format: | grep -v '^$' | awk -F'/' '{print $1}' | sort -u | grep -v '^\.\|^$' | tr '\n' ' ' | sed 's/ $//')
+            PACKAGES=$(git log --since="${SINCE_DAYS} days ago" --name-only --pretty=format: | grep -v '^$' | awk -F'/' '{print $1}' | sort -u | grep -v '^\.\|^$' | while read pkg; do [ -f "$pkg/Makefile" ] && echo "$pkg"; done | tr '\n' ' ' | sed 's/ $//')
             echo "最近2天更新的包: $PACKAGES"
             echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
           else
@@ -129,9 +129,9 @@ jobs:
           done
 
       - name: Build
-        uses: kenzok8/gh-action-sdk@hash
+        uses: immortalwrt/gh-action-sdk@master
         env:
-          ARCH: ${{ matrix.arch }}-${{ matrix.sdk }}
+          ARCH: ${{ matrix.arch }}-openwrt-${{ matrix.sdk }}
           FEEDNAME: packages_ci
           PACKAGES: luci-app-fchomo luci-app-homeproxy luci-app-momo luci-app-nikki luci-app-openclash luci-app-passwall luci-app-passwall2 luci-app-ssr-plus brook hysteria ipt2socks pdnsd-alt redsocks2 shadow-tls trojan tuic-client xray-plugin v2ray-core v2ray-geodata naiveproxy sing-box
           NO_REFRESH_CHECK: true
@@ -164,10 +164,12 @@ jobs:
           cp ${{ matrix.arch }}-${{ matrix.sdk }}.zip release-assets/
           echo -e "**文件说明** 🎈:\n" >> release.txt
           echo -e "1. 默认ssr与passwall的插件与依赖整合包\n" >> release.txt
-          echo -e "2. OpenWrt 24.10 使用：\`opkg install *.ipk\`\n" >> release.txt
-          echo -e "3. OpenWrt 25.12 使用：\`apk add --allow-untrusted ./*.apk\`\n" >> release.txt
-          echo -e "4. 默认压缩包里包含ssr passwall passwall2 等插件\n" >> release.txt
-          echo -e "5. 如果单独安装ssr与依赖，\`rm -rf {*passwall*,*homeproxy*}\`\n" >> release.txt
+          case "${{ matrix.sdk }}" in
+            25.*) echo -e "2. immortalwrt ${{ matrix.sdk }} 使用：\`apk add --allow-untrusted ./*.apk\`\n" >> release.txt ;;
+            *)    echo -e "2. immortalwrt ${{ matrix.sdk }} 使用：\`opkg install *.ipk\`\n" >> release.txt ;;
+          esac
+          echo -e "3. 默认压缩包里包含ssr passwall passwall2 等插件\n" >> release.txt
+          echo -e "4. 如果单独安装ssr与依赖，\`rm -rf {*passwall*,*homeproxy*}\`\n" >> release.txt
           
       - name: Upload packages
         uses: ncipollo/release-action@v1.21.0
