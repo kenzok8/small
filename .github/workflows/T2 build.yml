@@ -40,10 +40,10 @@ jobs:
             PACKAGES="luci-app-clashoo luci-app-fchomo luci-app-homeproxy luci-app-momo luci-app-nikki luci-app-openclash luci-app-passwall luci-app-passwall2 luci-app-ssr-plus brook clashoo hysteria ipt2socks pdnsd-alt redsocks2 shadow-tls trojan tuic-client xray-plugin v2ray-core v2ray-geodata naiveproxy sing-box"
             echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
           elif [ "$input" == "1" ]; then
-            PACKAGES=$(git log --since="1 days ago" --name-only --pretty=format: | grep -v '^$' | awk -F'/' '{print $1}' | sort -u | grep -v '^\.\|^$' | tr '\n' ' ' | sed 's/ $//')
+            PACKAGES=$(git log --since="1 days ago" --name-only --pretty=format: | grep -v '^$' | awk -F'/' '{print $1}' | sort -u | grep -v '^\.\|^$' | while read pkg; do [ -f "$pkg/Makefile" ] && echo "$pkg"; done | tr '\n' ' ' | sed 's/ $//')
             echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
           elif [ "$input" == "2" ]; then
-            PACKAGES=$(git log --since="2 days ago" --name-only --pretty=format: | grep -v '^$' | awk -F'/' '{print $1}' | sort -u | grep -v '^\.\|^$' | tr '\n' ' ' | sed 's/ $//')
+            PACKAGES=$(git log --since="2 days ago" --name-only --pretty=format: | grep -v '^$' | awk -F'/' '{print $1}' | sort -u | grep -v '^\.\|^$' | while read pkg; do [ -f "$pkg/Makefile" ] && echo "$pkg"; done | tr '\n' ' ' | sed 's/ $//')
             echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
           else
             echo "packages=$input" >> $GITHUB_OUTPUT
