@@ -165,7 +165,11 @@ function gen_outbound(flag, node, tag, proxy_table)
 								if not node.tls_CertByName then return "" end
 								return node.tls_CertByName
 							end)(),
-					echConfigList = (node.ech == "1") and node.ech_config or nil
+					echConfigList = (node.ech == "1") and node.ech_config or nil,
+					certificates = (node.tls_certificate == "1" and node.tls_certificate_pem ~= "") and {
+						certificate = api.split(node.tls_certificate_pem, "\n"),
+						usage = "verify"
+					} or nil
 				} or nil,
 				realitySettings = (node.stream_security == "reality") and {
 					serverName = node.tls_serverName,
@@ -1804,13 +1808,14 @@ function gen_config(var)
 					-- remote dns outbound rules
 					if value.outboundTag == "blackhole" then
 						table.insert(remote_dns_out_rules, {
-							action = "reject",
+							action = "return",
+							rCode = 0,
 							domain = api.clone(value.domain)
 						})
 					else
 						table.insert(remote_dns_out_rules, {
 							action = "hijack",
-							qtype = "1,28",
+							qType = "1,28",
 							domain = api.clone(value.domain)
 						})
 					end
@@ -1877,7 +1882,7 @@ function gen_config(var)
 			if remote_dns_outbound.settings.rules then
 				table.insert(remote_dns_out_rules, {
 					action = "hijack",
-					qtype = "1,28"
+					qType = "1,28"
 				})
 				table.insert(remote_dns_out_rules, {
 					action = "direct"
