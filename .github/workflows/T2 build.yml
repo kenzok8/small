@@ -50,7 +50,7 @@ jobs:
           fi
 
       - name: Build
-        uses: immortalwrt/gh-action-sdk@master
+        uses: kenzok8/gh-action-sdk@hash
         env:
           ARCH: ${{ matrix.arch }}-openwrt-${{ matrix.sdk }}
           FEEDNAME: packages_ci
