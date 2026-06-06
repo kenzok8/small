@@ -52,6 +52,7 @@ jobs:
       - name: Build
         uses: kenzok8/gh-action-sdk@hash
         env:
+          CONTAINER: immortalwrt/sdk
           ARCH: ${{ matrix.arch }}-openwrt-${{ matrix.sdk }}
           FEEDNAME: packages_ci
           PACKAGES: ${{ steps.packages.outputs.packages }}
