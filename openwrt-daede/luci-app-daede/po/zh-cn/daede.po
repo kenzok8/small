@@ -1,0 +1,653 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+"Project-Id-Version: PACKAGE VERSION\n"
+"Last-Translator: Automatically generated\n"
+"Language-Team: none\n"
+"Language: zh-Hans\n"
+"MIME-Version: 1.0\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+# ---- config.js: Service Status ----
+msgid "Service Status"
+msgstr "服务状态"
+
+msgid "Collecting data…"
+msgstr "正在收集数据…"
+
+msgid "RUNNING"
+msgstr "运行中"
+
+msgid "STOPPED"
+msgstr "已停止"
+
+msgid "Backend"
+msgstr "后端"
+
+msgid "Listen"
+msgstr "监听"
+
+msgid "Toggle service"
+msgstr "开关服务"
+
+msgid "Open WebUI"
+msgstr "打开 WebUI"
+
+msgid "Restart"
+msgstr "重启"
+
+msgid "Hot Reload"
+msgstr "热重载"
+
+# ---- config.js: Backend Switcher ----
+msgid "Active backend"
+msgstr "当前后端"
+
+msgid "Active"
+msgstr "当前"
+
+msgid "Not installed"
+msgstr "未安装"
+
+msgid "Switch to %s"
+msgstr "切换到 %s"
+
+msgid "%s is not installed"
+msgstr "%s 未安装"
+
+msgid "%s is not installed. Install it first, then switch backend."
+msgstr "%s 未安装。请先安装再切换后端。"
+
+msgid "Switching backend stops the current service first. Click start when you want the new backend to run."
+msgstr "切换后端会先停止当前服务。点击开关启动新后端即可。"
+
+msgid "Stopping current backend…"
+msgstr "停止当前后端中…"
+
+msgid "Switching to %s…"
+msgstr "切换至 %s 中…"
+
+msgid "Switched to %s. Click start when you want it to run."
+msgstr "已切换至 %s。点击开关启动。"
+
+msgid "Backend switched to %s. Click start to run it."
+msgstr "已切换至 %s。点击开关启动。"
+
+msgid "Switch failed."
+msgstr "切换失败。"
+
+msgid "Failed to switch backend: %s"
+msgstr "切换后端失败：%s"
+
+# ---- config.js: Init Actions ----
+msgid "Action \"%s\" error: %s"
+msgstr "操作 \"%s\" 出错：%s"
+
+msgid "Action \"%s\" failed: %s"
+msgstr "操作 \"%s\" 失败：%s"
+
+msgid "Action \"%s\" succeeded."
+msgstr "操作 \"%s\" 成功。"
+
+msgid "Toggle failed: %s"
+msgstr "开关切换失败：%s"
+
+msgid "%s is already running. Stop %s before starting %s because both backends share the same eBPF/cgroup attachment."
+msgstr "%s 已在运行。%s 与 %s 共用 eBPF/cgroup 挂载点，请先停止前者。"
+
+# ---- config.js: daede Settings ----
+msgid "daede Settings"
+msgstr "daede 设置"
+
+msgid "A modern dashboard for dae. Subscriptions, nodes, routing and DNS are managed in the daed WebUI."
+msgstr "dae 的现代化控制台。订阅、节点、路由和 DNS 请在 daed WebUI 中管理。"
+
+msgid "Listen Address"
+msgstr "监听地址"
+
+msgid "Host:port that the daed WebUI and GraphQL API listen on."
+msgstr "daed WebUI 与 GraphQL API 监听的 Host:Port。"
+
+msgid "Max Log Size (MB)"
+msgstr "单文件大小上限（MB）"
+
+msgid "Rotate the log file once it grows past this many megabytes."
+msgstr "单个日志文件超过此大小后轮转。"
+
+msgid "Max Log Backups"
+msgstr "保留旧日志数"
+
+msgid "Number of rotated log files to keep."
+msgstr "轮转后保留的旧日志文件数。"
+
+msgid "Log Advanced Settings"
+msgstr "日志高级设置"
+
+# ---- config.js: dae Settings ----
+msgid "dae Parameters"
+msgstr "dae 参数"
+
+msgid "Configuration file path and log rotation settings for dae."
+msgstr "dae 配置文件路径与日志轮转参数。"
+
+msgid "Configuration File"
+msgstr "配置文件"
+
+# ---- config.js: dae Editor ----
+msgid "dae Configuration"
+msgstr "dae 配置"
+
+msgid "Text-only mode."
+msgstr "纯文本模式。"
+
+msgid "dae has no built-in WebUI. Edit the config DSL below by hand (subscriptions, nodes, routing, DNS). \"Initialize from example\" loads the bundled template — replace the placeholder subscription URL with your own before saving. For point-and-click management, switch backend to daed."
+msgstr "dae 没有内置 WebUI，下面的 DSL 配置需要手工编辑（订阅、节点、路由、DNS）。「从示例初始化」会载入官方模板——保存前请把占位的订阅链接换成你自己的。想图形化点选管理，请把后端切回 daed。"
+
+msgid "dae config file is empty. Click \"Initialize from example\" to start, or paste your config here."
+msgstr "dae 配置文件为空。点「从示例初始化」开始，或直接粘贴你的配置。"
+
+# ---- config.js: dae Parameters ----
+msgid "dae Parameters"
+msgstr "dae 参数"
+
+msgid "Edit config DSL — subscriptions, nodes, routing, DNS. Load template via Initialize. Replace placeholder URL before saving. Switch to daed for GUI."
+msgstr "编辑 dae DSL 配置——订阅、节点、路由、DNS。通过「从示例初始化」载入模板。保存前务必替换占位订阅链接。图形化管理请切换至 daed。"
+
+msgid "Save and Hot Reload"
+msgstr "保存并热重载"
+
+msgid "Initialize from example"
+msgstr "从示例初始化"
+
+msgid "+ Insert Block…"
+msgstr "+ 插入块…"
+
+msgid "Insert config block at cursor"
+msgstr "在光标处插入配置块"
+
+msgid "lines"
+msgstr "行"
+
+msgid "⚠ %d placeholder"
+msgstr "⚠ %d 处占位"
+
+msgid "⚠ 还差订阅链接才能跑：检测到 %d 行占位 URL"
+msgstr "⚠ 还差订阅链接才能跑：检测到 %d 行占位 URL"
+
+msgid " / "
+msgstr " / "
+
+msgid "这些 "
+msgstr "这些 "
+
+msgid " 都是 dae 官方模板留的假地址，不是真订阅。把其中任意一行的 URL 换成你机场的订阅链接（删掉多余行），保存即可跑通。"
+msgstr " 都是 dae 官方模板留的假地址，不是真订阅。把其中任意一行的 URL 换成你机场的订阅链接（删掉多余行），保存即可跑通。"
+
+msgid "Placeholder lines (click line number to jump):"
+msgstr "占位行（点行号跳转）："
+
+msgid "Jump to line"
+msgstr "跳转到该行"
+
+msgid "Validating…"
+msgstr "校验中…"
+
+msgid "Validate failed: %s"
+msgstr "配置校验失败：%s"
+
+msgid "Saving…"
+msgstr "保存中…"
+
+msgid "Reload failed: %s"
+msgstr "热重载失败：%s"
+
+msgid "Validated · saved · hot-reloaded"
+msgstr "已校验 · 已保存 · 已热重载"
+
+msgid "Save failed: %s"
+msgstr "保存失败：%s"
+
+msgid "Loading example…"
+msgstr "加载示例中…"
+
+msgid "Example loaded"
+msgstr "示例已加载"
+
+msgid "Init failed: %s"
+msgstr "初始化失败：%s"
+
+msgid "Selected backend is not installed. Install dae or daed from the package feed first."
+msgstr "当前后端未安装，请从软件源安装 dae 或 daed。"
+
+# ---- log.js ----
+msgid "Loading…"
+msgstr "加载中…"
+
+msgid "Log file does not exist yet."
+msgstr "日志文件尚不存在。"
+
+msgid "Error reading log: %s"
+msgstr "读取日志出错：%s"
+
+msgid "Log file cleared."
+msgstr "日志文件已清空。"
+
+msgid "Failed to clear log: %s"
+msgstr "清空日志失败：%s"
+
+msgid "Truncate %s log on the router? This cannot be undone."
+msgstr "确定要清空路由器上的 %s 日志吗？此操作不可恢复。"
+
+# ---- updates.js: Data Updates ----
+msgid "Settings"
+msgstr "设置"
+
+msgid "Updates"
+msgstr "更新"
+
+msgid "Log"
+msgstr "日志"
+
+msgid "Data Updates"
+msgstr "数据更新"
+
+msgid "Package Updates"
+msgstr "软件包更新"
+
+msgid "System Health"
+msgstr "系统健康"
+
+msgid "Update"
+msgstr "更新"
+
+msgid "Upgrade"
+msgstr "升级"
+
+msgid "Clean"
+msgstr "清理"
+
+msgid "missing — click Update to fetch"
+msgstr "缺失——点 Update 下载"
+
+msgid "%s download started — will refresh in 1–3 min."
+msgstr "%s 下载已开始——1–3 分钟后刷新。"
+
+msgid "%s update already running."
+msgstr "%s 更新已在运行。"
+
+msgid "%s update failed: %s"
+msgstr "%s 更新失败：%s"
+
+msgid "%s update error: %s"
+msgstr "%s 更新出错：%s"
+
+# ---- updates.js: Package Updates ----
+msgid "%s binary"
+msgstr "%s 内核"
+
+msgid "active"
+msgstr "当前"
+
+msgid "installed"
+msgstr "已安装"
+
+msgid "latest"
+msgstr "最新"
+
+msgid "up to date"
+msgstr "已是最新"
+
+msgid "not installed via package manager"
+msgstr "非包管理器安装"
+
+msgid "Unavailable"
+msgstr "不可用"
+
+msgid "Run \"apk upgrade %s\" now? This may restart the active backend."
+msgstr "立即运行 \"apk upgrade %s\"？这可能会重启当前后端。"
+
+msgid "%s upgrade started — see log below."
+msgstr "%s 升级已开始——见下方日志。"
+
+msgid "%s upgrade already running."
+msgstr "%s 升级已在运行。"
+
+msgid "%s upgrade failed: %s"
+msgstr "%s 升级失败：%s"
+
+msgid "%s upgrade error: %s"
+msgstr "%s 升级出错：%s"
+
+# ---- updates.js: System Health ----
+msgid "Probing…"
+msgstr "检测中…"
+
+msgid "%s process"
+msgstr "%s 进程"
+
+msgid "Kernel BTF"
+msgstr "内核 BTF"
+
+msgid "WebUI/API"
+msgstr "WebUI/API"
+
+msgid "Hot reload"
+msgstr "热重载"
+
+msgid "netns daens"
+msgstr "netns daens"
+
+msgid "pgrep reports the backend is running"
+msgstr "pgrep 检测到后端正在运行"
+
+msgid "backend process is not running"
+msgstr "后端进程未运行"
+
+msgid "service is running, expected on port %s"
+msgstr "服务运行中，预期监听端口 %s"
+
+msgid "service is stopped"
+msgstr "服务已停止"
+
+msgid "not available — eBPF needs CONFIG_DEBUG_INFO_BTF or vmlinux-btf"
+msgstr "不可用——eBPF 需要 CONFIG_DEBUG_INFO_BTF 或 vmlinux-btf"
+
+msgid "/etc/init.d/dae hot_reload is available"
+msgstr "dae 热重载可用"
+
+msgid "netns daens removed."
+msgstr "netns daens 已清理。"
+
+msgid "exists, may block daed start"
+msgstr "已存在，可能阻碍 daed 启动"
+
+msgid "clean"
+msgstr "干净"
+
+# ---- log.js toolbar ----
+msgid "%s Realtime Log"
+msgstr "%s 实时日志"
+
+msgid "Auto-scroll"
+msgstr "自动滚动"
+
+msgid "Pause"
+msgstr "暂停"
+
+msgid "Filter (substring)"
+msgstr "过滤（子串）"
+
+msgid "Clear View"
+msgstr "清空显示"
+
+msgid "Clear File"
+msgstr "清空文件"
+
+msgid "Download"
+msgstr "下载"
+
+# ---- config.js: Subscription Card ----
+msgid "Subscription Management"
+msgstr "订阅管理"
+
+msgid "Paste subscription URL here"
+msgstr "在此粘贴订阅链接"
+
+msgid "Apply and Save"
+msgstr "应用并保存"
+
+msgid "Applying…"
+msgstr "应用…"
+
+msgid "Saved, start dae to apply"
+msgstr "已保存，启动 dae 后生效"
+
+msgid "Saved and applied"
+msgstr "已保存并应用"
+
+msgid "Saved, reload failed"
+msgstr "已保存，重载失败"
+
+msgid "Not found, load example first"
+msgstr "未找到订阅行，请先载入示例"
+
+msgid "Failed"
+msgstr "失败"
+
+msgid "This will replace your current config. Continue?"
+msgstr "这将覆盖当前配置，继续？"
+
+msgid "Example loaded — save to apply"
+msgstr "示例已载入，保存后生效"
+
+msgid "Saved OK (start dae to apply)"
+msgstr "已保存（启动 dae 后生效）"
+
+msgid "Configuration Editor"
+msgstr "配置编辑"
+
+msgid "Edit config DSL — subscriptions, nodes, routing, DNS. Load template via Initialize. Replace placeholder URL before saving. Switch to daed for GUI."
+msgstr "编辑 dae DSL 配置——订阅、节点、路由、DNS。通过「从示例初始化」载入模板。保存前务必替换占位订阅链接。图形化管理请切换至 daed。"
+
+# ---- config.js: Proxy Health ----
+msgid "Test YouTube"
+msgstr "测试 YouTube"
+
+msgid "Testing…"
+msgstr "测试中…"
+
+msgid "YouTube reachable · %d ms"
+msgstr "YouTube 可访问 · %d ms"
+
+msgid "YouTube unreachable (timeout)"
+msgstr "YouTube 无法访问（超时）"
+
+msgid "YouTube unreachable (HTTP %s)"
+msgstr "YouTube 无法访问（HTTP %s）"
+
+# ---- config.js: dae friendly form ----
+msgid "Subscriptions"
+msgstr "订阅"
+
+msgid "Airport / subscription links. dae resolves them into the node pool."
+msgstr "机场 / 订阅链接，dae 会解析成节点池里的节点。"
+
+msgid "Tag"
+msgstr "标签"
+
+msgid "Subscription URL"
+msgstr "订阅链接"
+
+msgid "URL is required"
+msgstr "订阅链接不能为空"
+
+msgid "Must start with http(s):// or file://"
+msgstr "需以 http(s):// 或 file:// 开头"
+
+msgid "Enabled"
+msgstr "启用"
+
+msgid "Nodes"
+msgstr "节点"
+
+msgid "Single share links (ss / vmess / vless / trojan / tuic / hysteria2 / socks5 …)."
+msgstr "每行添加一个节点分享链接，支持 ss、vmess、vless、trojan、tuic、hysteria2、socks5。"
+
+msgid "Share Link"
+msgstr "分享链接"
+
+msgid "Groups"
+msgstr "分组"
+
+msgid "Outbound groups. Leave the source empty to use all nodes. Set the route fallback to one of these."
+msgstr "出站分组。来源留空表示用全部节点。路由兜底要指向其中一个分组。"
+
+msgid "Name"
+msgstr "名称"
+
+msgid "Policy"
+msgstr "策略"
+
+msgid "Min moving average latency"
+msgstr "最小移动平均延迟"
+
+msgid "Min last latency"
+msgstr "最小最近延迟"
+
+msgid "Min average of last 10"
+msgstr "最近 10 次最小均值"
+
+msgid "Random"
+msgstr "随机"
+
+msgid "Fixed (first node)"
+msgstr "固定（第一个节点）"
+
+msgid "Source"
+msgstr "来源"
+
+msgid "Subscriptions and nodes that feed this group. Pick from the list or type a name. Leave empty to use all nodes."
+msgstr "进入这个分组的订阅和节点。从列表里选，或手输名称。留空＝用全部节点。"
+
+msgid "subscription"
+msgstr "订阅"
+
+msgid "node"
+msgstr "节点"
+
+msgid "Name filter"
+msgstr "名称筛选"
+
+msgid "Optional. Narrows subscriptions in the source to nodes whose name matches — e.g. 香港 or 新加坡|日本. Nodes you picked by name are always kept."
+msgstr "可选。只对来源里的订阅做收窄，留下名称匹配的节点，如 香港 或 新加坡|日本；你手动挑的单个节点始终保留。"
+
+msgid "Routing"
+msgstr "路由"
+
+msgid "Private IPs direct"
+msgstr "私网 IP 直连"
+
+msgid "LAN / private addresses bypass the proxy."
+msgstr "局域网 / 私有地址不走代理。"
+
+msgid "China direct"
+msgstr "国内直连"
+
+msgid "China mainland IPs and domains bypass the proxy."
+msgstr "中国大陆 IP 和域名不走代理。"
+
+msgid "Block ads"
+msgstr "拦截广告"
+
+msgid "Drop traffic matching the ad domain list."
+msgstr "丢弃命中广告域名表的流量。"
+
+msgid "Fallback group"
+msgstr "兜底分组"
+
+msgid "Default outbound for everything else."
+msgstr "其余流量的默认出站。"
+
+msgid "Custom rules"
+msgstr "自定义规则"
+
+msgid "Raw dae routing lines, evaluated before fallback. Target must be a group name above (or direct/block)."
+msgstr "原始 dae 路由行，在兜底前生效。箭头右边要填上面的分组名（或 direct / block）。"
+
+msgid "China upstream"
+msgstr "国内 DNS 上游"
+
+msgid "Resolves China-mainland domains."
+msgstr "解析中国大陆域名。"
+
+msgid "Fallback upstream"
+msgstr "兜底 DNS 上游"
+
+msgid "Resolves everything else."
+msgstr "解析其余域名。"
+
+msgid "Add a subscription or node, then save — it takes effect automatically."
+msgstr "填好订阅或节点，点保存就自动生效。"
+
+msgid "Apply failed: %s"
+msgstr "应用失败：%s"
+
+msgid "Saved · validated · hot-reloaded"
+msgstr "已保存 · 已校验 · 已热重载"
+
+msgid "Please fix the highlighted fields."
+msgstr "请先修正高亮的字段。"
+
+msgid "Import from existing config"
+msgstr "从现有配置导入"
+
+msgid "Existing config detected"
+msgstr "检测到已有配置"
+
+msgid "You have a hand-written config.dae. Import its subscriptions and nodes into the form, or keep editing manually below. Saving the form overwrites config.dae."
+msgstr "你已有手写的 config.dae。可把里面的订阅和节点导入表单，或在下方继续手动编辑。表单保存会覆盖 config.dae。"
+
+msgid "Importing…"
+msgstr "导入中…"
+
+msgid "Imported, reloading…"
+msgstr "已导入，正在刷新…"
+
+msgid "Import failed"
+msgstr "导入失败"
+
+msgid "Advanced / Manual Mode"
+msgstr "高级 / 手动模式"
+
+msgid "Edit config.dae directly. Saving the form above regenerates the file and overwrites changes made here."
+msgstr "直接编辑 config.dae。上方表单保存会重新生成文件并覆盖这里的改动。"
+
+msgid "Update Subscriptions"
+msgstr "更新订阅"
+
+msgid "Re-fetch all airport subscriptions (reloads dae)"
+msgstr "重新拉取所有机场订阅（重载 dae）"
+
+msgid "Updating subscriptions…"
+msgstr "更新订阅中…"
+
+msgid "dae is stopped; it fetches subscriptions on start."
+msgstr "dae 未运行，启动时会自动拉取订阅。"
+
+msgid "Update failed: %s"
+msgstr "更新失败：%s"
+
+msgid "Subscriptions updated (dae reloaded)"
+msgstr "订阅已更新（dae 已重载）"
+
+msgid "Section"
+msgstr "区块"
+
+msgid "DNS"
+msgstr "DNS"
+
+msgid "dae config file is empty. Click \"Initialize from example\" to start, or paste your config here."
+msgstr "dae 配置文件为空。点击「从示例初始化」开始，或直接在此粘贴你的配置。"
+
+# ---- log.js: filter dropdown ----
+msgid "All"
+msgstr "全部"
+
+msgid "Node Status"
+msgstr "节点状态"
+
+msgid "Proxy Traffic"
+msgstr "代理流量"
+
+
+msgid "Logging"
+msgstr "日志"
+
+msgid "Save manual config"
+msgstr "保存手动配置"
+
+msgid "Save and Apply"
+msgstr "保存并应用"
+
+msgid "Fixed link — nothing to fetch."
+msgstr "固定链接，无需更新。"
