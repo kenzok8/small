@@ -1,6 +1,10 @@
-<h1 align="center">luci-app-daede</h1>
+<h1 align="center">openwrt-daede</h1>
 
-<p align="center">OpenWrt LuCI 管理界面，用于 <b>dae</b> 和 <b>daed</b> 透明代理后端。</p>
+<p align="center">OpenWrt 一体包：<b>dae</b> 内核 + <b>daed</b> 配套 + <b>luci-app-daede</b> 管理界面。</p>
+
+<p align="center">
+  <code>dae/</code> 与 <code>daed/</code> Makefile 来自上游 <a href="https://github.com/kenzok8/wall">kenzok8/wall</a>，本仓库仅做打包与 LuCI 前端开发。改包请改 wall。
+</p>
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/kenzok8/kenzok8/main/screenshot/daede/dae-logo.png" height="88" alt="dae">
@@ -47,13 +51,13 @@
 ### 一键安装
 
 ```bash
-wget -O - https://raw.githubusercontent.com/kenzok8/luci-app-daede/refs/heads/main/scripts/install.sh | ash
+wget -O - https://raw.githubusercontent.com/kenzok8/openwrt-daede/refs/heads/main/scripts/install.sh | ash
 ```
 
 大陆网络加速：
 
 ```bash
-wget --no-check-certificate -O - https://ghfast.top/https://raw.githubusercontent.com/kenzok8/luci-app-daede/refs/heads/main/scripts/install.sh | ash
+wget --no-check-certificate -O - https://ghfast.top/https://raw.githubusercontent.com/kenzok8/openwrt-daede/refs/heads/main/scripts/install.sh | ash
 ```
 
 ### Release 手动安装
@@ -76,7 +80,7 @@ wget -qO- https://down.dllkids.xyz/openwrt-feed/openwrt-feed-setup.sh | sh
 ### 卸载
 
 ```bash
-wget -O - https://raw.githubusercontent.com/kenzok8/luci-app-daede/refs/heads/main/scripts/uninstall.sh | ash
+wget -O - https://raw.githubusercontent.com/kenzok8/openwrt-daede/refs/heads/main/scripts/uninstall.sh | ash
 ```
 
 ## 使用
@@ -85,7 +89,7 @@ wget -O - https://raw.githubusercontent.com/kenzok8/luci-app-daede/refs/heads/ma
 2. 选择后端（dae 或 daed）
 3. 导入配置文件并启动
 
-📖 **新手教程**：[dae 后端使用指南](https://github.com/kenzok8/luci-app-daede/wiki) —— 订阅、节点、分组、路由、DNS 怎么填，常见问题一篇讲清。
+📖 **新手教程**：[dae 后端使用指南](https://github.com/kenzok8/openwrt-daede/wiki) —— 订阅、节点、分组、路由、DNS 怎么填，常见问题一篇讲清。
 
 ## 依赖
 
