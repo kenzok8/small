@@ -376,3 +376,51 @@ msgstr ""
 #: dae.js
 msgid " are placeholder addresses from dae's template, not real subscriptions. Replace the URL on any one line with your airport subscription link (delete the spare lines) and save."
 msgstr ""
+
+#: dae.js
+msgid "Manual nodes"
+msgstr ""
+
+#: dae.js
+msgid "Update all subscriptions"
+msgstr ""
+
+#: dae.js
+msgid "Advanced settings"
+msgstr ""
+
+#: dae.js
+msgid "auto-generated"
+msgstr ""
+
+#: dae.js
+msgid "Save and Apply"
+msgstr ""
+
+#: dae.js
+msgid "Save config"
+msgstr ""
+
+#: dae.js
+msgid "Save and Start"
+msgstr ""
+
+#: dae.js
+msgid "Saved · applied"
+msgstr ""
+
+#: dae.js
+msgid "Saved"
+msgstr ""
+
+#: dae.js
+msgid "Saved · started"
+msgstr ""
+
+#: dae.js
+msgid "Starting…"
+msgstr ""
+
+#: dae.js
+msgid "Start failed: %s"
+msgstr ""

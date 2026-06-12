@@ -114,6 +114,29 @@ function ellipsisCell(section_id) {
 	return E('span', { 'title': v, 'style': 'font-family:ui-monospace,Menlo,monospace;font-size:12px' }, short);
 }
 
+/* Tag is auto-generated and rarely relevant to beginners — render it muted. */
+function mutedCell(section_id) {
+	const v = this.cfgvalue(section_id) || '';
+	return E('span', { 'class': 'dd-meta', 'style': 'opacity:.55;font-size:11.5px' }, v);
+}
+
+/* Fill blank tags of a section type with unique <prefix>_<n> values so dae's
+   config generator always has a stable identifier. Runs after m.save() wrote
+   the form values into the uci session, before uci.save(). */
+function autofillTags(stype, prefix) {
+	const secs = uci.sections('dae', stype) || [];
+	const used = {};
+	secs.forEach(function(s) { if (s.tag) used[s.tag] = 1; });
+	let n = 1;
+	secs.forEach(function(s) {
+		if (s.tag) return;
+		while (used[prefix + '_' + n]) n++;
+		const t = prefix + '_' + n;
+		uci.set('dae', s['.name'], 'tag', t);
+		used[t] = 1; n++;
+	});
+}
+
 /* Wrap every form section in a collapsible accordion. openTitles lists the
    section titles that should start expanded; the rest start collapsed. */
 function accordionizeSections(mapNode, openTitles) {
@@ -156,7 +179,8 @@ function renderDaeForms(ctx) {
 	s.anonymous = true;
 	s.sortable = false;
 	o = s.option(form.Value, 'tag', _('Tag'));
-	o.placeholder = 'my_sub';
+	o.placeholder = _('auto-generated');
+	o.textvalue = mutedCell;
 	o = s.option(form.Value, 'url', _('Subscription URL'));
 	o.rmempty = false;
 	o.placeholder = 'https://example.com/sub';
@@ -169,65 +193,16 @@ function renderDaeForms(ctx) {
 	o = s.option(form.Flag, 'enabled', _('Enabled'));
 	o.default = '1';
 	o.editable = true;
-	/* add an Update button next to Edit/Delete in each row; dae re-pulls all
-	   subscriptions on reload, so the action is global regardless of the row */
-	const origRowActions = s.renderRowActions;
-	s.renderRowActions = function(section_id, more_label) {
-		const cell = origRowActions.call(this, section_id, more_label);
-		/* only real subscription links (http/https) are re-fetchable; fixed share
-		   links (vless:// ss:// …) are static. Keep the button on every row for a
-		   consistent layout, but grey it out (disabled) on the fixed ones. */
-		const subUrl = uci.get('dae', section_id, 'url') || '';
-		const fetchable = /^https?:\/\//i.test(subUrl);
-		const btn = E('button', {
-			'class': 'cbi-button cbi-button-action',
-			'style': 'margin-right:.25em',
-			'disabled': fetchable ? null : '',
-			'title': fetchable ? '' : _('Fixed link — nothing to fetch.')
-		}, _('Update'));
-		const upMsg = E('span', { 'class': 'dd-meta', 'style': 'margin-left:8px;display:none' }, '');
-		function setUpMsg(text, kind) {
-			upMsg.textContent = text;
-			upMsg.style.display = '';
-			upMsg.style.color = (kind === 'err') ? 'var(--error-color, #d33)' : (kind === 'ok') ? 'var(--success-color, #2a8)' : '';
-			if (kind !== 'err')
-				setTimeout(function() { if (upMsg.textContent === text) upMsg.style.display = 'none'; }, 5000);
-		}
-		if (fetchable) {
-			btn.addEventListener('click', function(ev) {
-				ev.preventDefault();
-				btn.disabled = true;
-				setUpMsg(_('Updating…'));
-				backend.detectRunning().then(function(r) {
-					if (!r || !r.dae)
-						return setUpMsg(_('dae is stopped; it fetches subscriptions on start.'), 'warn');
-					return fs.exec(backend.BACKENDS.dae.initd, ['hot_reload']).then(function(res) {
-						if (res && res.code !== 0)
-							setUpMsg(_('Update failed: %s').format(res.stderr || res.stdout || ('exit ' + res.code)), 'err');
-						else
-							setUpMsg(_('Subscriptions updated (dae reloaded)'), 'ok');
-					});
-				}).catch(function(e) {
-					setUpMsg(_('Update failed: %s').format(e.message || e), 'err');
-				}).finally(function() { btn.disabled = false; });
-			});
-		}
-		const firstBtn = cell.querySelector('button, a.cbi-button');
-		if (firstBtn && firstBtn.parentNode) firstBtn.parentNode.insertBefore(btn, firstBtn);
-		else cell.appendChild(btn);
-		if (btn.parentNode) btn.parentNode.insertBefore(upMsg, btn.nextSibling);
-		else cell.appendChild(upMsg);
-		return cell;
-	};
 
 	/* Manual nodes (share links) */
-	s = m.section(form.GridSection, 'node', _('Nodes'),
+	s = m.section(form.GridSection, 'node', _('Manual nodes'),
 		_('One node share link per line — ss, vmess, vless, trojan, tuic, hysteria2, socks5.'));
 	s.addremove = true;
 	s.anonymous = true;
 	s.sortable = false;
 	o = s.option(form.Value, 'tag', _('Tag'));
-	o.placeholder = 'node1';
+	o.placeholder = _('auto-generated');
+	o.textvalue = mutedCell;
 	o = s.option(form.Value, 'link', _('Share Link'));
 	o.rmempty = false;
 	o.placeholder = 'vmess://...';
@@ -325,55 +300,98 @@ function renderDaeForms(ctx) {
 		statusTimer = setTimeout(function() { status.classList.remove('show'); }, hold || 3000);
 	}
 
-	const save = E('button', { 'class': 'cbi-button cbi-button-positive' }, _('Save and Hot Reload'));
+	/* one save pipeline, parameterised by intent:
+	   - opts.start: after generate, enable + start dae (stopped → "Save and Start")
+	   - otherwise just save + generate; generate hot-reloads itself when dae runs */
+	function doSave(opts, btns) {
+		btns.forEach(function(b) { b.disabled = true; });
+		flash(_('Saving…'));
+		/* ensure the singleton sections exist before parsing the form —
+		   on installs where uci-defaults never seeded them, writing an
+		   option to a missing named section fails with ubus NOT_FOUND (4) */
+		if (!uci.get('dae', 'routing')) uci.add('dae', 'routing', 'routing');
+		if (!uci.get('dae', 'dns'))     uci.add('dae', 'dns', 'dns');
+		if (!uci.get('dae', 'config'))  uci.add('dae', 'dae', 'config');
+		return m.save(null, true)
+			.then(function() {
+				/* assign unique tags to any rows the user left blank */
+				autofillTags('subscription', 'subscription');
+				autofillTags('node', 'node');
+			})
+			.then(function() { return uci.save(); })
+			.then(function() {
+				/* apply flushes the rpc session to /etc/config so the
+				   generator (reads /etc/config/dae) sees the form data;
+				   skip it when nothing changed — apply on an empty
+				   changeset throws ubus NO_DATA (code 5). */
+				return uci.changes().then(function(ch) {
+					return (ch && Object.keys(ch).length) ? uci.apply() : null;
+				});
+			})
+			.then(function() { return fs.exec(GEN, ['generate']); })
+			.then(function(res) {
+				if (res && res.code !== 0) {
+					const err = (res.stderr || res.stdout || ('exit ' + res.code)).trim().split('\n')[0];
+					flash(_('Apply failed: %s').format(err), 'err', 9000);
+					throw new Error('gen-failed');
+				}
+				if (!opts.start) {
+					/* generate already hot-reloaded if dae was running */
+					flash(opts.okMsg || _('Saved'), 'ok');
+					setTimeout(function() { window.location.reload(); }, 900);
+					return;
+				}
+				flash(_('Starting…'));
+				return fs.exec('/sbin/uci', ['set', 'dae.config.enabled=1'])
+					.then(function() { return fs.exec('/sbin/uci', ['commit', 'dae']); })
+					.then(function() { return fs.exec(backend.BACKENDS.dae.initd, ['enable']); })
+					.then(function() { return fs.exec(backend.BACKENDS.dae.initd, ['start']); })
+					.then(function(r2) {
+						if (r2 && r2.code !== 0)
+							flash(_('Start failed: %s').format(r2.stderr || r2.stdout || ('exit ' + r2.code)), 'err', 9000);
+						else {
+							flash(_('Saved · started'), 'ok');
+							setTimeout(function() { window.location.reload(); }, 900);
+						}
+					});
+			})
+			.catch(function(e) {
+				if (e && e.message === 'gen-failed') return;
+				if (e && e.name === 'CBIValidationError') {
+					flash(_('Please fix the highlighted fields.'), 'err', 6000);
+					return;
+				}
+				flash(_('Save failed: %s').format(e.message || e), 'err', 9000);
+			})
+			.finally(function() { btns.forEach(function(b) { b.disabled = false; }); });
+	}
 
 	return m.render().then(function(mapNode) {
-		save.addEventListener('click', function(ev) {
-			ev.preventDefault();
-			save.disabled = true;
-			flash(_('Saving…'));
-			/* ensure the singleton sections exist before parsing the form —
-			   on installs where uci-defaults never seeded them, writing an
-			   option to a missing named section fails with ubus NOT_FOUND (4) */
-			if (!uci.get('dae', 'routing')) uci.add('dae', 'routing', 'routing');
-			if (!uci.get('dae', 'dns'))     uci.add('dae', 'dns', 'dns');
-			if (!uci.get('dae', 'config'))  uci.add('dae', 'dae', 'config');
-			/* commit dae UCI (apply flushes the rpc session to /etc/config,
-			   which a CLI `uci commit` cannot see), then regenerate + hot reload */
-			m.save(null, true)
-				.then(function() { return uci.save(); })
-				.then(function() {
-					/* apply flushes the rpc session to /etc/config so the
-					   generator (reads /etc/config/dae) sees the form data;
-					   skip it when nothing changed — apply on an empty
-					   changeset throws ubus NO_DATA (code 5). */
-					return uci.changes().then(function(ch) {
-						return (ch && Object.keys(ch).length) ? uci.apply() : null;
-					});
-				})
-				.then(function() { return fs.exec(GEN, ['generate']); })
-				.then(function(res) {
-					if (res && res.code !== 0) {
-						const err = (res.stderr || res.stdout || ('exit ' + res.code)).trim().split('\n')[0];
-						flash(_('Apply failed: %s').format(err), 'err', 9000);
-						return;
-					}
-					/* reload to reflect committed state and clear the change badge */
-					flash(_('Saved · validated · hot-reloaded'), 'ok');
-					setTimeout(function() { window.location.reload(); }, 900);
-				})
-				.catch(function(e) {
-					if (e && e.name === 'CBIValidationError') {
-						flash(_('Please fix the highlighted fields.'), 'err', 6000);
-						return;
-					}
-					flash(_('Save failed: %s').format(e.message || e), 'err', 9000);
-				})
-				.finally(function() { save.disabled = false; });
-		});
 
-		/* make each form section collapsible; keep the two everyday ones open */
-		accordionizeSections(mapNode, [ _('Subscriptions'), _('Nodes') ]);
+		/* beginner default: only Subscriptions starts open; nodes/groups/routing/dns/logging collapse */
+		accordionizeSections(mapNode, [ _('Subscriptions') ]);
+
+		/* fold groups / routing / dns / logging under one "Advanced settings"
+		   collapsible so the everyday view is just subscriptions + nodes */
+		const advTitles = [ _('Groups'), _('Routing'), _('DNS'), _('Logging') ];
+		const advWraps = [];
+		mapNode.querySelectorAll('.dd-adv').forEach(function(w) {
+			const t = w.querySelector('.dd-adv-bar span');
+			if (t && advTitles.indexOf(t.textContent.trim()) >= 0) advWraps.push(w);
+		});
+		if (advWraps.length) {
+			const outerBody = E('div', { 'class': 'dd-adv-body' });
+			const outer = E('div', { 'class': 'dd-adv dd-closed' }, [
+				E('div', { 'class': 'dd-adv-bar' }, [
+					E('span', {}, _('Advanced settings')),
+					E('span', { 'class': 'dd-adv-chevron' }, '›')
+				]),
+				outerBody
+			]);
+			outer.firstChild.addEventListener('click', function() { outer.classList.toggle('dd-closed'); });
+			advWraps[0].parentNode.insertBefore(outer, advWraps[0]);
+			advWraps.forEach(function(w) { outerBody.appendChild(w); });
+		}
 
 		const cardChildren = [
 			E('h4', { 'class': 'dd-card-title' }, _('dae Configuration')),
@@ -381,9 +399,72 @@ function renderDaeForms(ctx) {
 				_('Add a subscription or node, then save — it takes effect automatically.'))
 		];
 		cardChildren.push(mapNode);
-		cardChildren.push(E('div', { 'class': 'dd-editor-actions' }, [ save, status ]));
 
-		return E('div', { 'class': 'dd-card dd-settings-card' }, cardChildren);
+		/* state-aware primary action: running → one "Save and Apply"; stopped →
+		   "Save config" (secondary) + "Save and Start" (primary). Starting the
+		   proxy is an explicit choice, never an implicit side effect of saving. */
+		return backend.detectRunning().then(function(rr) {
+			const running = rr && rr.dae;
+
+			/* "Update all subscriptions" only helps while dae runs (hot reload
+			   re-pulls them). A stopped dae re-fetches every subscription on
+			   start, so there is nothing to update — hide the button then. */
+			if (running) {
+				const upBtn = E('button', { 'class': 'cbi-button cbi-button-action' }, _('Update all subscriptions'));
+				const upMsg = E('span', { 'class': 'dd-meta', 'style': 'margin-left:8px;display:none' }, '');
+				const setUp = function(text, kind) {
+					upMsg.textContent = text;
+					upMsg.style.display = '';
+					upMsg.style.color = (kind === 'err') ? 'var(--error-color, #d33)' : 'var(--success-color, #2a8)';
+					if (kind !== 'err')
+						setTimeout(function() { if (upMsg.textContent === text) upMsg.style.display = 'none'; }, 5000);
+				};
+				upBtn.addEventListener('click', function(ev) {
+					ev.preventDefault();
+					upBtn.disabled = true;
+					setUp(_('Updating…'));
+					fs.exec(backend.BACKENDS.dae.initd, ['hot_reload']).then(function(res) {
+						if (res && res.code !== 0)
+							setUp(_('Update failed: %s').format(res.stderr || res.stdout || ('exit ' + res.code)), 'err');
+						else
+							setUp(_('Subscriptions updated (dae reloaded)'), 'ok');
+					}).catch(function(e) {
+						setUp(_('Update failed: %s').format(e.message || e), 'err');
+					}).finally(function() { upBtn.disabled = false; });
+				});
+				const upWrap = E('div', { 'class': 'dd-actions', 'style': 'margin:0 0 8px' }, [ upBtn, upMsg ]);
+				const advs = mapNode.querySelectorAll('.dd-adv');
+				for (let i = 0; i < advs.length; i++) {
+					const t = advs[i].querySelector('.dd-adv-bar span');
+					if (t && t.textContent.trim() === _('Subscriptions')) {
+						const body = advs[i].querySelector('.dd-adv-body');
+						const tbl = body && body.querySelector('.cbi-section-table');
+						if (tbl) tbl.parentNode.insertBefore(upWrap, tbl);
+						else if (body) body.insertBefore(upWrap, body.firstChild);
+						break;
+					}
+				}
+			}
+
+			const actions = [];
+			let btns;
+			if (running) {
+				const apply = E('button', { 'class': 'cbi-button cbi-button-positive' }, _('Save and Apply'));
+				btns = [ apply ];
+				apply.addEventListener('click', function(ev) { ev.preventDefault(); doSave({ okMsg: _('Saved · applied') }, btns); });
+				actions.push(apply);
+			} else {
+				const saveOnly = E('button', { 'class': 'cbi-button' }, _('Save config'));
+				const saveStart = E('button', { 'class': 'cbi-button cbi-button-positive' }, _('Save and Start'));
+				btns = [ saveOnly, saveStart ];
+				saveOnly.addEventListener('click', function(ev) { ev.preventDefault(); doSave({ okMsg: _('Saved') }, btns); });
+				saveStart.addEventListener('click', function(ev) { ev.preventDefault(); doSave({ start: true }, btns); });
+				actions.push(saveOnly, saveStart);
+			}
+			actions.push(status);
+			cardChildren.push(E('div', { 'class': 'dd-editor-actions' }, actions));
+			return E('div', { 'class': 'dd-card dd-settings-card' }, cardChildren);
+		});
 	});
 }
 
@@ -425,12 +506,36 @@ function renderDaeImportBanner() {
 	}).catch(function() { return null; });
 }
 
+/* Lightweight dae-DSL syntax highlighter: tokenises into spans for a <pre>
+   layer drawn behind a transparent textarea (no editor library needed). */
+function highlightDae(src) {
+	const re = /(#[^\n]*)|('[^'\n]*')|\b(global|subscription|node|group|routing|dns|include|upstream|request|response)\b|\b([A-Za-z_][\w-]*)(?=\s*\()|(->|&&|\|\|)|\b(geoip|geosite)(?=:)/g;
+	let out = '', last = 0, m;
+	const esc = function(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); };
+	while ((m = re.exec(src)) !== null) {
+		out += esc(src.slice(last, m.index));
+		const cls = m[1] ? 'c' : m[2] ? 's' : m[3] ? 'k' : m[4] ? 'f' : m[5] ? 'o' : 'g';
+		out += '<span class="dh-' + cls + '">' + esc(m[0]) + '</span>';
+		last = m.index + m[0].length;
+	}
+	out += esc(src.slice(last));
+	return out;
+}
+
 function renderDaeEditor() {
 	const textarea = E('textarea', {
-		'class': 'dd-editor',
+		'class': 'dd-editor dd-editor-hl',
 		'spellcheck': 'false',
 		'placeholder': _('dae config file is empty. Click "Initialize from example" to start, or paste your config here.')
 	}, '');
+	const hlCode = E('code', {});
+	const hlPre = E('pre', { 'class': 'dd-hl', 'aria-hidden': 'true' }, hlCode);
+	const editWrap = E('div', { 'class': 'dd-edit-wrap' }, [ hlPre, textarea ]);
+	function syncHL() {
+		hlCode.innerHTML = highlightDae(textarea.value) + '\n';
+		hlPre.scrollTop = textarea.scrollTop;
+	}
+	textarea.addEventListener('scroll', function() { hlPre.scrollTop = textarea.scrollTop; });
 	const save = E('button', { 'class': 'cbi-button cbi-button-positive' }, _('Save manual config'));
 	const init = E('button', { 'class': 'cbi-button cbi-button-action' }, _('Initialize from example'));
 	const status = E('span', { 'class': 'dd-editor-status' }, '');
@@ -514,6 +619,7 @@ function renderDaeEditor() {
 	}
 
 	function refreshPlaceholders() {
+		syncHL();
 		const hits = detectPlaceholders(textarea.value);
 		const titleEl = phWarn.querySelector('.dd-ph-warn-title');
 		const howtoEl = phWarn.querySelector('.dd-ph-howto');
@@ -634,7 +740,7 @@ function renderDaeEditor() {
 						_('Edit config DSL — subscriptions, nodes, routing, DNS. Load template via Initialize. Replace placeholder URL before saving. Switch to daed for GUI.')
 					]),
 					phWarn,
-					textarea,
+					editWrap,
 					footer,
 					E('div', { 'class': 'dd-editor-actions' }, [ save, init, insertSelect, status ])
 				])
