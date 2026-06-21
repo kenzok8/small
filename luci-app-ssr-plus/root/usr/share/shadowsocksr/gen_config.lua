@@ -50,32 +50,28 @@ local b64encode = nixio.bin.b64encode
 local effective_node_local_port = tonumber(server.local_port) or tonumber(default_node_local_port) or 1234
 
 if server.type == "ss-rust" then
-    server.type = "ss"
+	server.type = "ss"
 end
 
 local function parse_realm_uri(uri)
 	if type(uri) ~= "string" then return nil end
-	-- realm://token@server/realm_id?query
-	local token, server_url, realm_id, query = trim(uri):match("^realm://([^@]+)@([^/]+)/([^?]*)%??(.*)$")
-	if not token or not server_url or not realm_id then return nil end
+	-- realm[+http]://token@server/realm_id?query
+	local scheme, token, server_url, realm_id, query = trim(uri):match("^(realm%+http|realm)://([^@]+)@([^/]+)/([^?]*)%??(.*)$")
+	if not scheme or not token or not server_url or not realm_id then return nil end
 	realm_id = realm_id:gsub("/+$", "")
 	local realm = {
+		scheme = scheme,
 		token = token,
 		server_url = server_url,
 		realm_id = realm_id
 	}
 	-- 解析 query 中的 stun=
-	if query and query ~= "" then
-		local stun_servers = {}
-		for key, value in query:gmatch("([^&=?]+)=([^&]+)") do
-			if key == "stun" and value ~= "" then
-				stun_servers[#stun_servers + 1] = value
-			end
-		end
-		if #stun_servers > 0 then
-			realm.stun_servers = stun_servers
-		end
+	local stun_servers
+	for value in (query or ""):gmatch("[?&]?[Ss][Tt][Uu][Nn]=([^&]+)") do
+		if not stun_servers then stun_servers = {} end
+		stun_servers[#stun_servers + 1] = value
 	end
+	realm.stun_servers = stun_servers
 	return realm
 end
 
@@ -428,22 +424,24 @@ end
 	-- 开启 socks 代理
 	-- 检查是否启用 socks 代理
 if proto and proto:find("tcp") and socks_port ~= "0" then
-    table.insert(Xray.inbounds, {
-        -- socks
-        protocol = "socks",
-        port = tonumber(socks_port),
+	local auth = (socks_server.socks5_auth and socks_server.socks5_auth ~= "noauth")
+		and {{
+			user = socks_server.socks5_user,
+			pass = socks_server.socks5_pass
+		}} or nil
+
+	table.insert(Xray.inbounds, {
+		-- socks
+		protocol = "socks",
+		port = tonumber(socks_port),
 		settings = {
 			auth = socks_server.socks5_auth or "noauth",
 			udp = true,
-			mixed = ((socks_server.socks5_mixed == '1') and true or false) or nil,
-			accounts = (socks_server.socks5_auth and socks_server.socks5_auth ~= "noauth") and {
-				{
-					user = socks_server.socks5_user,
-					pass = socks_server.socks5_pass
-				}
-			} or nil
-		} or nil
-    })
+			mixed = socks_server.socks5_mixed == "1" or nil,
+			accounts = (xray_version_val <= 260503) and auth or nil,
+			users = (xray_version_val > 260503) and auth or nil
+		}
+	})
 end
 
 -- 传出连接
@@ -648,9 +646,7 @@ Xray.outbounds = {
 						local realm = parse_realm_uri(server.hysteria2_realm_url)
 						local url, stun
 						if realm then
-							if realm.token and realm.server_url and realm.realm_id then
-								url = "realm://" .. realm.token .. "@" .. realm.server_url .. "/" .. realm.realm_id
-							end
+							url = realm.scheme .. "://" .. realm.token .. "@" .. realm.server_url .. "/" .. realm.realm_id
 							stun = realm.stun_servers or server.hysteria2_realm_stun
 						end
 						local r = {
