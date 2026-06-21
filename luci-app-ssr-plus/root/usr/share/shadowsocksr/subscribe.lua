@@ -26,9 +26,12 @@ local ucic = require "luci.model.uci".cursor()
 local proxy = ucic:get_first(name, 'server_subscribe', 'proxy', '0')
 local switch = ucic:get_first(name, 'server_subscribe', 'switch', '1')
 local allow_insecure = ucic:get_first(name, 'server_subscribe', 'allow_insecure', '0')
-local filter_words = ucic:get_first(name, 'server_subscribe', 'filter_words', '过期/套餐/剩余/网址/QQ群/官网/防失联/回国')
+local filter_words = ucic:get_first(name, 'server_subscribe', 'filter_words', '过期/重置/套餐/剩余/网址/QQ群/官网/防失联/回国')
 local save_words = ucic:get_first(name, 'server_subscribe', 'save_words', '')
 local user_agent = ucic:get_first(name, 'server_subscribe', 'user_agent', 'v2rayN/9.99')
+local sub_convert = ucic:get_first(name, 'server_subscribe', 'sub_convert', '0')
+local convert_address = ucic:get_first(name, 'server_subscribe', 'convert_address', 'https://api.asailor.org/sub')
+local template_url = ucic:get_first(name, 'server_subscribe', 'template_url', '')
 local local_clash_dir = "/etc/ssrplus/clash"
 local target_subscribe_sid = tostring(arg and arg[1] or ""):gsub("^%s*(.-)%s*$", "%1")
 
@@ -122,6 +125,11 @@ end
 local function urlEncode(szText)
 	local str = szText:gsub("([^0-9a-zA-Z ])", get_urlencode)
 	str = str:gsub(" ", "+")
+	return str
+end
+
+local function urlEncodeRFC3986(szText)
+	local str = tostring(szText or ""):gsub("([^0-9a-zA-Z%-_%.~])", get_urlencode)
 	return str
 end
 
@@ -397,6 +405,7 @@ local function parseAnytlsShare(content)
 	if not userinfo or not hostinfo then
 		return nil
 	end
+	hostinfo = hostinfo:gsub("/+$", "")
 
 	local password = UrlDecode(userinfo)
 	local server, port = hostinfo:match("^(.+):(%d+)$")
@@ -468,6 +477,389 @@ local function buildAnytlsClashYaml(entries, group_name)
 	return table.concat(lines, "\n") .. "\n"
 end
 
+local function anytls_to_mihomo_node(entry)
+	if not entry then
+		return nil
+	end
+
+	return {
+		type = "anytls",
+		alias = entry.name,
+		raw_alias = entry.name,
+		server = entry.server,
+		server_port = entry.port,
+		password = entry.password,
+		tls_host = entry.sni,
+		insecure = entry.allow_insecure and "1" or "0",
+		fingerprint = entry.client_fingerprint
+	}
+end
+
+local function split_csv_values(value)
+	local items = {}
+	for v in tostring(value or ""):gmatch("[^,;|%s]+") do
+		items[#items + 1] = v
+	end
+	return items
+end
+
+local function bool_from_flag(value)
+	return is_true_value(value) and true or nil
+end
+
+local function number_from_value(value)
+	if value == nil or value == "" then
+		return nil
+	end
+	return tonumber(value)
+end
+
+local function string_from_value(value)
+	if value == nil or value == "" then
+		return nil
+	end
+	return tostring(value)
+end
+
+local function split_plugin_opts(value)
+	local opts = {}
+	for part in tostring(value or ""):gmatch("[^;]+") do
+		local key, val = part:match("^%s*([^=]+)=?(.*)%s*$")
+		if key and key ~= "" then
+			opts[key] = val or ""
+		end
+	end
+	return opts
+end
+
+local function pick_plugin_opt(opts, ...)
+	for i = 1, select("#", ...) do
+		local key = select(i, ...)
+		if opts[key] ~= nil and opts[key] ~= "" then
+			return opts[key]
+		end
+	end
+	return nil
+end
+
+local function normalize_mihomo_plugin_name(plugin)
+	local value = tostring(plugin or ""):lower()
+	if value == "" or value == "none" then
+		return ""
+	end
+	if value == "simple-obfs" or value == "obfs" or value == "obfs-local" then
+		return "obfs"
+	end
+	if value == "xray-plugin" then
+		return "v2ray-plugin"
+	end
+	if value == "shadowtls" then
+		return "shadow-tls"
+	end
+	return value
+end
+
+local function apply_mihomo_ss_plugin(proxy, node)
+	local plugin = normalize_mihomo_plugin_name(node.plugin)
+	if plugin == "" then
+		return
+	end
+
+	local opts = split_plugin_opts(node.plugin_opts)
+	proxy.plugin = plugin
+	if plugin == "obfs" then
+		proxy["plugin-opts"] = {
+			mode = pick_plugin_opt(opts, "obfs", "mode") or "http",
+			host = string_from_value(pick_plugin_opt(opts, "obfs-host", "obfs_host", "host"))
+		}
+	elseif plugin == "shadow-tls" then
+		proxy["client-fingerprint"] = string_from_value(node.fingerprint)
+		proxy["plugin-opts"] = {
+			host = string_from_value(pick_plugin_opt(opts, "host")),
+			password = string_from_value(pick_plugin_opt(opts, "passwd", "password")),
+			version = number_from_value(pick_plugin_opt(opts, "version")) or (opts.v3 == "1" and 3) or (opts.v2 == "1" and 2) or (opts.v1 == "1" and 1) or nil
+		}
+	elseif plugin == "v2ray-plugin" then
+		proxy["plugin-opts"] = {
+			mode = pick_plugin_opt(opts, "mode") or "websocket",
+			tls = bool_from_flag(pick_plugin_opt(opts, "tls")),
+			host = string_from_value(pick_plugin_opt(opts, "host")),
+			path = string_from_value(pick_plugin_opt(opts, "path")),
+			mux = bool_from_flag(pick_plugin_opt(opts, "mux")),
+			["skip-cert-verify"] = bool_from_flag(pick_plugin_opt(opts, "skip-cert-verify", "skip_cert_verify", "insecure")),
+			["v2ray-http-upgrade"] = bool_from_flag(pick_plugin_opt(opts, "v2ray-http-upgrade", "v2ray_http_upgrade"))
+		}
+	else
+		proxy["plugin-opts"] = next(opts) and opts or nil
+	end
+end
+
+local function apply_mihomo_tls_options(proxy, node)
+	local tls_enabled = node.tls == "1" or node.reality == "1"
+	if not tls_enabled then
+		return
+	end
+
+	proxy.tls = true
+	proxy.servername = string_from_value(node.tls_host)
+	proxy.fingerprint = string_from_value(node.tls_CertSha)
+	proxy["client-fingerprint"] = string_from_value(node.fingerprint)
+	proxy["skip-cert-verify"] = bool_from_flag(node.insecure)
+
+	local alpn = split_csv_values(node.tls_alpn)
+	if #alpn > 0 then
+		proxy.alpn = alpn
+	end
+
+	if node.reality == "1" then
+		proxy["reality-opts"] = {
+			["public-key"] = string_from_value(node.reality_publickey),
+			["short-id"] = string_from_value(node.reality_shortid),
+			["support-x25519mlkem768"] = bool_from_flag(node.enable_mldsa65verify)
+		}
+	end
+
+	if node.enable_ech == "1" and node.ech_config and node.ech_config ~= "" then
+		proxy["ech-opts"] = {
+			enable = true,
+			config = node.ech_config
+		}
+	end
+end
+
+local function apply_mihomo_trojan_tls_options(proxy, node)
+	proxy.sni = string_from_value(node.tls_host)
+	proxy.fingerprint = string_from_value(node.tls_CertSha)
+	proxy["client-fingerprint"] = string_from_value(node.fingerprint)
+	proxy["skip-cert-verify"] = bool_from_flag(node.insecure)
+
+	local alpn = split_csv_values(node.tls_alpn)
+	if #alpn > 0 then
+		proxy.alpn = alpn
+	end
+
+	if node.reality == "1" then
+		proxy["reality-opts"] = {
+			["public-key"] = string_from_value(node.reality_publickey),
+			["short-id"] = string_from_value(node.reality_shortid)
+		}
+	end
+end
+
+local function apply_mihomo_transport_options(proxy, node)
+	local transport = node.transport or "raw"
+	if transport == "raw" or transport == "tcp" or transport == "" then
+		return
+	end
+	if transport == "httpupgrade" then
+		proxy.network = "ws"
+		proxy["ws-opts"] = {
+			path = string_from_value(node.httpupgrade_path),
+			headers = node.httpupgrade_host and node.httpupgrade_host ~= "" and { Host = node.httpupgrade_host } or nil,
+			["v2ray-http-upgrade"] = true
+		}
+	elseif transport == "ws" then
+		proxy.network = "ws"
+		proxy["ws-opts"] = {
+			path = string_from_value(node.ws_path),
+			headers = node.ws_host and node.ws_host ~= "" and { Host = node.ws_host } or nil
+		}
+	elseif transport == "h2" then
+		proxy.network = "h2"
+		proxy["h2-opts"] = {
+			host = node.h2_host and node.h2_host ~= "" and split_csv_values(node.h2_host) or nil,
+			path = string_from_value(node.h2_path)
+		}
+	elseif transport == "grpc" then
+		proxy.network = "grpc"
+		proxy["grpc-opts"] = {
+			["grpc-service-name"] = string_from_value(node.serviceName)
+		}
+	elseif transport == "xhttp" and proxy.type == "vless" then
+		proxy.network = "xhttp"
+		proxy["xhttp-opts"] = {
+			path = string_from_value(node.xhttp_path),
+			host = string_from_value(node.xhttp_host),
+			mode = string_from_value(node.xhttp_mode)
+		}
+	end
+end
+
+local function to_mihomo_proxy(node)
+	local proxy = {
+		name = node.alias,
+		server = node.server,
+		port = tonumber(node.server_port) or node.server_port,
+		udp = true
+	}
+
+	if node.type == "v2ray" and node.v2ray_protocol == "vmess" then
+		proxy.type = "vmess"
+		proxy.uuid = node.vmess_id
+		proxy.alterId = tonumber(node.alter_id) or 0
+		proxy.cipher = node.security or "auto"
+		proxy.tfo = bool_from_flag(node.fast_open)
+		apply_mihomo_tls_options(proxy, node)
+		apply_mihomo_transport_options(proxy, node)
+	elseif node.type == "v2ray" and node.v2ray_protocol == "vless" then
+		proxy.type = "vless"
+		proxy.uuid = node.vmess_id
+		proxy.flow = string_from_value(node.tls_flow)
+		proxy.encryption = node.vless_encryption or ""
+		proxy.tfo = bool_from_flag(node.fast_open)
+		apply_mihomo_tls_options(proxy, node)
+		apply_mihomo_transport_options(proxy, node)
+	elseif node.type == "ss" or node.type == "ss-rust" or (node.type == "v2ray" and node.v2ray_protocol == "shadowsocks") then
+		proxy.type = "ss"
+		proxy.cipher = node.encrypt_method_ss or node.encrypt_method
+		proxy.password = node.password
+		proxy.tfo = bool_from_flag(node.fast_open)
+		apply_mihomo_ss_plugin(proxy, node)
+	elseif node.type == "ssr" then
+		proxy.type = "ssr"
+		proxy.cipher = node.encrypt_method
+		proxy.password = node.password
+		proxy.obfs = node.obfs
+		proxy.protocol = node.protocol
+		proxy["obfs-param"] = string_from_value(node.obfs_param)
+		proxy["protocol-param"] = string_from_value(node.protocol_param)
+		proxy.tfo = bool_from_flag(node.fast_open)
+	elseif node.type == "v2ray" and node.v2ray_protocol == "trojan" then
+		proxy.type = "trojan"
+		proxy.password = node.password
+		proxy.tfo = bool_from_flag(node.fast_open)
+		apply_mihomo_trojan_tls_options(proxy, node)
+		apply_mihomo_transport_options(proxy, node)
+	elseif node.type == "tuic" then
+		local alpn = split_csv_values(node.tls_alpn)
+		local heartbeat = number_from_value(node.heartbeat)
+		local timeout = number_from_value(node.timeout)
+		proxy.type = "tuic"
+		proxy.uuid = node.tuic_uuid
+		proxy.password = node.tuic_passwd
+		proxy.ip = string_from_value(node.tuic_ip)
+		proxy.sni = string_from_value(node.tls_host)
+		proxy.alpn = (#alpn > 0) and alpn or nil
+		proxy["udp-relay-mode"] = string_from_value(node.udp_relay_mode)
+		proxy["congestion-controller"] = string_from_value(node.congestion_control)
+		proxy["heartbeat-interval"] = heartbeat and (heartbeat * 1000) or nil
+		proxy["request-timeout"] = timeout and (timeout * 1000) or nil
+		proxy["max-udp-relay-packet-size"] = number_from_value(node.tuic_max_package_size)
+		proxy["disable-sni"] = bool_from_flag(node.disable_sni)
+		proxy["reduce-rtt"] = bool_from_flag(node.zero_rtt_handshake)
+		proxy["skip-cert-verify"] = bool_from_flag(node.insecure)
+	elseif node.type == "v2ray" and (node.v2ray_protocol == "hysteria2" or node.v2ray_protocol == "hy2") then
+		local alpn = split_csv_values(node.tls_alpn)
+		proxy.type = "hysteria2"
+		proxy.password = node.hy2_auth
+		proxy.ports = string_from_value(node.port_range)
+		proxy.up = node.uplink_capacity and (tostring(node.uplink_capacity) .. " Mbps") or nil
+		proxy.down = node.downlink_capacity and (tostring(node.downlink_capacity) .. " Mbps") or nil
+		proxy.sni = string_from_value(node.tls_host)
+		proxy.fingerprint = string_from_value(node.tls_CertSha)
+		proxy["skip-cert-verify"] = bool_from_flag(node.insecure)
+		proxy.alpn = (#alpn > 0) and alpn or nil
+		if node.flag_obfs == "1" then
+			proxy.obfs = string_from_value(node.obfs_type)
+			proxy["obfs-password"] = string_from_value(node.salamander)
+		end
+	elseif node.type == "anytls" then
+		proxy.type = "anytls"
+		proxy.password = node.password
+		proxy.sni = string_from_value(node.tls_host)
+		proxy["client-fingerprint"] = string_from_value(node.fingerprint)
+		proxy["skip-cert-verify"] = bool_from_flag(node.insecure)
+	elseif node.type == "v2ray" and node.v2ray_protocol == "snell" then
+		proxy.type = "snell"
+		proxy.psk = node.snell_psk
+		proxy.version = tonumber(node.snell_version) or nil
+		local obfs_mode = string_from_value(node.snell_obfs)
+		local obfs_host = string_from_value(node.snell_obfs_host)
+		if obfs_mode or obfs_host then
+			proxy["obfs-opts"] = {
+				mode = obfs_mode,
+				host = obfs_host
+			}
+		end
+	else
+		return nil
+	end
+
+	if not proxy.name or proxy.name == "" or not proxy.server or not proxy.port then
+		return nil
+	end
+
+	return proxy
+end
+
+local function can_group_into_mihomo(node)
+	if not node then
+		return false
+	end
+	if node.type == "ssr" or node.type == "ss" or node.type == "ss-rust" then
+		return true
+	end
+	if node.type == "v2ray" and (
+		node.v2ray_protocol == "vmess"
+		or node.v2ray_protocol == "vless"
+		or node.v2ray_protocol == "shadowsocks"
+		or node.v2ray_protocol == "trojan"
+		or node.v2ray_protocol == "hysteria2"
+		or node.v2ray_protocol == "hy2"
+		or node.v2ray_protocol == "snell"
+	) then
+		return true
+	end
+	if node.type == "tuic" then
+		return true
+	end
+	if node.type == "anytls" then
+		return true
+	end
+	return false
+end
+
+local function buildMihomoSubscribeYaml(nodes, group_name)
+	local proxies = {}
+	local names = {}
+
+	for _, node in ipairs(nodes) do
+		local proxy = to_mihomo_proxy(node)
+		if proxy then
+			proxies[#proxies + 1] = proxy
+			names[#names + 1] = proxy.name
+		end
+	end
+
+	if #proxies == 0 then
+		return nil, 0
+	end
+
+	local doc = {
+		mode = "rule",
+		["log-level"] = "silent",
+		proxies = proxies,
+		["proxy-groups"] = {
+			{
+				name = group_name,
+				type = "select",
+				proxies = names
+			}
+		},
+		rules = { "MATCH," .. group_name }
+	}
+
+	local ok_lyaml, lyaml = pcall(require, "lyaml")
+	if ok_lyaml then
+		local ok_dump, dumped = pcall(lyaml.dump, { doc })
+		if ok_dump and dumped then
+			return dumped, #proxies
+		end
+	end
+
+	return nil, 0
+end
+
 local function processLocalClashSubscription(path, alias)
 	local result = {
 		type = "clash",
@@ -499,7 +891,7 @@ local function processData(szType, content, cfgid)
 		local url = URL.parse("http://" .. content)
 		local params = url.query
 
-		if not has_xray then
+		if not has_xray and not has_mihomo then
 			return nil
 		end
 
@@ -561,6 +953,30 @@ local function processData(szType, content, cfgid)
 		if params.tfo then
 			-- 处理 fast open 参数
 			result.fast_open = params.tfo
+		end
+	elseif szType == "snell" then
+		if not has_mihomo then
+			log("跳过 Snell 节点：本地未安装 mihomo。")
+			return nil
+		end
+
+		local url = URL.parse("http://" .. content)
+		local params = url.query or {}
+		local raw_alias = url.fragment and UrlDecode(url.fragment) or nil
+		local psk = url.user and UrlDecode(url.user) or first_nonempty(params, {"psk", "password"})
+
+		result.type = "v2ray"
+		result.v2ray_protocol = "snell"
+		result.raw_alias = raw_alias
+		result.alias = raw_alias
+		result.server = normalize_host(url.host)
+		result.server_port = url.port
+		result.snell_psk = psk
+		result.snell_version = first_nonempty(params, {"version", "v"}) or "4"
+		result.snell_obfs = first_nonempty(params, {"obfs", "obfs-mode", "obfs_mode"})
+		result.snell_obfs_host = first_nonempty(params, {"obfs-host", "obfs_host", "host"})
+		if not result.snell_psk or result.snell_psk == "" then
+			result.server = nil
 		end
 	elseif szType == 'ssr' then
 		-- 去掉前后空白和#注释
@@ -1168,7 +1584,7 @@ local function processData(szType, content, cfgid)
 		end
 
 		-- 自动决定模式（true=Xray, false=普通 Trojan）
-		if not has_xray then
+		if not has_xray and not has_mihomo then
 			return nil
 		end
 
@@ -1575,6 +1991,56 @@ local function curl(url, user_agent)
 	return stdout, md5
 end
 
+local function build_convert_url(url)
+	if sub_convert ~= "1" then
+		return url, false
+	end
+
+	local tpl = trim(template_url or "")
+	local endpoint = trim(convert_address or "")
+	local exclude = trim(filter_words or "")
+	if tpl == "" or endpoint == "" then
+		return url, false
+	end
+
+	endpoint = endpoint:gsub("%s+$", ""):gsub("^%s+", ""):gsub("%z", ""):gsub("[\r\n]", "")
+	local sep = endpoint:find("?", 1, true) and "&" or "?"
+	local query = "target=clash"
+		.. "&new_name=true"
+		.. "&url=" .. urlEncodeRFC3986(url)
+		.. "&config=" .. urlEncodeRFC3986(tpl)
+		.. "&exclude=" .. urlEncodeRFC3986(exclude)
+		.. "&emoji=false"
+		.. "&list=false"
+		.. "&sort=false"
+		.. "&udp=true"
+		.. "&scv=" .. (allow_insecure == "1" and "true" or "false")
+		.. "&fdn=true"
+
+	return endpoint .. sep .. query, true
+end
+
+local function filterClashYamlRaw(raw)
+	if not raw or raw == "" then
+		return raw, 0
+	end
+
+	local tmp = string.format("/tmp/ssrplus-subscribe-filter-%d-%d.yaml", nixio.getpid(), os.time())
+	local ok = nixio.fs.writefile(tmp, raw)
+	if not ok then
+		return raw, 0
+	end
+
+	local removed = tonumber(trim(luci.sys.exec(string.format(
+		"/usr/bin/lua /usr/share/shadowsocksr/clash_yaml.lua filter %s %s 2>/dev/null",
+		shell_quote(tmp),
+		shell_quote(filter_words)
+	)))) or 0
+	local filtered = nixio.fs.readfile(tmp) or raw
+	nixio.fs.remove(tmp)
+	return filtered, removed
+end
+
 local function collect_wan_interfaces()
 	local ifaces = {}
 	local seen = {}
@@ -1845,6 +2311,7 @@ end
 -- 加载订阅未变化的节点用于防止被误删
 local function loadOldNodes(groupHash)
 	local nodes = {}
+	local count = 0
 	cache[groupHash] = {}
 	nodeResult[#nodeResult + 1] = nodes
 	local index = #nodeResult
@@ -1854,8 +2321,22 @@ local function loadOldNodes(groupHash)
 			local section = setmetatable({}, {__index = s})
 			nodes[s.hashkey] = section
 			cache[groupHash][s.hashkey] = section
+			count = count + 1
 		end
 	end)
+
+	return count
+end
+
+local function group_has_saved_nodes(groupHash)
+	local found = false
+	ucic:foreach(name, uciType, function(s)
+		if s.grouphashkey == groupHash and s.hashkey then
+			found = true
+			return false
+		end
+	end)
+	return found
 end
 
 local function get_section_ss_backend(section)
@@ -1901,6 +2382,58 @@ local function group_needs_ss_backend_refresh(groupHash)
 	return has_ss_node and needs_refresh
 end
 
+local function is_mihomo_subscribe_node(section)
+	if not section then
+		return false
+	end
+	if section.type == "clash" and section.clash_path and tostring(section.clash_path):match("%.mihomo%.yaml$") then
+		return true
+	end
+	if section.type == "ssr" then
+		return true
+	end
+	if section.type == "ss" or section.type == "ss-rust" then
+		return true
+	end
+	if section.type == "v2ray" and (
+		section.v2ray_protocol == "vmess"
+		or section.v2ray_protocol == "vless"
+		or section.v2ray_protocol == "shadowsocks"
+		or section.v2ray_protocol == "trojan"
+		or section.v2ray_protocol == "hysteria2"
+		or section.v2ray_protocol == "hy2"
+		or section.v2ray_protocol == "snell"
+	) then
+		return true
+	end
+	if section.type == "tuic" then
+		return true
+	end
+	return false
+end
+
+local function group_needs_mihomo_subscribe_refresh(groupHash)
+	if not has_mihomo then
+		return false
+	end
+
+	local needs_refresh = false
+	ucic:foreach(name, uciType, function(s)
+		if s.grouphashkey == groupHash then
+			if is_mihomo_subscribe_node(s) and s.type ~= "clash" then
+				needs_refresh = true
+				return false
+			end
+			if s.type == "clash" and s.clash_path and tostring(s.clash_path):match("%.anytls%.yaml$") then
+				needs_refresh = true
+				return false
+			end
+		end
+	end)
+
+	return needs_refresh
+end
+
 local function preserve_unselected_groups(selected_hashes)
 	local preserved = {}
 
@@ -1918,7 +2451,8 @@ local execute = function()
 	local selected_hashes = {}
 
 	for _, item in ipairs(subscribe_items) do
-		selected_hashes[md5(item.url)] = true
+		local fetch_url = build_convert_url(item.url)
+		selected_hashes[md5(fetch_url)] = true
 	end
 
 	if target_subscribe_sid ~= "" then
@@ -1927,21 +2461,38 @@ local execute = function()
 
 	for _, item in ipairs(subscribe_items) do
 		local url = item.url
-		local raw, new_md5 = curl(url, user_agent)
+		local fetch_url, converted = build_convert_url(url)
+		local raw, new_md5 = curl(fetch_url, user_agent)
+		local yaml_removed_count = 0
+		if isClashYAML(raw) then
+			raw, yaml_removed_count = filterClashYamlRaw(raw)
+			if yaml_removed_count and yaml_removed_count > 0 then
+				new_md5 = md5_string(raw)
+			end
+		end
 		log("raw 长度: "..#raw)
-		local groupHash = md5(url)
+		local groupHash = md5(fetch_url)
 		local old_md5 = read_old_md5(groupHash)
 
 		log("处理订阅: " .. url)
+		if converted then
+			log("使用订阅转换模板: " .. template_url)
+			log("转换服务: " .. convert_address)
+		end
+		if yaml_removed_count and yaml_removed_count > 0 then
+			log("Clash/Mihomo YAML 已按订阅过滤关键词移除节点数量: " .. tostring(yaml_removed_count))
+		end
 		log("groupHash: " .. groupHash)
 		log("old_md5: " .. tostring(old_md5))
 		log("new_md5: " .. tostring(new_md5))
 
 		local backend_refresh = group_needs_ss_backend_refresh(groupHash)
+		local mihomo_subscribe_refresh = group_needs_mihomo_subscribe_refresh(groupHash)
+		local missing_saved_nodes = old_md5 and new_md5 == old_md5 and not group_has_saved_nodes(groupHash)
 		if #raw == 0 then
 			log(url .. ': 获取内容为空')
 			loadOldNodes(groupHash)
-		elseif old_md5 and new_md5 == old_md5 and not backend_refresh then
+		elseif old_md5 and new_md5 == old_md5 and not backend_refresh and not mihomo_subscribe_refresh and not missing_saved_nodes then
 				log("订阅未变化, 跳过无需更新的订阅: " .. url)
 				-- 防止 diff 阶段误删未更新订阅节点
 				loadOldNodes(groupHash)
@@ -1955,6 +2506,12 @@ local execute = function()
 				if backend_refresh and old_md5 and new_md5 == old_md5 then
 					log("检测到 SS 后端偏好变化，强制重建订阅节点: " .. url)
 				end
+				if mihomo_subscribe_refresh and old_md5 and new_md5 == old_md5 then
+					log("检测到可迁移订阅节点，强制重建为 Mihomo 总节点: " .. url)
+				end
+				if missing_saved_nodes then
+					log("订阅内容未变化但本地节点不存在，强制重建订阅节点: " .. url)
+				end
 				updated = true
 				-- 保存更新后的 MD5 值到以 groupHash 为标识的临时文件中，用于下次订阅更新时进行对比
 				write_new_md5(groupHash, new_md5)
@@ -1967,7 +2524,7 @@ local execute = function()
 
 					if isClashYAML(raw) then
 						is_clash_subscription = true
-						local result = processClashSubscription(url)
+						local result = processClashSubscription(fetch_url)
 						if result and not check_filer(result) and not cache[groupHash][result.hashkey] then
 							result.grouphashkey = groupHash
 							table.insert(nodeResult[index], result)
@@ -2014,7 +2571,7 @@ local execute = function()
 						if line:match("^anytls://") then
 							local parsed = parseAnytlsShare(line:gsub("^anytls://", ""))
 							if parsed then
-								table.insert(anytls_nodes, parsed)
+								table.insert(anytls_nodes, anytls_to_mihomo_node(parsed))
 							end
 						elseif line ~= "" then
 							table.insert(normal_nodes, node)
@@ -2022,19 +2579,8 @@ local execute = function()
 					end
 
 					if #anytls_nodes > 0 then
-						local parsed_url = URL.parse(url)
-						local alias = "Clash_" .. (parsed_url.host or groupHash)
-						local local_path = string.format("%s/%s.anytls.yaml", local_clash_dir, groupHash)
-						local yaml = buildAnytlsClashYaml(anytls_nodes, "Proxy")
-						nixio.fs.mkdirr(local_clash_dir)
-						nixio.fs.writefile(local_path, yaml)
-
-						local result = processLocalClashSubscription(local_path, alias)
-						if result and not cache[groupHash][result.hashkey] then
-							result.grouphashkey = groupHash
-							table.insert(nodeResult[index], result)
-							cache[groupHash][result.hashkey] = result
-							log('成功导入 AnyTLS 转 Clash 总节点: ' .. result.alias)
+						for _, parsed in ipairs(anytls_nodes) do
+							table.insert(normal_nodes, parsed)
 						end
 					end
 
@@ -2046,10 +2592,12 @@ local execute = function()
 
 				if not is_clash_subscription then
 				for _, v in ipairs(nodes) do
-					if v and not string.match(v, "^%s*$") then
+					if v and (type(v) == "table" or not string.match(v, "^%s*$")) then
 						xpcall(function()
 							local result
-							if szType then
+							if type(v) == "table" then
+								result = v
+							elseif szType then
 								result = processData(szType, v)
 							elseif not szType then
 								local node = trim(v)
@@ -2061,7 +2609,7 @@ local execute = function()
 									if dat[3] then
 										dat3 = "://" .. dat[3]
 									end
-									if dat[1] == 'ss' or dat[1] == 'trojan' or dat[1] == 'tuic' then
+									if dat[1] == 'ss' or dat[1] == 'trojan' or dat[1] == 'tuic' or dat[1] == 'snell' then
 										result = processData(dat[1], dat[2] .. dat3)
 									else
 										result = processData(dat[1], base64Decode(dat[2]))
@@ -2110,7 +2658,44 @@ local execute = function()
 					end
 					-- 清理临时字段
 					node.raw_alias = nil
-					-- 存入 nodeResult
+				end
+
+				local mihomo_nodes = {}
+				local legacy_nodes = {}
+				for _, node in ipairs(groupRawNodes) do
+					if has_mihomo and can_group_into_mihomo(node) then
+						mihomo_nodes[#mihomo_nodes + 1] = node
+					else
+						legacy_nodes[#legacy_nodes + 1] = node
+					end
+				end
+
+				if #mihomo_nodes > 0 then
+					local parsed_url = URL.parse(url)
+					local alias = item.alias ~= "" and item.alias or ("Mihomo_" .. ((parsed_url and parsed_url.host) or groupHash))
+					local local_path = string.format("%s/%s.mihomo.yaml", local_clash_dir, groupHash)
+					local yaml, proxy_count = buildMihomoSubscribeYaml(mihomo_nodes, "Proxy")
+
+					if yaml and proxy_count > 0 then
+						nixio.fs.mkdirr(local_clash_dir)
+						nixio.fs.writefile(local_path, yaml)
+
+						local result = processLocalClashSubscription(local_path, alias)
+						if result and not cache[groupHash][result.hashkey] then
+							result.grouphashkey = groupHash
+							table.insert(nodeResult[index], result)
+							cache[groupHash][result.hashkey] = result
+							log('成功导入 Mihomo 总节点: ' .. result.alias .. '，包含节点数量: ' .. proxy_count)
+						end
+					else
+						log('Mihomo 总节点生成失败，回退为普通订阅节点。')
+						for _, node in ipairs(mihomo_nodes) do
+							legacy_nodes[#legacy_nodes + 1] = node
+						end
+					end
+				end
+
+				for _, node in ipairs(legacy_nodes) do
 					node.grouphashkey = groupHash
 					table.insert(nodeResult[index], node)
 					cache[groupHash][node.hashkey] = node
