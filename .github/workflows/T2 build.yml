@@ -84,6 +84,11 @@ jobs:
           mkdir -p release-assets
           cp "${packages[@]}" release-assets/
           cp ${{ matrix.arch }}-${{ matrix.sdk }}.zip release-assets/
+          SDK_MM="${{ matrix.sdk }}"; SDK_MM="${SDK_MM%.*}"
+          case "${{ matrix.sdk }}" in
+            25.*) echo -e "## 📦 SDK ${SDK_MM} (APK)\n" >> release.txt ;;
+            *)    echo -e "## 📦 SDK ${SDK_MM} (IPK)\n" >> release.txt ;;
+          esac
           echo -e "**文件说明** 🎈:\n" >> release.txt
           echo -e "1. 默认ssr与passwall的插件与依赖整合包\n" >> release.txt
           case "${{ matrix.sdk }}" in
