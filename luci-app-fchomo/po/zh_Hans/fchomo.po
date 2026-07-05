@@ -21,39 +21,61 @@ msgstr "%s 日志"
 msgid "%s ports"
 msgstr "%s 端口"
 
-#: htdocs/luci-static/resources/fchomo.js:617
-#: htdocs/luci-static/resources/fchomo.js:620
-#: htdocs/luci-static/resources/view/fchomo/client.js:316
+#: htdocs/luci-static/resources/fchomo.js:642
+#: htdocs/luci-static/resources/fchomo.js:645
+#: htdocs/luci-static/resources/view/fchomo/client.js:318
 msgid "(Imported)"
 msgstr "(已导入)"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:1002
-#: htdocs/luci-static/resources/fchomo/listeners.js:1010
-#: htdocs/luci-static/resources/fchomo/listeners.js:1019
+#: htdocs/luci-static/resources/fchomo/listeners.js:1020
+#: htdocs/luci-static/resources/fchomo/listeners.js:1028
+#: htdocs/luci-static/resources/fchomo/listeners.js:1037
 #: htdocs/luci-static/resources/view/fchomo/global.js:564
 #: htdocs/luci-static/resources/view/fchomo/global.js:570
-#: htdocs/luci-static/resources/view/fchomo/node.js:1159
-#: htdocs/luci-static/resources/view/fchomo/node.js:1165
-#: htdocs/luci-static/resources/view/fchomo/node.js:1173
-#: htdocs/luci-static/resources/view/fchomo/node.js:1179
+#: htdocs/luci-static/resources/view/fchomo/node.js:1188
+#: htdocs/luci-static/resources/view/fchomo/node.js:1194
+#: htdocs/luci-static/resources/view/fchomo/node.js:1202
+#: htdocs/luci-static/resources/view/fchomo/node.js:1208
 msgid "(mTLS)"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:869
-#: htdocs/luci-static/resources/view/fchomo/client.js:870
-#: htdocs/luci-static/resources/view/fchomo/client.js:1052
-#: htdocs/luci-static/resources/view/fchomo/client.js:1053
-#: htdocs/luci-static/resources/view/fchomo/client.js:1066
-#: htdocs/luci-static/resources/view/fchomo/client.js:1067
-#: htdocs/luci-static/resources/view/fchomo/client.js:1296
-#: htdocs/luci-static/resources/view/fchomo/node.js:268
-#: htdocs/luci-static/resources/view/fchomo/node.js:274
-#: htdocs/luci-static/resources/view/fchomo/node.js:2035
-#: htdocs/luci-static/resources/view/fchomo/node.js:2041
-#: htdocs/luci-static/resources/view/fchomo/node.js:2055
-#: htdocs/luci-static/resources/view/fchomo/node.js:2061
+#: htdocs/luci-static/resources/view/fchomo/client.js:688
+msgid "-- NETWORK --"
+msgstr ""
+
+#: htdocs/luci-static/resources/view/fchomo/client.js:1204
+msgid "-- PROXY-GROUP --"
+msgstr ""
+
+#: htdocs/luci-static/resources/view/fchomo/client.js:1139
+#: htdocs/luci-static/resources/view/fchomo/client.js:1206
+msgid "-- PROXY-NODE --"
+msgstr ""
+
+#: htdocs/luci-static/resources/fchomo.js:832
+#: htdocs/luci-static/resources/view/fchomo/client.js:877
+#: htdocs/luci-static/resources/view/fchomo/client.js:880
+#: htdocs/luci-static/resources/view/fchomo/client.js:1077
+#: htdocs/luci-static/resources/view/fchomo/client.js:1081
+#: htdocs/luci-static/resources/view/fchomo/client.js:1097
+#: htdocs/luci-static/resources/view/fchomo/client.js:1101
+#: htdocs/luci-static/resources/view/fchomo/client.js:1357
+#: htdocs/luci-static/resources/view/fchomo/node.js:270
+#: htdocs/luci-static/resources/view/fchomo/node.js:281
+#: htdocs/luci-static/resources/view/fchomo/node.js:2071
+#: htdocs/luci-static/resources/view/fchomo/node.js:2082
+#: htdocs/luci-static/resources/view/fchomo/node.js:2101
+#: htdocs/luci-static/resources/view/fchomo/node.js:2112
 msgid "-- Please choose --"
 msgstr "-- 请选择 --"
+
+#: htdocs/luci-static/resources/view/fchomo/client.js:691
+msgid "-- RULE-SET --"
+msgstr ""
+
+#: htdocs/luci-static/resources/fchomo.js:833
+msgid "-- custom --"
+msgstr ""
 
 #: htdocs/luci-static/resources/fchomo.js:404
 msgid "0-RTT reuse."
@@ -64,7 +86,7 @@ msgstr "0-RTT 重用。"
 msgid "1-RTT only."
 msgstr "仅限 1-RTT。"
 
-#: htdocs/luci-static/resources/fchomo.js:43
+#: htdocs/luci-static/resources/fchomo.js:44
 msgid "163Music"
 msgstr "网抑云"
 
@@ -80,20 +102,20 @@ msgstr ""
 msgid "2022-blake3-chacha20-poly1305"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:698
+#: htdocs/luci-static/resources/view/fchomo/client.js:703
 msgid "<code>0</code> or <code>1</code> only."
 msgstr "仅限 <code>0</code> 或 <code>1</code>。"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:980
-#: htdocs/luci-static/resources/fchomo/listeners.js:995
-#: htdocs/luci-static/resources/fchomo/listeners.js:1020
-#: htdocs/luci-static/resources/view/fchomo/node.js:1166
-#: htdocs/luci-static/resources/view/fchomo/node.js:1180
+#: htdocs/luci-static/resources/fchomo/listeners.js:998
+#: htdocs/luci-static/resources/fchomo/listeners.js:1013
+#: htdocs/luci-static/resources/fchomo/listeners.js:1038
+#: htdocs/luci-static/resources/view/fchomo/node.js:1195
+#: htdocs/luci-static/resources/view/fchomo/node.js:1209
 msgid "<strong>Save your configuration before uploading files!</strong>"
 msgstr "<strong>上传文件前请先保存配置！</strong>"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:286
-#: htdocs/luci-static/resources/view/fchomo/node.js:414
+#: htdocs/luci-static/resources/view/fchomo/node.js:424
 msgid ""
 "A base64 string is used to fine-tune network behavior.<br/>Please refer to "
 "the <a target=\"_blank\" href=\"%s\" rel=\"noreferrer noopener\">document</"
@@ -153,9 +175,9 @@ msgstr "API 令牌"
 #: htdocs/luci-static/resources/fchomo/listeners.js:371
 #: htdocs/luci-static/resources/fchomo/listeners.js:373
 #: htdocs/luci-static/resources/fchomo/listeners.js:374
-#: htdocs/luci-static/resources/view/fchomo/node.js:443
-#: htdocs/luci-static/resources/view/fchomo/node.js:445
-#: htdocs/luci-static/resources/view/fchomo/node.js:446
+#: htdocs/luci-static/resources/view/fchomo/node.js:453
+#: htdocs/luci-static/resources/view/fchomo/node.js:455
+#: htdocs/luci-static/resources/view/fchomo/node.js:456
 msgid "ASCII data stream"
 msgstr "ASCII 数据流"
 
@@ -168,15 +190,15 @@ msgstr "ASN 版本"
 msgid "Access Control"
 msgstr "访问控制"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1710
+#: htdocs/luci-static/resources/view/fchomo/client.js:1776
 msgid "Add a Bootstrap DNS policy (Node)"
 msgstr "新增 引导 DNS 策略 (节点)"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1762
+#: htdocs/luci-static/resources/view/fchomo/client.js:1828
 msgid "Add a DNS policy"
 msgstr "新增 DNS 策略"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1458
+#: htdocs/luci-static/resources/view/fchomo/client.js:1521
 msgid "Add a DNS server"
 msgstr "新增 DNS 服务器"
 
@@ -188,19 +210,19 @@ msgstr "新增 节点"
 msgid "Add a inbound"
 msgstr "新增 入站"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1555
+#: htdocs/luci-static/resources/view/fchomo/node.js:1584
 msgid "Add a provider"
 msgstr "新增 供应商"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:2011
+#: htdocs/luci-static/resources/view/fchomo/node.js:2045
 msgid "Add a proxy chain"
 msgstr "新增 代理链"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:950
+#: htdocs/luci-static/resources/view/fchomo/client.js:968
 msgid "Add a proxy group"
 msgstr "新增 代理组"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1211
+#: htdocs/luci-static/resources/view/fchomo/client.js:1271
 msgid "Add a routing rule"
 msgstr "新增 路由规则"
 
@@ -212,20 +234,20 @@ msgstr "新增 规则集"
 msgid "Add a server"
 msgstr "新增 服务器"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1330
+#: htdocs/luci-static/resources/view/fchomo/client.js:1393
 msgid "Add a sub rule"
 msgstr "新增 子规则"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1833
+#: htdocs/luci-static/resources/view/fchomo/node.js:1867
 msgid "Add prefix"
 msgstr "添加前缀"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1837
+#: htdocs/luci-static/resources/view/fchomo/node.js:1871
 msgid "Add suffix"
 msgstr "添加后缀"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1518
-#: htdocs/luci-static/resources/view/fchomo/client.js:1523
+#: htdocs/luci-static/resources/view/fchomo/client.js:1581
+#: htdocs/luci-static/resources/view/fchomo/client.js:1586
 msgid "Address"
 msgstr "地址"
 
@@ -236,7 +258,7 @@ msgid ""
 msgstr ""
 "在 1-RTT client/server hello 之后，以 100% 的概率随机填充 111-1111 字节。"
 
-#: htdocs/luci-static/resources/fchomo.js:62
+#: htdocs/luci-static/resources/fchomo.js:63
 msgid "Aggressive"
 msgstr "侵略性"
 
@@ -261,11 +283,11 @@ msgid ""
 msgstr ""
 "允许从私有网络访问。</br>要从公共网站访问私有网络上的 API，则必须启用。"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:961
+#: htdocs/luci-static/resources/fchomo/listeners.js:979
 msgid "Allow insecure connections"
 msgstr "允许不安全的连接"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:835
+#: htdocs/luci-static/resources/view/fchomo/node.js:845
 msgid "Allowed IPs"
 msgstr "允许的 IP"
 
@@ -277,13 +299,13 @@ msgstr "已是最新版本。"
 msgid "Already in updating."
 msgstr "已在更新中。"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:543
-#: htdocs/luci-static/resources/view/fchomo/node.js:685
+#: htdocs/luci-static/resources/fchomo/listeners.js:540
+#: htdocs/luci-static/resources/view/fchomo/node.js:695
 msgid "Alter ID"
 msgstr "额外 ID"
 
-#: htdocs/luci-static/resources/fchomo.js:163
-#: htdocs/luci-static/resources/fchomo.js:199
+#: htdocs/luci-static/resources/fchomo.js:164
+#: htdocs/luci-static/resources/fchomo.js:200
 msgid "AnyTLS"
 msgstr ""
 
@@ -300,20 +322,20 @@ msgstr "作为 dnsmasq 的最优先上游"
 msgid "As the TOP upstream of dnsmasq."
 msgstr "作为 dnsmasq 的最优先上游。"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:493
+#: htdocs/luci-static/resources/fchomo/listeners.js:490
 msgid "Auth timeout"
 msgstr "认证超时"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:707
+#: htdocs/luci-static/resources/view/fchomo/node.js:717
 msgid "Authenticated length"
 msgstr "认证长度"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:440
-#: htdocs/luci-static/resources/fchomo/listeners.js:1174
+#: htdocs/luci-static/resources/fchomo/listeners.js:1192
 #: htdocs/luci-static/resources/view/fchomo/global.js:423
-#: htdocs/luci-static/resources/view/fchomo/node.js:494
-#: htdocs/luci-static/resources/view/fchomo/node.js:518
-#: htdocs/luci-static/resources/view/fchomo/node.js:1361
+#: htdocs/luci-static/resources/view/fchomo/node.js:504
+#: htdocs/luci-static/resources/view/fchomo/node.js:528
+#: htdocs/luci-static/resources/view/fchomo/node.js:1390
 msgid "Auto"
 msgstr "自动"
 
@@ -329,20 +351,20 @@ msgstr "自动更新"
 msgid "Auto update resources."
 msgstr "自动更新资源文件。"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:633
-#: htdocs/luci-static/resources/view/fchomo/node.js:933
+#: htdocs/luci-static/resources/fchomo/listeners.js:651
+#: htdocs/luci-static/resources/view/fchomo/node.js:953
 msgid "BBR profile"
 msgstr "BBR 配置文件"
 
-#: htdocs/luci-static/resources/fchomo.js:42
+#: htdocs/luci-static/resources/fchomo.js:43
 msgid "Baidu"
 msgstr "百度"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:722
+#: htdocs/luci-static/resources/view/fchomo/node.js:732
 msgid "Base64 encoded ECDSA private key on the NIST P-256 curve."
 msgstr "基于 NIST P-256 曲线的 Base64 编码 ECDSA 私钥。"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:730
+#: htdocs/luci-static/resources/view/fchomo/node.js:740
 msgid "Base64 encoded ECDSA public key on the NIST P-256 curve."
 msgstr "基于 NIST P-256 曲线的 Base64 编码 ECDSA 公钥。"
 
@@ -364,13 +386,13 @@ msgid "Binary mrs"
 msgstr "二进制 mrs"
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:758
-#: htdocs/luci-static/resources/view/fchomo/node.js:1522
-#: htdocs/luci-static/resources/view/fchomo/node.js:1909
+#: htdocs/luci-static/resources/view/fchomo/node.js:1551
+#: htdocs/luci-static/resources/view/fchomo/node.js:1943
 msgid "Bind interface"
 msgstr "绑定接口"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1523
-#: htdocs/luci-static/resources/view/fchomo/node.js:1910
+#: htdocs/luci-static/resources/view/fchomo/node.js:1552
+#: htdocs/luci-static/resources/view/fchomo/node.js:1944
 msgid "Bind outbound interface.</br>"
 msgstr "绑定出站接口。</br>"
 
@@ -383,20 +405,20 @@ msgstr "绑定出站流量至指定接口。留空自动检测。</br>"
 msgid "Black list"
 msgstr "黑名单"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:58
+#: htdocs/luci-static/resources/view/fchomo/client.js:60
 msgid "Block DNS queries"
 msgstr "封锁 DNS 请求"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1701
-#: htdocs/luci-static/resources/view/fchomo/client.js:1710
+#: htdocs/luci-static/resources/view/fchomo/client.js:1767
+#: htdocs/luci-static/resources/view/fchomo/client.js:1776
 msgid "Bootstrap DNS policy (Node)"
 msgstr "引导 DNS 策略 (节点)"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1403
+#: htdocs/luci-static/resources/view/fchomo/client.js:1466
 msgid "Bootstrap DNS server"
 msgstr "引导 DNS 服务器"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1410
+#: htdocs/luci-static/resources/view/fchomo/client.js:1473
 msgid "Bootstrap DNS server (Node)"
 msgstr "引导 DNS 服务器 (节点)"
 
@@ -416,10 +438,10 @@ msgstr "绕过 DSCP"
 #: htdocs/luci-static/resources/fchomo/listeners.js:439
 #: htdocs/luci-static/resources/fchomo/listeners.js:440
 #: htdocs/luci-static/resources/fchomo/listeners.js:441
-#: htdocs/luci-static/resources/view/fchomo/node.js:492
-#: htdocs/luci-static/resources/view/fchomo/node.js:493
-#: htdocs/luci-static/resources/view/fchomo/node.js:494
-#: htdocs/luci-static/resources/view/fchomo/node.js:495
+#: htdocs/luci-static/resources/view/fchomo/node.js:502
+#: htdocs/luci-static/resources/view/fchomo/node.js:503
+#: htdocs/luci-static/resources/view/fchomo/node.js:504
+#: htdocs/luci-static/resources/view/fchomo/node.js:505
 msgid "CDN support"
 msgstr "CDN 支持"
 
@@ -435,21 +457,21 @@ msgstr "CORS 允许私有网络"
 msgid "CORS allowed origins, <code>*</code> will be used if empty."
 msgstr "CORS 允许的来源，留空则使用 <code>*</code>。"
 
-#: htdocs/luci-static/resources/fchomo.js:733
+#: htdocs/luci-static/resources/fchomo.js:758
 msgid "Cancel"
 msgstr "取消"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1138
+#: htdocs/luci-static/resources/view/fchomo/node.js:1167
 msgid "Cert fingerprint"
 msgstr "证书指纹"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1139
+#: htdocs/luci-static/resources/view/fchomo/node.js:1168
 msgid ""
 "Certificate fingerprint. Used to implement SSL Pinning and prevent MitM."
 msgstr "证书指纹。用于实现 SSL证书固定 并防止 MitM。"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:972
-#: htdocs/luci-static/resources/view/fchomo/node.js:1159
+#: htdocs/luci-static/resources/fchomo/listeners.js:990
+#: htdocs/luci-static/resources/view/fchomo/node.js:1188
 msgid "Certificate path"
 msgstr "证书路径"
 
@@ -461,6 +483,13 @@ msgstr "检查"
 #: htdocs/luci-static/resources/view/fchomo/global.js:228
 msgid "Check routerself NAT Behavior"
 msgstr "检测路由器自身 NAT 行为"
+
+#: htdocs/luci-static/resources/view/fchomo/client.js:1921
+msgid ""
+"Check the response from the <code>%s</code>, only initiate query if the "
+"<code>%s</code> is satisfied."
+msgstr ""
+"检查来自<code>%s</code>的响应，仅当满足<code>%s</code>条件时才发起查询。"
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:86
 msgid "Check update"
@@ -480,14 +509,14 @@ msgstr "大陆域名列表版本"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:255
 #: htdocs/luci-static/resources/fchomo/listeners.js:354
-#: htdocs/luci-static/resources/view/fchomo/node.js:367
-#: htdocs/luci-static/resources/view/fchomo/node.js:426
-#: htdocs/luci-static/resources/view/fchomo/node.js:691
+#: htdocs/luci-static/resources/view/fchomo/node.js:377
+#: htdocs/luci-static/resources/view/fchomo/node.js:436
+#: htdocs/luci-static/resources/view/fchomo/node.js:701
 msgid "Chipher"
 msgstr "加密方法"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:363
-#: htdocs/luci-static/resources/view/fchomo/node.js:435
+#: htdocs/luci-static/resources/view/fchomo/node.js:445
 msgid "Chipher must be enabled if obfuscate downlink is disabled."
 msgstr "如果下行链路混淆功能被禁用，则必须启用加密。"
 
@@ -503,25 +532,25 @@ msgstr ""
 "点击<a target=\"_blank\" href=\"%s\" rel=\"noreferrer noopener\">此处</a>下载"
 "最新的初始包。"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:731
-#: htdocs/luci-static/resources/fchomo/listeners.js:1011
+#: htdocs/luci-static/resources/fchomo/listeners.js:749
+#: htdocs/luci-static/resources/fchomo/listeners.js:1029
 #: htdocs/luci-static/resources/view/fchomo/global.js:571
-#: htdocs/luci-static/resources/view/fchomo/node.js:997
-#: htdocs/luci-static/resources/view/fchomo/node.js:1160
-#: htdocs/luci-static/resources/view/fchomo/node.js:1174
+#: htdocs/luci-static/resources/view/fchomo/node.js:1025
+#: htdocs/luci-static/resources/view/fchomo/node.js:1189
+#: htdocs/luci-static/resources/view/fchomo/node.js:1203
 #: root/usr/share/luci/menu.d/luci-app-fchomo.json:22
 msgid "Client"
 msgstr "客户端"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:1010
+#: htdocs/luci-static/resources/fchomo/listeners.js:1028
 msgid "Client Auth Certificate path"
 msgstr "客户端认证证书路径"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:1002
+#: htdocs/luci-static/resources/fchomo/listeners.js:1020
 msgid "Client Auth type"
 msgstr "客户端认证类型"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1205
+#: htdocs/luci-static/resources/view/fchomo/node.js:1234
 msgid "Client fingerprint"
 msgstr "客户端指纹"
 
@@ -542,16 +571,16 @@ msgstr "收集数据中..."
 msgid "Common ports (bypass P2P traffic)"
 msgstr "常用端口（绕过 P2P 流量）"
 
-#: htdocs/luci-static/resources/fchomo.js:1405
+#: htdocs/luci-static/resources/fchomo.js:1755
 msgid "Complete"
 msgstr "完成"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1853
+#: htdocs/luci-static/resources/view/fchomo/node.js:1887
 msgid "Configuration Items"
 msgstr "配置项"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:625
-#: htdocs/luci-static/resources/view/fchomo/node.js:924
+#: htdocs/luci-static/resources/fchomo/listeners.js:643
+#: htdocs/luci-static/resources/view/fchomo/node.js:944
 msgid "Congestion controller"
 msgstr "拥塞控制器"
 
@@ -559,27 +588,27 @@ msgstr "拥塞控制器"
 msgid "Connection check"
 msgstr "连接检查"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:551
+#: htdocs/luci-static/resources/view/fchomo/node.js:561
 msgid "Connection reuse"
 msgstr "连接复用"
 
-#: htdocs/luci-static/resources/fchomo.js:61
+#: htdocs/luci-static/resources/fchomo.js:62
 msgid "Conservative"
 msgstr "保守"
 
-#: htdocs/luci-static/resources/fchomo.js:602
+#: htdocs/luci-static/resources/fchomo.js:627
 msgid "Content copied to clipboard!"
 msgstr "内容已复制到剪贴板！"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:679
-#: htdocs/luci-static/resources/view/fchomo/node.js:1698
-#: htdocs/luci-static/resources/view/fchomo/node.js:1724
+#: htdocs/luci-static/resources/view/fchomo/client.js:681
+#: htdocs/luci-static/resources/view/fchomo/node.js:1727
+#: htdocs/luci-static/resources/view/fchomo/node.js:1753
 #: htdocs/luci-static/resources/view/fchomo/ruleset.js:348
 #: htdocs/luci-static/resources/view/fchomo/ruleset.js:374
 msgid "Content will not be verified, Please make sure you enter it correctly."
 msgstr "内容将不会被验证，请确保输入正确。"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1697
+#: htdocs/luci-static/resources/view/fchomo/node.js:1726
 #: htdocs/luci-static/resources/view/fchomo/ruleset.js:347
 msgid "Contents"
 msgstr "内容"
@@ -588,7 +617,7 @@ msgstr "内容"
 msgid "Contents have been saved."
 msgstr ""
 
-#: htdocs/luci-static/resources/fchomo.js:604
+#: htdocs/luci-static/resources/fchomo.js:629
 msgid "Copy"
 msgstr "复制"
 
@@ -604,8 +633,8 @@ msgstr "Cron 表达式"
 msgid "Custom Direct List"
 msgstr "自定义直连列表"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1824
-#: htdocs/luci-static/resources/view/fchomo/ruleset.js:415
+#: htdocs/luci-static/resources/view/fchomo/node.js:1858
+#: htdocs/luci-static/resources/view/fchomo/ruleset.js:420
 msgid "Custom HTTP header."
 msgstr "自定义 HTTP header。"
 
@@ -614,7 +643,7 @@ msgid "Custom Proxy List"
 msgstr "自定义代理列表"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:378
-#: htdocs/luci-static/resources/view/fchomo/node.js:450
+#: htdocs/luci-static/resources/view/fchomo/node.js:460
 msgid "Custom byte layout"
 msgstr "自定义字节布局"
 
@@ -623,12 +652,12 @@ msgid ""
 "Custom internal hosts. Support <code>yaml</code> or <code>json</code> format."
 msgstr "自定义内部 hosts。支持 <code>yaml</code> 或 <code>json</code> 格式。"
 
-#: htdocs/luci-static/resources/fchomo.js:188
+#: htdocs/luci-static/resources/fchomo.js:189
 msgid "DIRECT"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1753
-#: htdocs/luci-static/resources/view/fchomo/client.js:1762
+#: htdocs/luci-static/resources/view/fchomo/client.js:1819
+#: htdocs/luci-static/resources/view/fchomo/client.js:1828
 msgid "DNS policy"
 msgstr "DNS 策略"
 
@@ -636,15 +665,15 @@ msgstr "DNS 策略"
 msgid "DNS port"
 msgstr " DNS 端口"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:882
-#: htdocs/luci-static/resources/view/fchomo/client.js:1449
-#: htdocs/luci-static/resources/view/fchomo/client.js:1458
-#: htdocs/luci-static/resources/view/fchomo/node.js:782
-#: htdocs/luci-static/resources/view/fchomo/node.js:865
+#: htdocs/luci-static/resources/view/fchomo/client.js:895
+#: htdocs/luci-static/resources/view/fchomo/client.js:1512
+#: htdocs/luci-static/resources/view/fchomo/client.js:1521
+#: htdocs/luci-static/resources/view/fchomo/node.js:792
+#: htdocs/luci-static/resources/view/fchomo/node.js:875
 msgid "DNS server"
 msgstr "DNS 服务器"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1386
+#: htdocs/luci-static/resources/view/fchomo/client.js:1449
 msgid "DNS settings"
 msgstr "DNS 设置"
 
@@ -656,31 +685,37 @@ msgstr "DSCP 列表"
 msgid "Dashboard version"
 msgstr "面板版本"
 
-#: htdocs/luci-static/resources/fchomo.js:93
+#: htdocs/luci-static/resources/fchomo.js:94
 msgid "Debug"
 msgstr "调试"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:56
+#: htdocs/luci-static/resources/view/fchomo/client.js:58
 msgid "Default DNS (issued by WAN)"
 msgstr "默认 DNS（由 WAN 下发）"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1424
+#: htdocs/luci-static/resources/view/fchomo/client.js:1487
+#: htdocs/luci-static/resources/view/fchomo/client.js:1922
+#: htdocs/luci-static/resources/view/fchomo/client.js:1925
 msgid "Default DNS server"
 msgstr "默认 DNS 服务器"
+
+#: htdocs/luci-static/resources/view/fchomo/client.js:1197
+msgid "Default selected"
+msgstr "默认选中"
 
 #: htdocs/luci-static/resources/view/fchomo/node.js:22
 msgid "Derive from priv-key"
 msgstr "从私钥派生"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:836
+#: htdocs/luci-static/resources/view/fchomo/node.js:846
 msgid "Destination addresses allowed to be forwarded via Wireguard."
 msgstr "允许通过 WireGuard 转发的目的地址"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:2034
+#: htdocs/luci-static/resources/view/fchomo/node.js:2068
 msgid "Destination provider"
 msgstr "落地供应商"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:2040
+#: htdocs/luci-static/resources/view/fchomo/node.js:2079
 msgid "Destination proxy node"
 msgstr "落地代理节点"
 
@@ -688,8 +723,8 @@ msgstr "落地代理节点"
 msgid "Dial fields"
 msgstr "拨号字段"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:2047
-#: htdocs/luci-static/resources/view/fchomo/node.js:2067
+#: htdocs/luci-static/resources/view/fchomo/node.js:2091
+#: htdocs/luci-static/resources/view/fchomo/node.js:2121
 msgid "Different chain head/tail"
 msgstr "不同的链头/链尾"
 
@@ -711,7 +746,7 @@ msgstr "直连 MAC 地址"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:194
 #: htdocs/luci-static/resources/view/fchomo/global.js:424
-#: htdocs/luci-static/resources/view/fchomo/node.js:322
+#: htdocs/luci-static/resources/view/fchomo/node.js:332
 msgid "Disable"
 msgstr "禁用"
 
@@ -727,11 +762,11 @@ msgstr "禁用 quic-go 的 通用分段卸载（GSO）"
 msgid "Disable ICMP Forwarding"
 msgstr "禁用 ICMP 转发"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1082
+#: htdocs/luci-static/resources/view/fchomo/node.js:1110
 msgid "Disable SNI"
 msgstr "禁用 SNI"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1103
+#: htdocs/luci-static/resources/view/fchomo/client.js:1146
 msgid "Disable UDP"
 msgstr "禁用 UDP"
 
@@ -739,7 +774,7 @@ msgstr "禁用 UDP"
 msgid "Disable safe path check"
 msgstr "禁用安全路径检查"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:829
+#: htdocs/luci-static/resources/view/fchomo/client.js:837
 msgid ""
 "Do not resolve the domain connection to IP for this match.</br>Only works "
 "for pure domain inbound connections without DNS resolution. e.g., socks5h"
@@ -747,62 +782,62 @@ msgstr ""
 "不要将域名连接解析为 IP 以进行此次匹配。</br>仅对未经 DNS 解析的纯域名入站连"
 "接有效。例如，socks5h"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:852
-#: htdocs/luci-static/resources/view/fchomo/client.js:857
-#: htdocs/luci-static/resources/view/fchomo/client.js:1836
-#: htdocs/luci-static/resources/view/fchomo/client.js:1843
-#: htdocs/luci-static/resources/view/fchomo/client.js:1845
+#: htdocs/luci-static/resources/view/fchomo/client.js:860
+#: htdocs/luci-static/resources/view/fchomo/client.js:865
+#: htdocs/luci-static/resources/view/fchomo/client.js:1902
+#: htdocs/luci-static/resources/view/fchomo/client.js:1909
+#: htdocs/luci-static/resources/view/fchomo/client.js:1911
 msgid "Domain"
 msgstr "域名"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1083
+#: htdocs/luci-static/resources/view/fchomo/node.js:1111
 msgid "Donot send server name in ClientHello."
 msgstr "不要在 ClientHello 中发送服务器名称。"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1598
-#: htdocs/luci-static/resources/view/fchomo/node.js:1152
-#: htdocs/luci-static/resources/view/fchomo/node.js:1893
+#: htdocs/luci-static/resources/view/fchomo/client.js:1664
+#: htdocs/luci-static/resources/view/fchomo/node.js:1181
+#: htdocs/luci-static/resources/view/fchomo/node.js:1927
 msgid "Donot verifying server certificate."
 msgstr "不验证服务器证书。"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1499
+#: htdocs/luci-static/resources/view/fchomo/node.js:1528
 msgid "Download bandwidth"
 msgstr "下载带宽"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1500
+#: htdocs/luci-static/resources/view/fchomo/node.js:1529
 msgid "Download bandwidth in Mbps."
 msgstr "下载带宽（单位：Mbps）。"
 
-#: htdocs/luci-static/resources/fchomo.js:1284
+#: htdocs/luci-static/resources/fchomo.js:1634
 msgid "Download failed: %s"
 msgstr "下载失败: %s"
 
-#: htdocs/luci-static/resources/fchomo.js:1282
+#: htdocs/luci-static/resources/fchomo.js:1632
 msgid "Download successful."
 msgstr "下载成功。"
 
-#: htdocs/luci-static/resources/fchomo.js:173
+#: htdocs/luci-static/resources/fchomo.js:174
 msgid "Dual stack"
 msgstr "双栈"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1199
+#: htdocs/luci-static/resources/view/fchomo/node.js:1228
 msgid "ECH HTTPS record query servername"
 msgstr "ECH HTTPS 记录查询域名"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:1068
-#: htdocs/luci-static/resources/view/fchomo/node.js:1193
+#: htdocs/luci-static/resources/fchomo/listeners.js:1086
+#: htdocs/luci-static/resources/view/fchomo/node.js:1222
 msgid "ECH config"
 msgstr "ECH 配置"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:1027
+#: htdocs/luci-static/resources/fchomo/listeners.js:1045
 msgid "ECH key"
 msgstr "ECH 密钥"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1632
+#: htdocs/luci-static/resources/view/fchomo/client.js:1698
 msgid "ECS override"
 msgstr "强制覆盖 ECS"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1616
+#: htdocs/luci-static/resources/view/fchomo/client.js:1682
 msgid "EDNS Client Subnet"
 msgstr "EDNS 客户端子网"
 
@@ -810,11 +845,11 @@ msgstr "EDNS 客户端子网"
 msgid "ETag support"
 msgstr "ETag 支持"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1339
+#: htdocs/luci-static/resources/view/fchomo/node.js:1368
 msgid "Early Data first packet length limit."
 msgstr "前置数据长度阈值"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1345
+#: htdocs/luci-static/resources/view/fchomo/node.js:1374
 msgid "Early Data header name"
 msgstr "前置数据标头"
 
@@ -830,7 +865,7 @@ msgstr "编辑出站"
 msgid "Edit ruleset"
 msgstr "编辑规则集"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1695
+#: htdocs/luci-static/resources/view/fchomo/node.js:1724
 #: htdocs/luci-static/resources/view/fchomo/ruleset.js:345
 msgid "Editer"
 msgstr "编辑器"
@@ -839,30 +874,30 @@ msgstr "编辑器"
 msgid "Eliminate encryption header characteristics"
 msgstr "消除加密头特征"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1094
+#: htdocs/luci-static/resources/view/fchomo/client.js:1131
 msgid "Empty fallback"
 msgstr "为空时回退"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:133
-#: htdocs/luci-static/resources/view/fchomo/client.js:940
-#: htdocs/luci-static/resources/view/fchomo/client.js:1034
-#: htdocs/luci-static/resources/view/fchomo/client.js:1280
-#: htdocs/luci-static/resources/view/fchomo/client.js:1372
-#: htdocs/luci-static/resources/view/fchomo/client.js:1514
-#: htdocs/luci-static/resources/view/fchomo/client.js:1745
-#: htdocs/luci-static/resources/view/fchomo/client.js:1801
+#: htdocs/luci-static/resources/view/fchomo/client.js:958
+#: htdocs/luci-static/resources/view/fchomo/client.js:1053
+#: htdocs/luci-static/resources/view/fchomo/client.js:1340
+#: htdocs/luci-static/resources/view/fchomo/client.js:1435
+#: htdocs/luci-static/resources/view/fchomo/client.js:1577
+#: htdocs/luci-static/resources/view/fchomo/client.js:1811
+#: htdocs/luci-static/resources/view/fchomo/client.js:1867
 #: htdocs/luci-static/resources/view/fchomo/global.js:422
 #: htdocs/luci-static/resources/view/fchomo/global.js:704
 #: htdocs/luci-static/resources/view/fchomo/node.js:246
-#: htdocs/luci-static/resources/view/fchomo/node.js:1668
-#: htdocs/luci-static/resources/view/fchomo/node.js:1932
-#: htdocs/luci-static/resources/view/fchomo/node.js:2021
+#: htdocs/luci-static/resources/view/fchomo/node.js:1697
+#: htdocs/luci-static/resources/view/fchomo/node.js:1966
+#: htdocs/luci-static/resources/view/fchomo/node.js:2055
 #: htdocs/luci-static/resources/view/fchomo/ruleset.js:272
 #: htdocs/luci-static/resources/view/fchomo/server.js:49
 msgid "Enable"
 msgstr "启用"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:600
+#: htdocs/luci-static/resources/view/fchomo/node.js:610
 msgid ""
 "Enable 0-RTT QUIC connection handshake on the client side. This is not "
 "impacting much on the performance, as the protocol is fully multiplexed.<br/"
@@ -871,7 +906,7 @@ msgstr ""
 "在客户端启用 0-RTT QUIC 连接握手。由于协议是完全复用的，这对性能影响不大。"
 "<br/>强烈建议禁用此功能，因为它容易受到重放攻击。"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:599
+#: htdocs/luci-static/resources/view/fchomo/node.js:609
 msgid "Enable 0-RTT handshake"
 msgstr "启用 0-RTT 握手"
 
@@ -883,57 +918,57 @@ msgstr ""
 "为出站连接启用 <a target=\"_blank\" href=\"%s\" rel=\"noreferrer "
 "noopener\">IP4P</a> 转换"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1187
+#: htdocs/luci-static/resources/view/fchomo/node.js:1216
 msgid "Enable ECH"
 msgstr "启用 ECH"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1487
+#: htdocs/luci-static/resources/view/fchomo/node.js:1516
 msgid "Enable TCP Brutal"
 msgstr "启用 TCP Brutal"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1488
+#: htdocs/luci-static/resources/view/fchomo/node.js:1517
 msgid "Enable TCP Brutal congestion control algorithm"
 msgstr "启用 TCP Brutal 拥塞控制算法。"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:594
+#: htdocs/luci-static/resources/view/fchomo/node.js:604
 msgid "Enable fast open"
 msgstr "启用 Fast open"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1476
+#: htdocs/luci-static/resources/view/fchomo/node.js:1505
 msgid "Enable multiplexing only for TCP."
 msgstr "仅为 TCP 启用多路复用。"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:424
-#: htdocs/luci-static/resources/view/fchomo/node.js:478
+#: htdocs/luci-static/resources/view/fchomo/node.js:488
 msgid "Enable obfuscate for downlink"
 msgstr "启用下行链路混淆"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1470
+#: htdocs/luci-static/resources/view/fchomo/node.js:1499
 msgid "Enable padding"
 msgstr "启用填充"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1481
+#: htdocs/luci-static/resources/view/fchomo/node.js:1510
 msgid "Enable statistic"
 msgstr "启用统计"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:949
-#: htdocs/luci-static/resources/view/fchomo/node.js:1875
+#: htdocs/luci-static/resources/view/fchomo/node.js:977
+#: htdocs/luci-static/resources/view/fchomo/node.js:1909
 msgid ""
 "Enable the SUoT protocol, requires server support. Conflict with Multiplex."
 msgstr "启用 SUoT 协议，需要服务端支持。与多路复用冲突。"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:201
-#: htdocs/luci-static/resources/view/fchomo/node.js:329
+#: htdocs/luci-static/resources/view/fchomo/node.js:339
 msgid ""
 "Enabling obfuscation will make the server incompatible with standard QUIC "
 "connections, losing the ability to masquerade with HTTP/3."
 msgstr "启用混淆将使服务器与标准的 QUIC 连接不兼容，失去 HTTP/3 伪装的能力。"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:694
+#: htdocs/luci-static/resources/fchomo/listeners.js:712
 msgid "Encryption method"
 msgstr "加密方法"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:729
+#: htdocs/luci-static/resources/view/fchomo/node.js:739
 msgid "Endpoint pubkic key"
 msgstr "端点公钥"
 
@@ -941,26 +976,26 @@ msgstr "端点公钥"
 msgid "Endpoint-Independent NAT"
 msgstr "端点独立 NAT"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:731
-#: htdocs/luci-static/resources/view/fchomo/client.js:874
+#: htdocs/luci-static/resources/view/fchomo/client.js:736
+#: htdocs/luci-static/resources/view/fchomo/client.js:887
 msgid "Entry"
 msgstr "条目"
 
-#: htdocs/luci-static/resources/fchomo.js:90
+#: htdocs/luci-static/resources/fchomo.js:91
 msgid "Error"
 msgstr "错误"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1147
+#: htdocs/luci-static/resources/view/fchomo/client.js:1190
 msgid ""
 "Exceeding this triggers a forced health check. <code>5</code> will be used "
 "if empty."
 msgstr "超过此限制将会触发强制健康检查。留空则使用 <code>5</code>。"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1990
+#: htdocs/luci-static/resources/view/fchomo/node.js:2024
 msgid "Exclude matched node types."
 msgstr "排除匹配的节点类型。"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1184
+#: htdocs/luci-static/resources/view/fchomo/client.js:1244
 msgid ""
 "Exclude matched node types. Available types see <a target=\"_blank\" "
 "href=\"%s\" rel=\"noreferrer noopener\">here</a>."
@@ -968,8 +1003,8 @@ msgstr ""
 "排除匹配的节点类型。可用类型请参见<a target=\"_blank\" href=\"%s\" "
 "rel=\"noreferrer noopener\">此处</a>。"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1179
-#: htdocs/luci-static/resources/view/fchomo/node.js:1983
+#: htdocs/luci-static/resources/view/fchomo/client.js:1239
+#: htdocs/luci-static/resources/view/fchomo/node.js:2017
 msgid "Exclude nodes that meet keywords or regexps."
 msgstr "排除匹配关键词或表达式的节点。"
 
@@ -977,139 +1012,143 @@ msgstr "排除匹配关键词或表达式的节点。"
 msgid "Expand/Collapse result"
 msgstr "展开/收起 结果"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1139
-#: htdocs/luci-static/resources/view/fchomo/node.js:1968
+#: htdocs/luci-static/resources/view/fchomo/client.js:1182
+#: htdocs/luci-static/resources/view/fchomo/node.js:2002
 msgid "Expected HTTP code. <code>204</code> will be used if empty."
 msgstr "预期的 HTTP code。留空则使用 <code>204</code>。"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1141
-#: htdocs/luci-static/resources/view/fchomo/node.js:1970
+#: htdocs/luci-static/resources/view/fchomo/client.js:1184
+#: htdocs/luci-static/resources/view/fchomo/node.js:2004
 msgid "Expected status"
 msgstr "预期状态"
 
 #: htdocs/luci-static/resources/fchomo.js:452
 #: htdocs/luci-static/resources/fchomo.js:455
 #: htdocs/luci-static/resources/fchomo.js:458
-#: htdocs/luci-static/resources/fchomo.js:1422
-#: htdocs/luci-static/resources/fchomo.js:1430
-#: htdocs/luci-static/resources/fchomo.js:1438
-#: htdocs/luci-static/resources/fchomo.js:1461
-#: htdocs/luci-static/resources/fchomo.js:1464
-#: htdocs/luci-static/resources/fchomo.js:1471
-#: htdocs/luci-static/resources/fchomo.js:1487
-#: htdocs/luci-static/resources/fchomo.js:1496
-#: htdocs/luci-static/resources/fchomo.js:1508
-#: htdocs/luci-static/resources/fchomo.js:1511
-#: htdocs/luci-static/resources/fchomo.js:1521
-#: htdocs/luci-static/resources/fchomo.js:1533
-#: htdocs/luci-static/resources/fchomo.js:1536
-#: htdocs/luci-static/resources/fchomo.js:1546
-#: htdocs/luci-static/resources/fchomo.js:1556
-#: htdocs/luci-static/resources/fchomo.js:1591
-#: htdocs/luci-static/resources/fchomo.js:1593
-#: htdocs/luci-static/resources/fchomo.js:1606
-#: htdocs/luci-static/resources/fchomo.js:1612
-#: htdocs/luci-static/resources/fchomo.js:1619
-#: htdocs/luci-static/resources/fchomo.js:1628
+#: htdocs/luci-static/resources/fchomo.js:1772
+#: htdocs/luci-static/resources/fchomo.js:1780
+#: htdocs/luci-static/resources/fchomo.js:1788
+#: htdocs/luci-static/resources/fchomo.js:1811
+#: htdocs/luci-static/resources/fchomo.js:1814
+#: htdocs/luci-static/resources/fchomo.js:1821
+#: htdocs/luci-static/resources/fchomo.js:1837
+#: htdocs/luci-static/resources/fchomo.js:1846
+#: htdocs/luci-static/resources/fchomo.js:1858
+#: htdocs/luci-static/resources/fchomo.js:1861
+#: htdocs/luci-static/resources/fchomo.js:1871
+#: htdocs/luci-static/resources/fchomo.js:1883
+#: htdocs/luci-static/resources/fchomo.js:1886
+#: htdocs/luci-static/resources/fchomo.js:1896
+#: htdocs/luci-static/resources/fchomo.js:1906
+#: htdocs/luci-static/resources/fchomo.js:1941
+#: htdocs/luci-static/resources/fchomo.js:1943
+#: htdocs/luci-static/resources/fchomo.js:1956
+#: htdocs/luci-static/resources/fchomo.js:1962
+#: htdocs/luci-static/resources/fchomo.js:1969
+#: htdocs/luci-static/resources/fchomo.js:1978
 #: htdocs/luci-static/resources/fchomo/listeners.js:363
 #: htdocs/luci-static/resources/fchomo/listeners.js:410
-#: htdocs/luci-static/resources/fchomo/listeners.js:723
-#: htdocs/luci-static/resources/fchomo/listeners.js:754
-#: htdocs/luci-static/resources/fchomo/listeners.js:855
-#: htdocs/luci-static/resources/view/fchomo/client.js:69
-#: htdocs/luci-static/resources/view/fchomo/client.js:1028
-#: htdocs/luci-static/resources/view/fchomo/client.js:1529
+#: htdocs/luci-static/resources/fchomo/listeners.js:741
+#: htdocs/luci-static/resources/fchomo/listeners.js:772
+#: htdocs/luci-static/resources/fchomo/listeners.js:873
+#: htdocs/luci-static/resources/view/fchomo/client.js:71
+#: htdocs/luci-static/resources/view/fchomo/client.js:1047
+#: htdocs/luci-static/resources/view/fchomo/client.js:1592
 #: htdocs/luci-static/resources/view/fchomo/global.js:904
-#: htdocs/luci-static/resources/view/fchomo/node.js:435
-#: htdocs/luci-static/resources/view/fchomo/node.js:471
-#: htdocs/luci-static/resources/view/fchomo/node.js:524
-#: htdocs/luci-static/resources/view/fchomo/node.js:526
-#: htdocs/luci-static/resources/view/fchomo/node.js:1020
-#: htdocs/luci-static/resources/view/fchomo/node.js:1144
-#: htdocs/luci-static/resources/view/fchomo/node.js:2047
-#: htdocs/luci-static/resources/view/fchomo/node.js:2067
+#: htdocs/luci-static/resources/view/fchomo/node.js:445
+#: htdocs/luci-static/resources/view/fchomo/node.js:481
+#: htdocs/luci-static/resources/view/fchomo/node.js:534
+#: htdocs/luci-static/resources/view/fchomo/node.js:536
+#: htdocs/luci-static/resources/view/fchomo/node.js:1048
+#: htdocs/luci-static/resources/view/fchomo/node.js:1173
+#: htdocs/luci-static/resources/view/fchomo/node.js:2091
+#: htdocs/luci-static/resources/view/fchomo/node.js:2121
 #: htdocs/luci-static/resources/view/fchomo/ruleset.js:300
 #: htdocs/luci-static/resources/view/fchomo/ruleset.js:314
 msgid "Expecting: %s"
 msgstr "请输入：%s"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:1135
-#: htdocs/luci-static/resources/fchomo/listeners.js:1142
-#: htdocs/luci-static/resources/view/fchomo/node.js:1254
-#: htdocs/luci-static/resources/view/fchomo/node.js:1261
-#: htdocs/luci-static/resources/view/fchomo/node.js:1269
+#: htdocs/luci-static/resources/fchomo/listeners.js:567
+#: htdocs/luci-static/resources/fchomo/listeners.js:1153
+#: htdocs/luci-static/resources/fchomo/listeners.js:1160
+#: htdocs/luci-static/resources/view/fchomo/node.js:894
+#: htdocs/luci-static/resources/view/fchomo/node.js:1283
+#: htdocs/luci-static/resources/view/fchomo/node.js:1290
+#: htdocs/luci-static/resources/view/fchomo/node.js:1298
 msgid "Expecting: only support %s."
-msgstr "请输入：仅支援 %s."
+msgstr "请输入：仅支援 %s。"
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:723
 msgid "Experimental"
 msgstr "实验性"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:551
-#: htdocs/luci-static/resources/view/fchomo/client.js:564
-#: htdocs/luci-static/resources/view/fchomo/client.js:572
-#: htdocs/luci-static/resources/view/fchomo/client.js:579
-#: htdocs/luci-static/resources/view/fchomo/client.js:589
-#: htdocs/luci-static/resources/view/fchomo/client.js:596
-#: htdocs/luci-static/resources/view/fchomo/client.js:604
-#: htdocs/luci-static/resources/view/fchomo/client.js:611
-#: htdocs/luci-static/resources/view/fchomo/client.js:678
+#: htdocs/luci-static/resources/view/fchomo/client.js:553
+#: htdocs/luci-static/resources/view/fchomo/client.js:566
+#: htdocs/luci-static/resources/view/fchomo/client.js:574
+#: htdocs/luci-static/resources/view/fchomo/client.js:581
+#: htdocs/luci-static/resources/view/fchomo/client.js:591
+#: htdocs/luci-static/resources/view/fchomo/client.js:598
+#: htdocs/luci-static/resources/view/fchomo/client.js:606
+#: htdocs/luci-static/resources/view/fchomo/client.js:613
+#: htdocs/luci-static/resources/view/fchomo/client.js:680
 msgid "Factor"
 msgstr "条件"
 
-#: htdocs/luci-static/resources/fchomo.js:1363
+#: htdocs/luci-static/resources/fchomo.js:1713
 msgid "Failed to execute \"/etc/init.d/fchomo %s %s\" reason: %s"
 msgstr "无法执行 \"/etc/init.d/fchomo %s %s\" 原因: %s"
 
-#: htdocs/luci-static/resources/fchomo.js:1316
+#: htdocs/luci-static/resources/fchomo.js:1666
 msgid "Failed to generate %s, error: %s."
 msgstr "生成 %s 失败，错误：%s。"
 
-#: htdocs/luci-static/resources/fchomo.js:1728
+#: htdocs/luci-static/resources/fchomo.js:2078
 msgid "Failed to upload %s, error: %s."
 msgstr "上传 %s 失败，错误：%s。"
 
-#: htdocs/luci-static/resources/fchomo.js:1747
+#: htdocs/luci-static/resources/fchomo.js:2097
 msgid "Failed to upload, error: %s."
 msgstr "上传失败，错误：%s。"
 
-#: htdocs/luci-static/resources/fchomo.js:241
+#: htdocs/luci-static/resources/fchomo.js:242
 #: htdocs/luci-static/resources/fchomo/listeners.js:449
 msgid "Fallback"
 msgstr "自动回退"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1418
-#: htdocs/luci-static/resources/view/fchomo/client.js:1431
+#: htdocs/luci-static/resources/view/fchomo/client.js:1481
+#: htdocs/luci-static/resources/view/fchomo/client.js:1494
+#: htdocs/luci-static/resources/view/fchomo/client.js:1925
 msgid "Fallback DNS server"
 msgstr "後備 DNS 服务器"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1815
+#: htdocs/luci-static/resources/view/fchomo/client.js:1881
+#: htdocs/luci-static/resources/view/fchomo/client.js:1922
 msgid "Fallback filter"
 msgstr "後備过滤器"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1174
-#: htdocs/luci-static/resources/view/fchomo/node.js:1977
+#: htdocs/luci-static/resources/view/fchomo/client.js:1234
+#: htdocs/luci-static/resources/view/fchomo/node.js:2011
 msgid "Filter nodes that meet keywords or regexps."
 msgstr "过滤匹配关键字或表达式的节点。"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1682
+#: htdocs/luci-static/resources/view/fchomo/client.js:1748
 msgid "Filter record type:"
 msgstr "过滤记录类型："
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1650
-#: htdocs/luci-static/resources/view/fchomo/client.js:1666
+#: htdocs/luci-static/resources/view/fchomo/client.js:1716
+#: htdocs/luci-static/resources/view/fchomo/client.js:1732
 msgid "Filter record: %s"
 msgstr "过滤 %s 记录"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1417
+#: htdocs/luci-static/resources/view/fchomo/client.js:1480
 msgid "Final DNS server"
 msgstr "兜底 DNS 服务器"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1419
+#: htdocs/luci-static/resources/view/fchomo/client.js:1482
 msgid "Final DNS server (For non-poisoned domains)"
 msgstr "兜底 DNS 服务器  (用于未被投毒污染的域名)"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1421
+#: htdocs/luci-static/resources/view/fchomo/client.js:1484
 msgid "Final DNS server (For poisoned domains)"
 msgstr "兜底 DNS 服务器  (用于已被投毒污染的域名)"
 
@@ -1117,12 +1156,12 @@ msgstr "兜底 DNS 服务器  (用于已被投毒污染的域名)"
 msgid "Firewall"
 msgstr "防火墙"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:535
-#: htdocs/luci-static/resources/view/fchomo/node.js:677
+#: htdocs/luci-static/resources/fchomo/listeners.js:532
+#: htdocs/luci-static/resources/view/fchomo/node.js:687
 msgid "Flow"
 msgstr "流控"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1163
+#: htdocs/luci-static/resources/view/fchomo/client.js:1223
 msgid ""
 "For details, see <a target=\"_blank\" href=\"%s\" rel=\"noreferrer "
 "noopener\">%s</a>."
@@ -1130,9 +1169,9 @@ msgstr ""
 "实现细节请参阅 <a target=\"_blank\" href=\"%s\" rel=\"noreferrer "
 "noopener\">%s</a>."
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1140
-#: htdocs/luci-static/resources/view/fchomo/node.js:1843
-#: htdocs/luci-static/resources/view/fchomo/node.js:1969
+#: htdocs/luci-static/resources/view/fchomo/client.js:1183
+#: htdocs/luci-static/resources/view/fchomo/node.js:1877
+#: htdocs/luci-static/resources/view/fchomo/node.js:2003
 msgid ""
 "For format see <a target=\"_blank\" href=\"%s\" rel=\"noreferrer "
 "noopener\">%s</a>."
@@ -1140,8 +1179,8 @@ msgstr ""
 "格式请参阅 <a target=\"_blank\" href=\"%s\" rel=\"noreferrer noopener\">%s</"
 "a>."
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:777
-#: htdocs/luci-static/resources/view/fchomo/node.js:860
+#: htdocs/luci-static/resources/view/fchomo/node.js:787
+#: htdocs/luci-static/resources/view/fchomo/node.js:870
 msgid "Force DNS remote resolution."
 msgstr "强制 DNS 远程解析。"
 
@@ -1160,7 +1199,7 @@ msgstr "格式"
 msgid "FullCombo Shark!"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1294
+#: htdocs/luci-static/resources/view/fchomo/node.js:1323
 msgid "GET"
 msgstr ""
 
@@ -1169,7 +1208,7 @@ msgid "GFW list version"
 msgstr "GFW 域名列表版本"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:196
-#: htdocs/luci-static/resources/view/fchomo/node.js:324
+#: htdocs/luci-static/resources/view/fchomo/node.js:334
 msgid "Gecko"
 msgstr ""
 
@@ -1178,9 +1217,9 @@ msgid "General"
 msgstr "常规"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:119
-#: htdocs/luci-static/resources/view/fchomo/client.js:1019
+#: htdocs/luci-static/resources/view/fchomo/client.js:1038
 #: htdocs/luci-static/resources/view/fchomo/node.js:233
-#: htdocs/luci-static/resources/view/fchomo/node.js:1658
+#: htdocs/luci-static/resources/view/fchomo/node.js:1687
 msgid "General fields"
 msgstr "常规字段"
 
@@ -1188,17 +1227,17 @@ msgstr "常规字段"
 msgid "General settings"
 msgstr "常规设置"
 
-#: htdocs/luci-static/resources/fchomo.js:553
-#: htdocs/luci-static/resources/fchomo.js:555
-#: htdocs/luci-static/resources/fchomo.js:569
-#: htdocs/luci-static/resources/fchomo.js:571
+#: htdocs/luci-static/resources/fchomo.js:578
+#: htdocs/luci-static/resources/fchomo.js:580
+#: htdocs/luci-static/resources/fchomo.js:594
+#: htdocs/luci-static/resources/fchomo.js:596
 #: htdocs/luci-static/resources/fchomo/listeners.js:341
 #: htdocs/luci-static/resources/fchomo/listeners.js:385
 #: htdocs/luci-static/resources/fchomo/listeners.js:387
-#: htdocs/luci-static/resources/fchomo/listeners.js:827
-#: htdocs/luci-static/resources/fchomo/listeners.js:1060
+#: htdocs/luci-static/resources/fchomo/listeners.js:845
+#: htdocs/luci-static/resources/fchomo/listeners.js:1078
 #: htdocs/luci-static/resources/view/fchomo/global.js:608
-#: htdocs/luci-static/resources/view/fchomo/node.js:1811
+#: htdocs/luci-static/resources/view/fchomo/node.js:1845
 msgid "Generate"
 msgstr "生成"
 
@@ -1214,21 +1253,21 @@ msgstr "GeoIP 版本"
 msgid "GeoSite version"
 msgstr "GeoSite 版本"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1825
+#: htdocs/luci-static/resources/view/fchomo/client.js:1891
 msgid "Geoip code"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1822
+#: htdocs/luci-static/resources/view/fchomo/client.js:1888
 msgid "Geoip enable"
 msgstr "Geoip 启用"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:853
-#: htdocs/luci-static/resources/view/fchomo/client.js:862
-#: htdocs/luci-static/resources/view/fchomo/client.js:1834
+#: htdocs/luci-static/resources/view/fchomo/client.js:861
+#: htdocs/luci-static/resources/view/fchomo/client.js:870
+#: htdocs/luci-static/resources/view/fchomo/client.js:1900
 msgid "Geosite"
 msgstr ""
 
-#: htdocs/luci-static/resources/fchomo.js:45
+#: htdocs/luci-static/resources/fchomo.js:46
 msgid "GitHub"
 msgstr ""
 
@@ -1245,11 +1284,11 @@ msgstr "全局"
 msgid "Global Authentication"
 msgstr "全局认证"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:701
+#: htdocs/luci-static/resources/view/fchomo/node.js:711
 msgid "Global padding"
 msgstr "全局填充"
 
-#: htdocs/luci-static/resources/fchomo.js:44
+#: htdocs/luci-static/resources/fchomo.js:45
 msgid "Google"
 msgstr "谷歌"
 
@@ -1261,58 +1300,58 @@ msgstr "谷歌 FCM"
 msgid "Grant access to fchomo configuration"
 msgstr "授予 fchomo 访问 UCI 配置的权限"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1044
+#: htdocs/luci-static/resources/view/fchomo/client.js:1063
 msgid "Group"
 msgstr "组"
 
-#: htdocs/luci-static/resources/fchomo.js:153
-#: htdocs/luci-static/resources/fchomo.js:189
-#: htdocs/luci-static/resources/fchomo/listeners.js:569
-#: htdocs/luci-static/resources/view/fchomo/node.js:883
-#: htdocs/luci-static/resources/view/fchomo/node.js:1243
-#: htdocs/luci-static/resources/view/fchomo/node.js:1254
-#: htdocs/luci-static/resources/view/fchomo/node.js:1261
+#: htdocs/luci-static/resources/fchomo.js:154
+#: htdocs/luci-static/resources/fchomo.js:190
+#: htdocs/luci-static/resources/fchomo/listeners.js:578
+#: htdocs/luci-static/resources/view/fchomo/node.js:905
+#: htdocs/luci-static/resources/view/fchomo/node.js:1272
+#: htdocs/luci-static/resources/view/fchomo/node.js:1283
+#: htdocs/luci-static/resources/view/fchomo/node.js:1290
 msgid "HTTP"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:291
-#: htdocs/luci-static/resources/view/fchomo/node.js:1316
-#: htdocs/luci-static/resources/view/fchomo/node.js:1823
-#: htdocs/luci-static/resources/view/fchomo/ruleset.js:414
+#: htdocs/luci-static/resources/view/fchomo/node.js:301
+#: htdocs/luci-static/resources/view/fchomo/node.js:1345
+#: htdocs/luci-static/resources/view/fchomo/node.js:1857
+#: htdocs/luci-static/resources/view/fchomo/ruleset.js:419
 msgid "HTTP header"
 msgstr "HTTP header"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:430
-#: htdocs/luci-static/resources/view/fchomo/node.js:484
+#: htdocs/luci-static/resources/view/fchomo/node.js:494
 msgid "HTTP mask"
 msgstr "HTTP 伪装"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:435
-#: htdocs/luci-static/resources/view/fchomo/node.js:489
-#: htdocs/luci-static/resources/view/fchomo/node.js:524
-#: htdocs/luci-static/resources/view/fchomo/node.js:526
+#: htdocs/luci-static/resources/view/fchomo/node.js:499
+#: htdocs/luci-static/resources/view/fchomo/node.js:534
+#: htdocs/luci-static/resources/view/fchomo/node.js:536
 msgid "HTTP mask mode"
 msgstr "HTTP 伪装模式"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:514
+#: htdocs/luci-static/resources/view/fchomo/node.js:524
 msgid "HTTP mask multiplex"
 msgstr "HTTP 伪装多路复用"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:499
-#: htdocs/luci-static/resources/view/fchomo/node.js:504
+#: htdocs/luci-static/resources/view/fchomo/node.js:509
+#: htdocs/luci-static/resources/view/fchomo/node.js:514
 msgid "HTTP mask: %s"
 msgstr "HTTP 伪装: %s"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1293
+#: htdocs/luci-static/resources/view/fchomo/node.js:1322
 msgid "HTTP request method"
 msgstr "HTTP 请求方法"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:445
-#: htdocs/luci-static/resources/view/fchomo/node.js:510
+#: htdocs/luci-static/resources/view/fchomo/node.js:520
 msgid "HTTP root path"
 msgstr "HTTP 根路径"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1581
+#: htdocs/luci-static/resources/view/fchomo/client.js:1647
 msgid "HTTP/3"
 msgstr ""
 
@@ -1322,9 +1361,9 @@ msgid ""
 "returned if empty."
 msgstr "身份验证失败时的 HTTP3 服务器响应。默认返回 404 页面。"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1244
-#: htdocs/luci-static/resources/view/fchomo/node.js:1255
-#: htdocs/luci-static/resources/view/fchomo/node.js:1262
+#: htdocs/luci-static/resources/view/fchomo/node.js:1273
+#: htdocs/luci-static/resources/view/fchomo/node.js:1284
+#: htdocs/luci-static/resources/view/fchomo/node.js:1291
 msgid "HTTPUpgrade"
 msgstr ""
 
@@ -1332,15 +1371,16 @@ msgstr ""
 msgid "Handle domain"
 msgstr "处理域名"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:406
+#: htdocs/luci-static/resources/view/fchomo/node.js:416
 msgid "Handshake mode"
 msgstr "握手模式"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:582
+#: htdocs/luci-static/resources/fchomo/listeners.js:590
 msgid "Handshake target that supports TLS 1.3"
 msgstr "握手目标 (支援 TLS 1.3)"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:417
+#: htdocs/luci-static/resources/view/fchomo/node.js:962
 msgid "Handshake timeout"
 msgstr "握手超时"
 
@@ -1348,57 +1388,57 @@ msgstr "握手超时"
 msgid "Header to read real client IP from (e.g. X-Forwarded-For)"
 msgstr "用于读取客户端真实 IP 的 Header（例如 X-Forwarded-For）"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:788
+#: htdocs/luci-static/resources/view/fchomo/node.js:798
 msgid "Health check"
 msgstr "健康检查"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1109
-#: htdocs/luci-static/resources/view/fchomo/node.js:1937
+#: htdocs/luci-static/resources/view/fchomo/client.js:1152
+#: htdocs/luci-static/resources/view/fchomo/node.js:1971
 msgid "Health check URL"
 msgstr "健康检查 URL"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1138
-#: htdocs/luci-static/resources/view/fchomo/node.js:1967
+#: htdocs/luci-static/resources/view/fchomo/client.js:1181
+#: htdocs/luci-static/resources/view/fchomo/node.js:2001
 msgid "Health check expected status"
 msgstr "健康检查预期状态"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1118
-#: htdocs/luci-static/resources/view/fchomo/node.js:1947
+#: htdocs/luci-static/resources/view/fchomo/client.js:1161
+#: htdocs/luci-static/resources/view/fchomo/node.js:1981
 msgid "Health check interval"
 msgstr "健康检查间隔"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1125
-#: htdocs/luci-static/resources/view/fchomo/node.js:1954
+#: htdocs/luci-static/resources/view/fchomo/client.js:1168
+#: htdocs/luci-static/resources/view/fchomo/node.js:1988
 msgid "Health check timeout"
 msgstr "健康检查超时"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1021
-#: htdocs/luci-static/resources/view/fchomo/node.js:1660
+#: htdocs/luci-static/resources/view/fchomo/client.js:1040
+#: htdocs/luci-static/resources/view/fchomo/node.js:1689
 msgid "Health fields"
 msgstr "健康字段"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:606
+#: htdocs/luci-static/resources/view/fchomo/node.js:616
 msgid "Heartbeat interval"
 msgstr "心跳间隔"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1189
+#: htdocs/luci-static/resources/view/fchomo/client.js:1249
 msgid "Hidden"
 msgstr "隐藏"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:575
-#: htdocs/luci-static/resources/view/fchomo/node.js:889
+#: htdocs/luci-static/resources/fchomo/listeners.js:583
+#: htdocs/luci-static/resources/view/fchomo/node.js:910
 msgid "Host that supports TLS 1.3"
 msgstr "主机名称 (支援 TLS 1.3)"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:361
+#: htdocs/luci-static/resources/view/fchomo/node.js:371
 msgid "Host-key"
 msgstr "主机密钥"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:356
+#: htdocs/luci-static/resources/view/fchomo/node.js:366
 msgid "Host-key algorithms"
 msgstr "主机密钥算法"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:504
+#: htdocs/luci-static/resources/view/fchomo/node.js:514
 msgid "Host/SNI override"
 msgstr "主机/SNI 覆盖"
 
@@ -1407,12 +1447,12 @@ msgstr "主机/SNI 覆盖"
 msgid "Hosts"
 msgstr ""
 
-#: htdocs/luci-static/resources/fchomo.js:165
-#: htdocs/luci-static/resources/fchomo.js:201
+#: htdocs/luci-static/resources/fchomo.js:166
+#: htdocs/luci-static/resources/fchomo.js:202
 msgid "Hysteria2"
 msgstr ""
 
-#: htdocs/luci-static/resources/fchomo.js:166
+#: htdocs/luci-static/resources/fchomo.js:167
 msgid "Hysteria2 Realm"
 msgstr "Hysteria2 Realm"
 
@@ -1421,58 +1461,58 @@ msgstr "Hysteria2 Realm"
 msgid "Hysteria2 Realm fields"
 msgstr "Hysteria2 Realm 字段"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1827
-#: htdocs/luci-static/resources/view/fchomo/client.js:1840
+#: htdocs/luci-static/resources/view/fchomo/client.js:1893
+#: htdocs/luci-static/resources/view/fchomo/client.js:1906
 msgid "IP"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1838
+#: htdocs/luci-static/resources/view/fchomo/client.js:1904
 msgid "IP CIDR"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:563
+#: htdocs/luci-static/resources/view/fchomo/node.js:573
 msgid "IP override"
 msgstr "IP 覆写"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1536
-#: htdocs/luci-static/resources/view/fchomo/node.js:1923
+#: htdocs/luci-static/resources/view/fchomo/node.js:1565
+#: htdocs/luci-static/resources/view/fchomo/node.js:1957
 msgid "IP version"
 msgstr "IP 版本"
 
-#: htdocs/luci-static/resources/fchomo.js:174
+#: htdocs/luci-static/resources/fchomo.js:175
 msgid "IPv4 only"
 msgstr "仅 IPv4"
 
-#: htdocs/luci-static/resources/fchomo.js:175
+#: htdocs/luci-static/resources/fchomo.js:176
 msgid "IPv6 only"
 msgstr "仅 IPv6"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1400
+#: htdocs/luci-static/resources/view/fchomo/client.js:1463
 #: htdocs/luci-static/resources/view/fchomo/global.js:436
 msgid "IPv6 support"
 msgstr "IPv6 支持"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1195
+#: htdocs/luci-static/resources/view/fchomo/client.js:1255
 msgid "Icon"
 msgstr "图标"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:650
+#: htdocs/luci-static/resources/view/fchomo/node.js:660
 msgid "Idle session check interval"
 msgstr "闲置会话检查间隔"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:657
+#: htdocs/luci-static/resources/view/fchomo/node.js:667
 msgid "Idle session timeout"
 msgstr "闲置会话超时"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:486
+#: htdocs/luci-static/resources/fchomo/listeners.js:483
 msgid "Idle timeout"
 msgstr "闲置超时"
 
-#: htdocs/luci-static/resources/fchomo.js:1464
+#: htdocs/luci-static/resources/fchomo.js:1814
 msgid "If All ports is selected, uncheck others"
 msgstr "如果选择了“所有端口”，则取消选中“其他”"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:69
+#: htdocs/luci-static/resources/view/fchomo/client.js:71
 msgid "If Block is selected, uncheck others"
 msgstr "如果选择了“阻止”，则取消选中“其他”"
 
@@ -1480,24 +1520,24 @@ msgstr "如果选择了“阻止”，则取消选中“其他”"
 msgid "Ignore client bandwidth"
 msgstr "忽略客户端带宽"
 
-#: htdocs/luci-static/resources/fchomo.js:738
+#: htdocs/luci-static/resources/fchomo.js:763
 msgid "Import"
 msgstr "导入"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:957
-#: htdocs/luci-static/resources/view/fchomo/client.js:1013
-#: htdocs/luci-static/resources/view/fchomo/client.js:1218
-#: htdocs/luci-static/resources/view/fchomo/client.js:1269
-#: htdocs/luci-static/resources/view/fchomo/client.js:1337
-#: htdocs/luci-static/resources/view/fchomo/client.js:1361
-#: htdocs/luci-static/resources/view/fchomo/client.js:1465
-#: htdocs/luci-static/resources/view/fchomo/client.js:1503
-#: htdocs/luci-static/resources/view/fchomo/client.js:1717
-#: htdocs/luci-static/resources/view/fchomo/client.js:1734
-#: htdocs/luci-static/resources/view/fchomo/client.js:1769
-#: htdocs/luci-static/resources/view/fchomo/client.js:1790
-#: htdocs/luci-static/resources/view/fchomo/node.js:1562
-#: htdocs/luci-static/resources/view/fchomo/node.js:1646
+#: htdocs/luci-static/resources/view/fchomo/client.js:975
+#: htdocs/luci-static/resources/view/fchomo/client.js:1032
+#: htdocs/luci-static/resources/view/fchomo/client.js:1278
+#: htdocs/luci-static/resources/view/fchomo/client.js:1329
+#: htdocs/luci-static/resources/view/fchomo/client.js:1400
+#: htdocs/luci-static/resources/view/fchomo/client.js:1424
+#: htdocs/luci-static/resources/view/fchomo/client.js:1528
+#: htdocs/luci-static/resources/view/fchomo/client.js:1566
+#: htdocs/luci-static/resources/view/fchomo/client.js:1783
+#: htdocs/luci-static/resources/view/fchomo/client.js:1800
+#: htdocs/luci-static/resources/view/fchomo/client.js:1835
+#: htdocs/luci-static/resources/view/fchomo/client.js:1856
+#: htdocs/luci-static/resources/view/fchomo/node.js:1591
+#: htdocs/luci-static/resources/view/fchomo/node.js:1675
 #: htdocs/luci-static/resources/view/fchomo/ruleset.js:154
 #: htdocs/luci-static/resources/view/fchomo/ruleset.js:249
 msgid "Import mihomo config"
@@ -1511,55 +1551,61 @@ msgstr "导入规则集链接"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:176
 #: htdocs/luci-static/resources/fchomo/listeners.js:182
-#: htdocs/luci-static/resources/view/fchomo/node.js:310
-#: htdocs/luci-static/resources/view/fchomo/node.js:316
-#: htdocs/luci-static/resources/view/fchomo/node.js:1881
-#: htdocs/luci-static/resources/view/fchomo/node.js:1887
+#: htdocs/luci-static/resources/view/fchomo/node.js:320
+#: htdocs/luci-static/resources/view/fchomo/node.js:326
+#: htdocs/luci-static/resources/view/fchomo/node.js:1915
+#: htdocs/luci-static/resources/view/fchomo/node.js:1921
 msgid "In Mbps."
 msgstr "单位为 Mbps。"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1736
+#: htdocs/luci-static/resources/view/fchomo/node.js:1765
 #: htdocs/luci-static/resources/view/fchomo/ruleset.js:392
 msgid "In bytes. <code>%s</code> will be used if empty."
 msgstr "单位为字节。留空则使用 <code>%s</code>。"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:607
-#: htdocs/luci-static/resources/view/fchomo/node.js:614
+#: htdocs/luci-static/resources/view/fchomo/node.js:617
+#: htdocs/luci-static/resources/view/fchomo/node.js:624
 msgid "In millisecond."
 msgstr "单位为毫秒。"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1126
-#: htdocs/luci-static/resources/view/fchomo/client.js:1155
-#: htdocs/luci-static/resources/view/fchomo/node.js:1955
+#: htdocs/luci-static/resources/view/fchomo/client.js:1169
+#: htdocs/luci-static/resources/view/fchomo/client.js:1215
+#: htdocs/luci-static/resources/view/fchomo/node.js:1989
 msgid "In millisecond. <code>%s</code> will be used if empty."
 msgstr "单位为毫秒。留空则使用 <code>%s</code>。"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1385
+#: htdocs/luci-static/resources/view/fchomo/node.js:1414
 msgid "In milliseconds."
 msgstr "单位为毫秒。"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:418
-#: htdocs/luci-static/resources/fchomo/listeners.js:487
-#: htdocs/luci-static/resources/fchomo/listeners.js:494
-#: htdocs/luci-static/resources/view/fchomo/node.js:651
-#: htdocs/luci-static/resources/view/fchomo/node.js:658
-#: htdocs/luci-static/resources/view/fchomo/node.js:1332
+#: htdocs/luci-static/resources/fchomo/listeners.js:484
+#: htdocs/luci-static/resources/fchomo/listeners.js:491
+#: htdocs/luci-static/resources/view/fchomo/node.js:661
+#: htdocs/luci-static/resources/view/fchomo/node.js:668
+#: htdocs/luci-static/resources/view/fchomo/node.js:1361
 msgid "In seconds."
 msgstr "单位为秒。"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1119
+#: htdocs/luci-static/resources/view/fchomo/client.js:1162
 #: htdocs/luci-static/resources/view/fchomo/global.js:446
 #: htdocs/luci-static/resources/view/fchomo/global.js:451
 #: htdocs/luci-static/resources/view/fchomo/global.js:536
-#: htdocs/luci-static/resources/view/fchomo/node.js:304
-#: htdocs/luci-static/resources/view/fchomo/node.js:1742
-#: htdocs/luci-static/resources/view/fchomo/node.js:1948
+#: htdocs/luci-static/resources/view/fchomo/node.js:314
+#: htdocs/luci-static/resources/view/fchomo/node.js:1771
+#: htdocs/luci-static/resources/view/fchomo/node.js:1982
 #: htdocs/luci-static/resources/view/fchomo/ruleset.js:398
 msgid "In seconds. <code>%s</code> will be used if empty."
 msgstr "单位为秒。留空则使用 <code>%s</code>。"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:743
-#: htdocs/luci-static/resources/view/fchomo/node.js:1009
+#: htdocs/luci-static/resources/view/fchomo/node.js:963
+msgid ""
+"In seconds. After configuration, the handshake is not affected by the outer "
+"connection timeout."
+msgstr "单位为秒。配置后握手时不受外层连接超时影响。"
+
+#: htdocs/luci-static/resources/fchomo/listeners.js:761
+#: htdocs/luci-static/resources/view/fchomo/node.js:1037
 msgid ""
 "In the order of one <code>Padding-Length</code> and one <code>Padding-"
 "Interval</code>, infinite concatenation."
@@ -1573,35 +1619,35 @@ msgstr ""
 msgid "Inbound"
 msgstr "入站"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1079
+#: htdocs/luci-static/resources/view/fchomo/client.js:1116
 msgid "Include all"
 msgstr "引入所有"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1084
+#: htdocs/luci-static/resources/view/fchomo/client.js:1121
 msgid "Include all node"
 msgstr "引入所有节点"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1089
+#: htdocs/luci-static/resources/view/fchomo/client.js:1126
 msgid "Include all provider"
 msgstr "引入所有供应商"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1090
+#: htdocs/luci-static/resources/view/fchomo/client.js:1127
 msgid "Includes all Provider."
 msgstr "引入所有供应商。"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1080
+#: htdocs/luci-static/resources/view/fchomo/client.js:1117
 msgid "Includes all Proxy Node and Provider."
 msgstr "引入所有代理节点及供应商。"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1085
+#: htdocs/luci-static/resources/view/fchomo/client.js:1122
 msgid "Includes all Proxy Node."
 msgstr "引入所有代理节点。"
 
-#: htdocs/luci-static/resources/fchomo.js:92
+#: htdocs/luci-static/resources/fchomo.js:93
 msgid "Info"
 msgstr "信息"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1675
+#: htdocs/luci-static/resources/view/fchomo/node.js:1704
 #: htdocs/luci-static/resources/view/fchomo/ruleset.js:288
 msgid "Inline"
 msgstr "内嵌"
@@ -1610,57 +1656,65 @@ msgstr "内嵌"
 msgid "Interface Control"
 msgstr "接口控制"
 
-#: htdocs/luci-static/resources/fchomo.js:52
-#: htdocs/luci-static/resources/fchomo.js:59
-#: htdocs/luci-static/resources/fchomo.js:172
+#: htdocs/luci-static/resources/fchomo.js:53
+#: htdocs/luci-static/resources/fchomo.js:60
+#: htdocs/luci-static/resources/fchomo.js:173
 #: htdocs/luci-static/resources/fchomo.js:377
-#: htdocs/luci-static/resources/view/fchomo/node.js:1897
+#: htdocs/luci-static/resources/view/fchomo/node.js:1931
 msgid "Keep default"
 msgstr "保持缺省"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1421
+#: htdocs/luci-static/resources/view/fchomo/node.js:1450
 msgid "Keep-alive period"
 msgstr "Keep-alive 周期"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:296
-#: htdocs/luci-static/resources/view/fchomo/node.js:420
+#: htdocs/luci-static/resources/view/fchomo/node.js:430
 msgid "Key"
 msgstr "密钥"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:987
-#: htdocs/luci-static/resources/view/fchomo/node.js:1173
+#: htdocs/luci-static/resources/fchomo/listeners.js:1005
+#: htdocs/luci-static/resources/view/fchomo/node.js:1202
 msgid "Key path"
 msgstr "证书路径"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:762
+#: htdocs/luci-static/resources/fchomo/listeners.js:780
 msgid "Keypairs"
 msgstr "密钥对"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:128
-#: htdocs/luci-static/resources/view/fchomo/client.js:1024
-#: htdocs/luci-static/resources/view/fchomo/client.js:1275
-#: htdocs/luci-static/resources/view/fchomo/client.js:1367
-#: htdocs/luci-static/resources/view/fchomo/client.js:1509
-#: htdocs/luci-static/resources/view/fchomo/client.js:1740
-#: htdocs/luci-static/resources/view/fchomo/client.js:1796
+#: htdocs/luci-static/resources/view/fchomo/client.js:1043
+#: htdocs/luci-static/resources/view/fchomo/client.js:1335
+#: htdocs/luci-static/resources/view/fchomo/client.js:1430
+#: htdocs/luci-static/resources/view/fchomo/client.js:1572
+#: htdocs/luci-static/resources/view/fchomo/client.js:1806
+#: htdocs/luci-static/resources/view/fchomo/client.js:1862
 #: htdocs/luci-static/resources/view/fchomo/node.js:241
-#: htdocs/luci-static/resources/view/fchomo/node.js:1663
-#: htdocs/luci-static/resources/view/fchomo/node.js:2016
+#: htdocs/luci-static/resources/view/fchomo/node.js:1692
+#: htdocs/luci-static/resources/view/fchomo/node.js:2050
 #: htdocs/luci-static/resources/view/fchomo/ruleset.js:267
 msgid "Label"
 msgstr "标签"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1132
-#: htdocs/luci-static/resources/view/fchomo/node.js:1961
+#: htdocs/luci-static/resources/view/fchomo/client.js:1175
+#: htdocs/luci-static/resources/view/fchomo/node.js:1995
 msgid "Lazy"
-msgstr "懒惰状态"
+msgstr "怠惰状态"
+
+#: htdocs/luci-static/resources/view/fchomo/client.js:1913
+msgid "Lazy query"
+msgstr "怠惰查询"
+
+#: htdocs/luci-static/resources/view/fchomo/client.js:1914
+msgid "Lazy query."
+msgstr "怠惰查询。"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:437
-#: htdocs/luci-static/resources/view/fchomo/node.js:491
+#: htdocs/luci-static/resources/view/fchomo/node.js:501
 msgid "Legacy"
 msgstr "传统"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:544
+#: htdocs/luci-static/resources/fchomo/listeners.js:541
 msgid ""
 "Legacy protocol support (VMess MD5 Authentication) is provided for "
 "compatibility purposes only, use of alterId > 1 is not recommended."
@@ -1672,8 +1726,8 @@ msgstr ""
 msgid "Less compatibility and sometimes better performance."
 msgstr "有时性能更好。"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:968
-#: htdocs/luci-static/resources/view/fchomo/node.js:1095
+#: htdocs/luci-static/resources/fchomo/listeners.js:986
+#: htdocs/luci-static/resources/view/fchomo/node.js:1123
 msgid "List of supported application level protocols, in order of preference."
 msgstr "支持的应用层协议协商列表，按顺序排列。"
 
@@ -1690,7 +1744,7 @@ msgid "Listen interfaces"
 msgstr "监听接口"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:153
-#: htdocs/luci-static/resources/view/fchomo/client.js:1392
+#: htdocs/luci-static/resources/view/fchomo/client.js:1455
 msgid "Listen port"
 msgstr "监听端口"
 
@@ -1698,26 +1752,26 @@ msgstr "监听端口"
 msgid "Listen ports"
 msgstr "监听端口"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1397
+#: htdocs/luci-static/resources/view/fchomo/client.js:1460
 msgid "Listen routing mark (Fwmark)"
 msgstr "监听路由标记 (Fwmark)"
 
-#: htdocs/luci-static/resources/fchomo.js:243
+#: htdocs/luci-static/resources/fchomo.js:244
 msgid "Load balance"
 msgstr "负载均衡"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1673
+#: htdocs/luci-static/resources/view/fchomo/node.js:1702
 #: htdocs/luci-static/resources/view/fchomo/ruleset.js:286
 msgid "Local"
 msgstr "本地"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:744
-#: htdocs/luci-static/resources/view/fchomo/node.js:807
+#: htdocs/luci-static/resources/view/fchomo/node.js:754
+#: htdocs/luci-static/resources/view/fchomo/node.js:817
 msgid "Local IPv6 address"
 msgstr "本地 IPv6 地址"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:736
-#: htdocs/luci-static/resources/view/fchomo/node.js:799
+#: htdocs/luci-static/resources/view/fchomo/node.js:746
+#: htdocs/luci-static/resources/view/fchomo/node.js:809
 msgid "Local address"
 msgstr "本地地址"
 
@@ -1741,10 +1795,10 @@ msgstr "日志等级"
 #: htdocs/luci-static/resources/fchomo/listeners.js:373
 #: htdocs/luci-static/resources/fchomo/listeners.js:374
 #: htdocs/luci-static/resources/fchomo/listeners.js:379
-#: htdocs/luci-static/resources/view/fchomo/node.js:444
-#: htdocs/luci-static/resources/view/fchomo/node.js:445
-#: htdocs/luci-static/resources/view/fchomo/node.js:446
-#: htdocs/luci-static/resources/view/fchomo/node.js:451
+#: htdocs/luci-static/resources/view/fchomo/node.js:454
+#: htdocs/luci-static/resources/view/fchomo/node.js:455
+#: htdocs/luci-static/resources/view/fchomo/node.js:456
+#: htdocs/luci-static/resources/view/fchomo/node.js:461
 msgid "Low-entropy data stream"
 msgstr "低熵数据流"
 
@@ -1753,12 +1807,12 @@ msgid "Lowercase only"
 msgstr "仅限小写"
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:523
-#: htdocs/luci-static/resources/view/fchomo/node.js:750
-#: htdocs/luci-static/resources/view/fchomo/node.js:853
+#: htdocs/luci-static/resources/view/fchomo/node.js:760
+#: htdocs/luci-static/resources/view/fchomo/node.js:863
 msgid "MTU"
 msgstr ""
 
-#: htdocs/luci-static/resources/fchomo.js:203
+#: htdocs/luci-static/resources/fchomo.js:204
 msgid "Masque"
 msgstr ""
 
@@ -1766,70 +1820,70 @@ msgstr ""
 msgid "Masquerade"
 msgstr "伪装"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:858
+#: htdocs/luci-static/resources/view/fchomo/client.js:866
 msgid "Match domain. Support wildcards."
 msgstr "匹配域名。支持通配符。"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1844
+#: htdocs/luci-static/resources/view/fchomo/client.js:1910
 msgid "Match domain. Support wildcards.</br>"
 msgstr "匹配域名。支持通配符。</br>"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:863
+#: htdocs/luci-static/resources/view/fchomo/client.js:871
 msgid "Match geosite."
 msgstr "匹配 geosite。"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1835
+#: htdocs/luci-static/resources/view/fchomo/client.js:1901
 msgid "Match geosite.</br>"
 msgstr "匹配 geosite。</br>"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1826
+#: htdocs/luci-static/resources/view/fchomo/client.js:1892
 msgid "Match response with geoip.</br>"
 msgstr "匹配响应通过 geoip。</br>"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1839
+#: htdocs/luci-static/resources/view/fchomo/client.js:1905
 msgid "Match response with ipcidr.</br>"
 msgstr "匹配响应通过 ipcidr</br>"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:868
+#: htdocs/luci-static/resources/view/fchomo/client.js:876
 msgid "Match rule set."
 msgstr "匹配规则集。"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1338
+#: htdocs/luci-static/resources/view/fchomo/node.js:1367
 msgid "Max Early Data"
 msgstr "前置数据最大值"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:480
-#: htdocs/luci-static/resources/view/fchomo/node.js:588
+#: htdocs/luci-static/resources/fchomo/listeners.js:477
+#: htdocs/luci-static/resources/view/fchomo/node.js:598
 msgid "Max UDP relay packet size"
 msgstr "UDP 中继数据包最大尺寸"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:1186
+#: htdocs/luci-static/resources/fchomo/listeners.js:1204
 msgid "Max buffered posts"
 msgstr "POST 最大缓冲"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1396
+#: htdocs/luci-static/resources/view/fchomo/node.js:1425
 msgid "Max concurrency"
 msgstr "最大并发"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1401
+#: htdocs/luci-static/resources/view/fchomo/node.js:1430
 msgid "Max connections"
 msgstr "最大连接数"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1146
+#: htdocs/luci-static/resources/view/fchomo/client.js:1189
 msgid "Max count of failures"
 msgstr "最大失败次数"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:181
-#: htdocs/luci-static/resources/view/fchomo/node.js:315
+#: htdocs/luci-static/resources/view/fchomo/node.js:325
 msgid "Max download speed"
 msgstr "最大下载速度"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:1197
-#: htdocs/luci-static/resources/view/fchomo/node.js:1378
+#: htdocs/luci-static/resources/fchomo/listeners.js:1215
+#: htdocs/luci-static/resources/view/fchomo/node.js:1407
 msgid "Max each POST bytes"
 msgstr "POST 最大字节数"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:620
+#: htdocs/luci-static/resources/view/fchomo/node.js:630
 msgid "Max open streams"
 msgstr "限制打开流的数量"
 
@@ -1841,29 +1895,29 @@ msgstr "最大 Realms 总数"
 msgid "Max realms per client IP"
 msgstr "每客户端 IP 最大 Realms 总数"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1411
+#: htdocs/luci-static/resources/view/fchomo/node.js:1440
 msgid "Max request times"
 msgstr "最大请求次数"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1416
+#: htdocs/luci-static/resources/view/fchomo/node.js:1445
 msgid "Max reusable seconds"
 msgstr "最大可复用秒数"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1406
+#: htdocs/luci-static/resources/view/fchomo/node.js:1435
 msgid "Max reuse times"
 msgstr "最大复用次数"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:175
-#: htdocs/luci-static/resources/view/fchomo/node.js:309
+#: htdocs/luci-static/resources/view/fchomo/node.js:319
 msgid "Max upload speed"
 msgstr "最大上传速度"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1442
-#: htdocs/luci-static/resources/view/fchomo/node.js:1462
+#: htdocs/luci-static/resources/view/fchomo/node.js:1471
+#: htdocs/luci-static/resources/view/fchomo/node.js:1491
 msgid "Maximum connections"
 msgstr "最大连接数"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1460
+#: htdocs/luci-static/resources/view/fchomo/node.js:1489
 msgid ""
 "Maximum multiplexed streams in a connection before opening a new connection."
 "<br/>Conflict with <code>%s</code> and <code>%s</code>."
@@ -1872,27 +1926,27 @@ msgstr ""
 "<code>%s</code> 冲突。"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:402
-#: htdocs/luci-static/resources/view/fchomo/node.js:463
+#: htdocs/luci-static/resources/view/fchomo/node.js:473
 msgid "Maximum padding rate"
 msgstr "最大填充率"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:410
-#: htdocs/luci-static/resources/view/fchomo/node.js:471
+#: htdocs/luci-static/resources/view/fchomo/node.js:481
 msgid ""
 "Maximum padding rate must be greater than or equal to the minimum padding "
 "rate."
 msgstr "最大填充率必须大于等于最小填充率。"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1459
+#: htdocs/luci-static/resources/view/fchomo/node.js:1488
 msgid "Maximum streams"
 msgstr "最大流数量"
 
-#: htdocs/luci-static/resources/fchomo.js:157
-#: htdocs/luci-static/resources/fchomo.js:193
+#: htdocs/luci-static/resources/fchomo.js:158
+#: htdocs/luci-static/resources/fchomo.js:194
 msgid "Mieru"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:912
+#: htdocs/luci-static/resources/view/fchomo/client.js:930
 #: htdocs/luci-static/resources/view/fchomo/log.js:149
 #: htdocs/luci-static/resources/view/fchomo/log.js:154
 msgid "Mihomo client"
@@ -1904,30 +1958,30 @@ msgstr "Mihomo 客户端"
 msgid "Mihomo server"
 msgstr "Mihomo 服务端"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:664
+#: htdocs/luci-static/resources/view/fchomo/node.js:674
 msgid "Min of idle sessions to keep"
 msgstr "要保留的最少闲置会话数"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1384
+#: htdocs/luci-static/resources/view/fchomo/node.js:1413
 msgid "Min posts interval"
 msgstr "POST 请求最小间隔时间"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1451
+#: htdocs/luci-static/resources/view/fchomo/node.js:1480
 msgid ""
 "Minimum multiplexed streams in a connection before opening a new connection."
 msgstr "在打开新连接之前，连接中的最小多路复用流数量。"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:395
-#: htdocs/luci-static/resources/view/fchomo/node.js:456
+#: htdocs/luci-static/resources/view/fchomo/node.js:466
 msgid "Minimum padding rate"
 msgstr "最小填充率"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1450
-#: htdocs/luci-static/resources/view/fchomo/node.js:1462
+#: htdocs/luci-static/resources/view/fchomo/node.js:1479
+#: htdocs/luci-static/resources/view/fchomo/node.js:1491
 msgid "Minimum streams"
 msgstr "最小流数量"
 
-#: htdocs/luci-static/resources/fchomo.js:155
+#: htdocs/luci-static/resources/fchomo.js:156
 #: htdocs/luci-static/resources/view/fchomo/global.js:518
 msgid "Mixed"
 msgstr "混合"
@@ -1940,7 +1994,7 @@ msgstr "混合 <code>系统</code> TCP 栈和 <code>gVisor</code> UDP 栈。"
 msgid "Mixed port"
 msgstr "混合端口"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1428
+#: htdocs/luci-static/resources/view/fchomo/node.js:1457
 msgid "Multiplex"
 msgstr "多路复用"
 
@@ -1949,20 +2003,20 @@ msgstr "多路复用"
 msgid "Multiplex fields"
 msgstr "多路复用字段"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:397
+#: htdocs/luci-static/resources/view/fchomo/node.js:407
 msgid "Multiplexing"
 msgstr "多路复用"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:622
-#: htdocs/luci-static/resources/view/fchomo/client.js:697
+#: htdocs/luci-static/resources/view/fchomo/client.js:624
+#: htdocs/luci-static/resources/view/fchomo/client.js:702
 msgid "NOT"
 msgstr "NOT"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:616
+#: htdocs/luci-static/resources/fchomo/listeners.js:629
 msgid "Name of the Proxy group as outbound."
 msgstr "出站代理组的名称。"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1748
+#: htdocs/luci-static/resources/view/fchomo/node.js:1777
 msgid "Name of the Proxy group to download provider."
 msgstr "用于下载供应商订阅的代理组名称。"
 
@@ -1970,11 +2024,11 @@ msgstr "用于下载供应商订阅的代理组名称。"
 msgid "Name of the Proxy group to download rule set."
 msgstr "用于下载规则集订阅的代理组名称。"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:610
+#: htdocs/luci-static/resources/fchomo/listeners.js:618
 msgid "Name of the Sub rule used for inbound matching."
 msgstr "用于入站匹配的子规则名称。"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:572
+#: htdocs/luci-static/resources/view/fchomo/node.js:582
 msgid "Native UDP"
 msgstr "原生 UDP"
 
@@ -1982,15 +2036,15 @@ msgstr "原生 UDP"
 msgid "Native appearance"
 msgstr "原生外观"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:756
+#: htdocs/luci-static/resources/view/fchomo/node.js:766
 msgid "Network"
 msgstr ""
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:642
+#: htdocs/luci-static/resources/fchomo/listeners.js:660
 msgid "Network type"
 msgstr "网络类型"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1899
+#: htdocs/luci-static/resources/view/fchomo/node.js:1933
 msgid "No"
 msgstr ""
 
@@ -1998,24 +2052,24 @@ msgstr ""
 msgid "No Authentication IP ranges"
 msgstr "无需认证的 IP 范围"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:1181
+#: htdocs/luci-static/resources/fchomo/listeners.js:1199
 msgid "No SSE header"
 msgstr "无 SSE header"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1529
+#: htdocs/luci-static/resources/view/fchomo/client.js:1592
 msgid "No add'l params"
 msgstr "无附加参数"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1368
+#: htdocs/luci-static/resources/view/fchomo/node.js:1397
 msgid "No gRPC header"
 msgstr "无 gRPC header"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1133
-#: htdocs/luci-static/resources/view/fchomo/node.js:1962
+#: htdocs/luci-static/resources/view/fchomo/client.js:1176
+#: htdocs/luci-static/resources/view/fchomo/node.js:1996
 msgid "No testing is performed when this provider node is not in use."
 msgstr "当此供应商的节点未使用时，不执行任何测试。"
 
-#: htdocs/luci-static/resources/fchomo.js:699
+#: htdocs/luci-static/resources/fchomo.js:724
 msgid "No valid %s found."
 msgstr "未找到有效的%s。"
 
@@ -2023,27 +2077,27 @@ msgstr "未找到有效的%s。"
 msgid "No valid rule-set link found."
 msgstr "未找到有效的规则集链接。"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1051
+#: htdocs/luci-static/resources/view/fchomo/client.js:1076
 #: htdocs/luci-static/resources/view/fchomo/node.js:228
 msgid "Node"
 msgstr "节点"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1178
-#: htdocs/luci-static/resources/view/fchomo/node.js:1982
+#: htdocs/luci-static/resources/view/fchomo/client.js:1238
+#: htdocs/luci-static/resources/view/fchomo/node.js:2016
 msgid "Node exclude filter"
 msgstr "排除节点"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1183
-#: htdocs/luci-static/resources/view/fchomo/node.js:1989
+#: htdocs/luci-static/resources/view/fchomo/client.js:1243
+#: htdocs/luci-static/resources/view/fchomo/node.js:2023
 msgid "Node exclude type"
 msgstr "排除节点类型"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1173
-#: htdocs/luci-static/resources/view/fchomo/node.js:1976
+#: htdocs/luci-static/resources/view/fchomo/client.js:1233
+#: htdocs/luci-static/resources/view/fchomo/node.js:2010
 msgid "Node filter"
 msgstr "过滤节点"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1154
+#: htdocs/luci-static/resources/view/fchomo/client.js:1214
 msgid "Node switch tolerance"
 msgstr "节点切换容差"
 
@@ -2055,49 +2109,49 @@ msgstr "无"
 msgid "Not Installed"
 msgstr "未安装"
 
-#: htdocs/luci-static/resources/fchomo.js:1242
+#: htdocs/luci-static/resources/fchomo.js:1592
 msgid "Not Running"
 msgstr "未在运行"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:517
+#: htdocs/luci-static/resources/view/fchomo/node.js:527
 msgid "OFF"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:519
+#: htdocs/luci-static/resources/view/fchomo/node.js:529
 msgid "ON"
 msgstr ""
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:568
-#: htdocs/luci-static/resources/view/fchomo/node.js:882
+#: htdocs/luci-static/resources/fchomo/listeners.js:577
+#: htdocs/luci-static/resources/view/fchomo/node.js:904
 msgid "Obfs Mode"
 msgstr "Obfs 模式"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:213
-#: htdocs/luci-static/resources/view/fchomo/node.js:341
+#: htdocs/luci-static/resources/view/fchomo/node.js:351
 msgid "Obfuscate maximum packet size"
 msgstr "混淆最大数据包大小"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:208
-#: htdocs/luci-static/resources/view/fchomo/node.js:336
+#: htdocs/luci-static/resources/view/fchomo/node.js:346
 msgid "Obfuscate minimum packet size"
 msgstr "混淆最小数据包大小"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:200
-#: htdocs/luci-static/resources/view/fchomo/node.js:328
+#: htdocs/luci-static/resources/view/fchomo/node.js:338
 msgid "Obfuscate password"
 msgstr "混淆密码"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:193
 #: htdocs/luci-static/resources/fchomo/listeners.js:370
-#: htdocs/luci-static/resources/view/fchomo/node.js:321
-#: htdocs/luci-static/resources/view/fchomo/node.js:442
+#: htdocs/luci-static/resources/view/fchomo/node.js:331
+#: htdocs/luci-static/resources/view/fchomo/node.js:452
 msgid "Obfuscate type"
 msgstr "混淆类型"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:371
 #: htdocs/luci-static/resources/fchomo/listeners.js:372
-#: htdocs/luci-static/resources/view/fchomo/node.js:443
-#: htdocs/luci-static/resources/view/fchomo/node.js:444
+#: htdocs/luci-static/resources/view/fchomo/node.js:453
+#: htdocs/luci-static/resources/view/fchomo/node.js:454
 msgid "Obfuscated as %s"
 msgstr "混淆为%s"
 
@@ -2105,12 +2159,12 @@ msgstr "混淆为%s"
 msgid "One or more numbers in the range 0-63 separated by commas"
 msgstr "0-63 范围内的一个或多个数字，以逗号分隔"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:962
+#: htdocs/luci-static/resources/fchomo/listeners.js:980
 msgid "Only applicable when %s are used as a frontend."
 msgstr "仅当 %s 用作前端时适用。"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:379
-#: htdocs/luci-static/resources/view/fchomo/node.js:451
+#: htdocs/luci-static/resources/view/fchomo/node.js:461
 msgid "Only applies to the %s."
 msgstr "只对%s生效。"
 
@@ -2118,7 +2172,7 @@ msgstr "只对%s生效。"
 msgid "Only process traffic from specific interfaces. Leave empty for all."
 msgstr "只处理来自指定接口的流量。留空表示全部。"
 
-#: htdocs/luci-static/resources/fchomo.js:1236
+#: htdocs/luci-static/resources/fchomo.js:1586
 msgid "Open Dashboard"
 msgstr "打开面板"
 
@@ -2135,16 +2189,16 @@ msgstr "出站"
 msgid "Override destination"
 msgstr "覆盖目标地址"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1020
-#: htdocs/luci-static/resources/view/fchomo/node.js:1659
+#: htdocs/luci-static/resources/view/fchomo/client.js:1039
+#: htdocs/luci-static/resources/view/fchomo/node.js:1688
 msgid "Override fields"
 msgstr "覆盖字段"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:564
+#: htdocs/luci-static/resources/view/fchomo/node.js:574
 msgid "Override the IP address of the server that DNS response."
 msgstr "覆盖 DNS 回应的服务器的 IP 地址。"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:891
+#: htdocs/luci-static/resources/view/fchomo/client.js:904
 msgid "Override the Proxy group of DNS server."
 msgstr "覆盖 DNS 服务器所使用的代理组。"
 
@@ -2152,11 +2206,11 @@ msgstr "覆盖 DNS 服务器所使用的代理组。"
 msgid "Override the connection destination address with the sniffed domain."
 msgstr "使用嗅探到的域名覆盖连接目标。"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1633
+#: htdocs/luci-static/resources/view/fchomo/client.js:1699
 msgid "Override the existing ECS in original request."
 msgstr "覆盖原始请求中已有的 ECS。"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1200
+#: htdocs/luci-static/resources/view/fchomo/node.js:1229
 msgid "Overrides the domain name used for HTTPS record queries."
 msgstr "覆盖用于 HTTPS 记录查询的域名。"
 
@@ -2164,37 +2218,37 @@ msgstr "覆盖用于 HTTPS 记录查询的域名。"
 msgid "Overview"
 msgstr "概览"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1295
+#: htdocs/luci-static/resources/view/fchomo/node.js:1324
 msgid "POST"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1296
+#: htdocs/luci-static/resources/view/fchomo/node.js:1325
 msgid "PUT"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:713
+#: htdocs/luci-static/resources/view/fchomo/node.js:723
 msgid "Packet encoding"
 msgstr "数据包编码"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1373
+#: htdocs/luci-static/resources/view/fchomo/node.js:1402
 msgid "Padding bytes"
 msgstr "填充字节"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:524
+#: htdocs/luci-static/resources/fchomo/listeners.js:521
 msgid "Padding scheme"
 msgstr "填充方案"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:741
-#: htdocs/luci-static/resources/view/fchomo/node.js:1007
+#: htdocs/luci-static/resources/fchomo/listeners.js:759
+#: htdocs/luci-static/resources/view/fchomo/node.js:1035
 msgid "Paddings"
 msgstr "填充 (Paddings)"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:166
 #: htdocs/luci-static/resources/fchomo/listeners.js:263
-#: htdocs/luci-static/resources/fchomo/listeners.js:589
-#: htdocs/luci-static/resources/view/fchomo/node.js:285
-#: htdocs/luci-static/resources/view/fchomo/node.js:375
-#: htdocs/luci-static/resources/view/fchomo/node.js:897
+#: htdocs/luci-static/resources/fchomo/listeners.js:597
+#: htdocs/luci-static/resources/view/fchomo/node.js:295
+#: htdocs/luci-static/resources/view/fchomo/node.js:385
+#: htdocs/luci-static/resources/view/fchomo/node.js:917
 msgid "Password"
 msgstr "密码"
 
@@ -2206,13 +2260,13 @@ msgstr "捆绑包路径"
 msgid "Path in bundle: <code>%s</code>"
 msgstr "在捆绑包<code>%s</code>中的路径"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:681
-#: htdocs/luci-static/resources/view/fchomo/node.js:1723
+#: htdocs/luci-static/resources/fchomo/listeners.js:699
+#: htdocs/luci-static/resources/view/fchomo/node.js:1752
 #: htdocs/luci-static/resources/view/fchomo/ruleset.js:373
 msgid "Payload"
 msgstr "Payload"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:821
+#: htdocs/luci-static/resources/view/fchomo/node.js:831
 msgid "Peer pubkic key"
 msgstr "对端公钥"
 
@@ -2222,11 +2276,11 @@ msgid ""
 "it is not needed."
 msgstr "性能可能会略有下降，建议仅在需要时开启。"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:848
+#: htdocs/luci-static/resources/view/fchomo/node.js:858
 msgid "Periodically sends data packets to maintain connection persistence."
 msgstr "定期发送数据包以维持连接持久性。"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:847
+#: htdocs/luci-static/resources/view/fchomo/node.js:857
 msgid "Persistent keepalive"
 msgstr "持久连接"
 
@@ -2249,8 +2303,8 @@ msgid ""
 "standards."
 msgstr "链接格式标准请参考 <a href=\"%s\" target=\"_blank\">%s</a>。"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1696
-#: htdocs/luci-static/resources/view/fchomo/node.js:1722
+#: htdocs/luci-static/resources/view/fchomo/node.js:1725
+#: htdocs/luci-static/resources/view/fchomo/node.js:1751
 #: htdocs/luci-static/resources/view/fchomo/ruleset.js:346
 #: htdocs/luci-static/resources/view/fchomo/ruleset.js:372
 msgid ""
@@ -2259,33 +2313,33 @@ msgid ""
 msgstr ""
 "请输入 <a target=\"_blank\" href=\"%s\" rel=\"noreferrer noopener\">%s</a>。"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:958
-#: htdocs/luci-static/resources/view/fchomo/client.js:1219
-#: htdocs/luci-static/resources/view/fchomo/client.js:1338
-#: htdocs/luci-static/resources/view/fchomo/client.js:1466
-#: htdocs/luci-static/resources/view/fchomo/client.js:1718
-#: htdocs/luci-static/resources/view/fchomo/client.js:1770
-#: htdocs/luci-static/resources/view/fchomo/node.js:1563
+#: htdocs/luci-static/resources/view/fchomo/client.js:976
+#: htdocs/luci-static/resources/view/fchomo/client.js:1279
+#: htdocs/luci-static/resources/view/fchomo/client.js:1401
+#: htdocs/luci-static/resources/view/fchomo/client.js:1529
+#: htdocs/luci-static/resources/view/fchomo/client.js:1784
+#: htdocs/luci-static/resources/view/fchomo/client.js:1836
+#: htdocs/luci-static/resources/view/fchomo/node.js:1592
 #: htdocs/luci-static/resources/view/fchomo/ruleset.js:155
 msgid "Please type <code>%s</code> fields of mihomo config.</br>"
 msgstr "请输入 mihomo 配置的 <code>%s</code> 字段。</br>"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:560
-#: htdocs/luci-static/resources/view/fchomo/node.js:871
+#: htdocs/luci-static/resources/fchomo/listeners.js:557
+#: htdocs/luci-static/resources/view/fchomo/node.js:881
 msgid "Plugin"
 msgstr "插件"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:568
-#: htdocs/luci-static/resources/fchomo/listeners.js:575
-#: htdocs/luci-static/resources/fchomo/listeners.js:582
-#: htdocs/luci-static/resources/fchomo/listeners.js:589
-#: htdocs/luci-static/resources/fchomo/listeners.js:595
-#: htdocs/luci-static/resources/view/fchomo/node.js:882
-#: htdocs/luci-static/resources/view/fchomo/node.js:889
-#: htdocs/luci-static/resources/view/fchomo/node.js:897
-#: htdocs/luci-static/resources/view/fchomo/node.js:903
-#: htdocs/luci-static/resources/view/fchomo/node.js:911
+#: htdocs/luci-static/resources/fchomo/listeners.js:577
+#: htdocs/luci-static/resources/fchomo/listeners.js:583
+#: htdocs/luci-static/resources/fchomo/listeners.js:590
+#: htdocs/luci-static/resources/fchomo/listeners.js:597
+#: htdocs/luci-static/resources/fchomo/listeners.js:603
+#: htdocs/luci-static/resources/view/fchomo/node.js:904
+#: htdocs/luci-static/resources/view/fchomo/node.js:910
 #: htdocs/luci-static/resources/view/fchomo/node.js:917
+#: htdocs/luci-static/resources/view/fchomo/node.js:923
+#: htdocs/luci-static/resources/view/fchomo/node.js:931
+#: htdocs/luci-static/resources/view/fchomo/node.js:937
 msgid "Plugin:"
 msgstr "插件："
 
@@ -2293,15 +2347,15 @@ msgstr "插件："
 msgid "Port"
 msgstr "端口"
 
-#: htdocs/luci-static/resources/fchomo.js:1473
+#: htdocs/luci-static/resources/fchomo.js:1823
 msgid "Port %s alrealy exists!"
 msgstr "端口 %s 已存在！"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:303
+#: htdocs/luci-static/resources/view/fchomo/node.js:313
 msgid "Port hop interval"
 msgstr "端口跳跃间隔"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:385
+#: htdocs/luci-static/resources/view/fchomo/node.js:395
 msgid "Port range"
 msgstr "端口范围"
 
@@ -2310,27 +2364,27 @@ msgid "Ports"
 msgstr "端口"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:153
-#: htdocs/luci-static/resources/view/fchomo/node.js:298
+#: htdocs/luci-static/resources/view/fchomo/node.js:308
 msgid "Ports pool"
 msgstr "端口池"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:225
 #: htdocs/luci-static/resources/fchomo/listeners.js:456
-#: htdocs/luci-static/resources/view/fchomo/node.js:534
-#: htdocs/luci-static/resources/view/fchomo/node.js:828
+#: htdocs/luci-static/resources/view/fchomo/node.js:544
+#: htdocs/luci-static/resources/view/fchomo/node.js:838
 msgid "Pre-shared key"
 msgstr "预共享密钥"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:879
-#: htdocs/luci-static/resources/view/fchomo/node.js:1042
+#: htdocs/luci-static/resources/fchomo/listeners.js:897
+#: htdocs/luci-static/resources/view/fchomo/node.js:1070
 msgid "Pre-shared key of rendezvous server"
 msgstr "牵线服务器的预共享密钥"
 
-#: htdocs/luci-static/resources/fchomo.js:176
+#: htdocs/luci-static/resources/fchomo.js:177
 msgid "Prefer IPv4"
 msgstr "优先 IPv4"
 
-#: htdocs/luci-static/resources/fchomo.js:177
+#: htdocs/luci-static/resources/fchomo.js:178
 msgid "Prefer IPv6"
 msgstr "优先 IPv6"
 
@@ -2341,23 +2395,23 @@ msgstr "防止某些情况下的 ICMP 环回问题。Ping 不会显示实际延�
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:760
 #: htdocs/luci-static/resources/view/fchomo/global.js:777
-#: htdocs/luci-static/resources/view/fchomo/node.js:1524
-#: htdocs/luci-static/resources/view/fchomo/node.js:1531
-#: htdocs/luci-static/resources/view/fchomo/node.js:1911
-#: htdocs/luci-static/resources/view/fchomo/node.js:1918
+#: htdocs/luci-static/resources/view/fchomo/node.js:1553
+#: htdocs/luci-static/resources/view/fchomo/node.js:1560
+#: htdocs/luci-static/resources/view/fchomo/node.js:1945
+#: htdocs/luci-static/resources/view/fchomo/node.js:1952
 msgid "Priority: Proxy Node > Global."
 msgstr "优先级: 代理节点 > 全局。"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:347
+#: htdocs/luci-static/resources/view/fchomo/node.js:357
 msgid "Priv-key"
 msgstr "密钥"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:351
+#: htdocs/luci-static/resources/view/fchomo/node.js:361
 msgid "Priv-key passphrase"
 msgstr "密钥密码"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:721
-#: htdocs/luci-static/resources/view/fchomo/node.js:813
+#: htdocs/luci-static/resources/view/fchomo/node.js:731
+#: htdocs/luci-static/resources/view/fchomo/node.js:823
 msgid "Private key"
 msgstr "私钥"
 
@@ -2366,34 +2420,34 @@ msgid "Process matching mode"
 msgstr "进程匹配模式"
 
 #: htdocs/luci-static/resources/view/fchomo/global.js:708
-#: htdocs/luci-static/resources/view/fchomo/node.js:1434
+#: htdocs/luci-static/resources/view/fchomo/node.js:1463
 msgid "Protocol"
 msgstr "协议"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:708
+#: htdocs/luci-static/resources/view/fchomo/node.js:718
 msgid "Protocol parameter. Enable length block encryption."
 msgstr "协议参数。启用长度块加密。"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:702
+#: htdocs/luci-static/resources/view/fchomo/node.js:712
 msgid ""
 "Protocol parameter. Will waste traffic randomly if enabled (enabled by "
 "default in v2ray and cannot be disabled)."
 msgstr "协议参数。 如启用会随机浪费流量（在 v2ray 中默认启用并且无法禁用）。"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1065
-#: htdocs/luci-static/resources/view/fchomo/node.js:1546
-#: htdocs/luci-static/resources/view/fchomo/node.js:1555
-#: htdocs/luci-static/resources/view/fchomo/node.js:2027
+#: htdocs/luci-static/resources/view/fchomo/client.js:1096
+#: htdocs/luci-static/resources/view/fchomo/node.js:1575
+#: htdocs/luci-static/resources/view/fchomo/node.js:1584
+#: htdocs/luci-static/resources/view/fchomo/node.js:2061
 msgid "Provider"
 msgstr "供应商"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1729
+#: htdocs/luci-static/resources/view/fchomo/node.js:1758
 msgid "Provider URL"
 msgstr "供应商订阅 URL"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:932
 #: htdocs/luci-static/resources/view/fchomo/client.js:950
-#: htdocs/luci-static/resources/view/fchomo/client.js:1422
+#: htdocs/luci-static/resources/view/fchomo/client.js:968
+#: htdocs/luci-static/resources/view/fchomo/client.js:1485
 msgid "Proxy Group"
 msgstr "代理组"
 
@@ -2410,24 +2464,24 @@ msgid "Proxy MAC-s"
 msgstr "代理 MAC 地址"
 
 #: htdocs/luci-static/resources/view/fchomo/node.js:219
-#: htdocs/luci-static/resources/view/fchomo/node.js:2026
+#: htdocs/luci-static/resources/view/fchomo/node.js:2060
 msgid "Proxy Node"
 msgstr "代理节点"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:2002
-#: htdocs/luci-static/resources/view/fchomo/node.js:2011
+#: htdocs/luci-static/resources/view/fchomo/node.js:2036
+#: htdocs/luci-static/resources/view/fchomo/node.js:2045
 msgid "Proxy chain"
 msgstr "代理链"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:615
-#: htdocs/luci-static/resources/view/fchomo/client.js:792
-#: htdocs/luci-static/resources/view/fchomo/client.js:1564
-#: htdocs/luci-static/resources/view/fchomo/node.js:1747
+#: htdocs/luci-static/resources/fchomo/listeners.js:628
+#: htdocs/luci-static/resources/view/fchomo/client.js:797
+#: htdocs/luci-static/resources/view/fchomo/client.js:1627
+#: htdocs/luci-static/resources/view/fchomo/node.js:1776
 #: htdocs/luci-static/resources/view/fchomo/ruleset.js:403
 msgid "Proxy group"
 msgstr "代理组"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:890
+#: htdocs/luci-static/resources/view/fchomo/client.js:903
 msgid "Proxy group override"
 msgstr "代理组覆盖"
 
@@ -2439,44 +2493,44 @@ msgstr "代理模式"
 msgid "Proxy routerself"
 msgstr "代理路由器自身"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:573
-#: htdocs/luci-static/resources/view/fchomo/node.js:793
+#: htdocs/luci-static/resources/view/fchomo/node.js:583
+#: htdocs/luci-static/resources/view/fchomo/node.js:803
 msgid "QUIC"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:935
+#: htdocs/luci-static/resources/view/fchomo/client.js:953
 #: htdocs/luci-static/resources/view/fchomo/server.js:44
 msgid "Quick Reload"
 msgstr "快速重载"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:1075
-#: htdocs/luci-static/resources/view/fchomo/node.js:1214
+#: htdocs/luci-static/resources/fchomo/listeners.js:1093
+#: htdocs/luci-static/resources/view/fchomo/node.js:1243
 msgid "REALITY"
 msgstr "REALITY"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1229
+#: htdocs/luci-static/resources/view/fchomo/node.js:1258
 msgid "REALITY X25519MLKEM768 PQC support"
 msgstr "REALITY X25519MLKEM768 后量子加密支持"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:1112
+#: htdocs/luci-static/resources/fchomo/listeners.js:1130
 msgid "REALITY certificate issued to"
 msgstr "REALITY 证书颁发给"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:1080
+#: htdocs/luci-static/resources/fchomo/listeners.js:1098
 msgid "REALITY handshake server"
 msgstr "REALITY 握手服务器"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:1087
+#: htdocs/luci-static/resources/fchomo/listeners.js:1105
 msgid "REALITY private key"
 msgstr "REALITY 私钥"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:1102
-#: htdocs/luci-static/resources/view/fchomo/node.js:1219
+#: htdocs/luci-static/resources/fchomo/listeners.js:1120
+#: htdocs/luci-static/resources/view/fchomo/node.js:1248
 msgid "REALITY public key"
 msgstr "REALITY 公钥"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:1106
-#: htdocs/luci-static/resources/view/fchomo/node.js:1224
+#: htdocs/luci-static/resources/fchomo/listeners.js:1124
+#: htdocs/luci-static/resources/view/fchomo/node.js:1253
 msgid "REALITY short ID"
 msgstr "REALITY 标识符"
 
@@ -2484,9 +2538,9 @@ msgstr "REALITY 标识符"
 msgid "REMATCH-NAME marking"
 msgstr "REMATCH-NAME 打标"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:712
-#: htdocs/luci-static/resources/fchomo/listeners.js:731
-#: htdocs/luci-static/resources/view/fchomo/node.js:997
+#: htdocs/luci-static/resources/fchomo/listeners.js:730
+#: htdocs/luci-static/resources/fchomo/listeners.js:749
+#: htdocs/luci-static/resources/view/fchomo/node.js:1025
 msgid "RTT"
 msgstr ""
 
@@ -2502,13 +2556,13 @@ msgstr "留空将使用随机令牌。"
 msgid "Randomized traffic characteristics"
 msgstr "随机化流量特征"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:868
-#: htdocs/luci-static/resources/view/fchomo/node.js:1031
+#: htdocs/luci-static/resources/fchomo/listeners.js:886
+#: htdocs/luci-static/resources/view/fchomo/node.js:1059
 msgid "Realm"
 msgstr "Realm"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:884
-#: htdocs/luci-static/resources/view/fchomo/node.js:1047
+#: htdocs/luci-static/resources/fchomo/listeners.js:902
+#: htdocs/luci-static/resources/view/fchomo/node.js:1075
 msgid "Realm ID"
 msgstr "Realm ID"
 
@@ -2536,8 +2590,8 @@ msgstr "Redirect TCP + Tun UDP"
 msgid "Refresh every %s seconds."
 msgstr "每 %s 秒刷新。"
 
-#: htdocs/luci-static/resources/fchomo.js:1229
-#: htdocs/luci-static/resources/view/fchomo/client.js:936
+#: htdocs/luci-static/resources/fchomo.js:1579
+#: htdocs/luci-static/resources/view/fchomo/client.js:954
 #: htdocs/luci-static/resources/view/fchomo/global.js:193
 #: htdocs/luci-static/resources/view/fchomo/server.js:45
 msgid "Reload"
@@ -2547,46 +2601,46 @@ msgstr "重载"
 msgid "Reload All"
 msgstr "重载所有"
 
-#: htdocs/luci-static/resources/fchomo.js:187
+#: htdocs/luci-static/resources/fchomo.js:188
 msgid "Rematch"
 msgstr "再路由"
 
-#: htdocs/luci-static/resources/fchomo.js:187
+#: htdocs/luci-static/resources/fchomo.js:188
 msgid "Rematching routing rules"
 msgstr "重新匹配路由规则"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1674
+#: htdocs/luci-static/resources/view/fchomo/node.js:1703
 #: htdocs/luci-static/resources/view/fchomo/ruleset.js:287
 msgid "Remote"
 msgstr "远程"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:776
-#: htdocs/luci-static/resources/view/fchomo/node.js:859
+#: htdocs/luci-static/resources/view/fchomo/node.js:786
+#: htdocs/luci-static/resources/view/fchomo/node.js:869
 msgid "Remote DNS resolve"
 msgstr "远程 DNS 解析"
 
-#: htdocs/luci-static/resources/fchomo.js:1394
+#: htdocs/luci-static/resources/fchomo.js:1744
 msgid "Remove"
 msgstr "移除"
 
-#: htdocs/luci-static/resources/fchomo.js:1399
-#: htdocs/luci-static/resources/view/fchomo/node.js:1650
-#: htdocs/luci-static/resources/view/fchomo/node.js:1652
+#: htdocs/luci-static/resources/fchomo.js:1749
+#: htdocs/luci-static/resources/view/fchomo/node.js:1679
+#: htdocs/luci-static/resources/view/fchomo/node.js:1681
 #: htdocs/luci-static/resources/view/fchomo/ruleset.js:259
 #: htdocs/luci-static/resources/view/fchomo/ruleset.js:261
 msgid "Remove idles"
 msgstr "移除闲置"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:873
-#: htdocs/luci-static/resources/view/fchomo/node.js:1036
+#: htdocs/luci-static/resources/fchomo/listeners.js:891
+#: htdocs/luci-static/resources/view/fchomo/node.js:1064
 msgid "Rendezvous server"
 msgstr "牵线服务器"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1841
+#: htdocs/luci-static/resources/view/fchomo/node.js:1875
 msgid "Replace name"
 msgstr "名称替换"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1842
+#: htdocs/luci-static/resources/view/fchomo/node.js:1876
 msgid "Replace node name."
 msgstr "替换节点名称"
 
@@ -2594,13 +2648,13 @@ msgstr "替换节点名称"
 msgid "Request"
 msgstr ""
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:1160
-#: htdocs/luci-static/resources/view/fchomo/node.js:1302
-#: htdocs/luci-static/resources/view/fchomo/node.js:1309
+#: htdocs/luci-static/resources/fchomo/listeners.js:1178
+#: htdocs/luci-static/resources/view/fchomo/node.js:1331
+#: htdocs/luci-static/resources/view/fchomo/node.js:1338
 msgid "Request path"
 msgstr "请求路径"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:613
+#: htdocs/luci-static/resources/view/fchomo/node.js:623
 msgid "Request timeout"
 msgstr "请求超时"
 
@@ -2613,11 +2667,11 @@ msgid "Require any"
 msgstr ""
 
 #: htdocs/luci-static/resources/fchomo.js:404
-#: htdocs/luci-static/resources/view/fchomo/node.js:1230
+#: htdocs/luci-static/resources/view/fchomo/node.js:1259
 msgid "Requires server support."
 msgstr "需要服务器支持。"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:842
+#: htdocs/luci-static/resources/view/fchomo/node.js:852
 msgid "Reserved field bytes"
 msgstr "保留字段字节"
 
@@ -2625,26 +2679,26 @@ msgstr "保留字段字节"
 msgid "Resources management"
 msgstr "资源管理"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:917
+#: htdocs/luci-static/resources/view/fchomo/node.js:937
 msgid "Restls script"
 msgstr "Restls 剧本"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1190
+#: htdocs/luci-static/resources/view/fchomo/client.js:1250
 msgid ""
 "Returns hidden status in the API to hide the display of this proxy group."
 msgstr "在 API 返回 hidden 状态，以隐藏该代理组显示。"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1196
+#: htdocs/luci-static/resources/view/fchomo/client.js:1256
 msgid ""
 "Returns the string input for icon in the API to display in this proxy group."
 msgstr "在 API 返回 icon 所输入的字符串，以在该代理组显示。"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:518
+#: htdocs/luci-static/resources/view/fchomo/node.js:528
 msgid "Reuse HTTP connections to reduce RTT for each connection establishment."
 msgstr "重用 HTTP 连接以减少每次建立连接的 RTT。"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:515
-#: htdocs/luci-static/resources/view/fchomo/node.js:519
+#: htdocs/luci-static/resources/view/fchomo/node.js:525
+#: htdocs/luci-static/resources/view/fchomo/node.js:529
 msgid "Reusing a single tunnel to carry multiple target connections within it."
 msgstr "复用单条隧道使其内部承载多条目标连线。"
 
@@ -2661,10 +2715,10 @@ msgstr "路由 DSCP"
 msgid "Routing GFW"
 msgstr "路由 GFW 流量"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:605
+#: htdocs/luci-static/resources/fchomo/listeners.js:613
 #: htdocs/luci-static/resources/view/fchomo/global.js:776
-#: htdocs/luci-static/resources/view/fchomo/node.js:1530
-#: htdocs/luci-static/resources/view/fchomo/node.js:1917
+#: htdocs/luci-static/resources/view/fchomo/node.js:1559
+#: htdocs/luci-static/resources/view/fchomo/node.js:1951
 msgid "Routing mark (Fwmark)"
 msgstr "路由标记 (Fwmark)"
 
@@ -2685,8 +2739,8 @@ msgstr "路由模式将处理域名。"
 msgid "Routing ports"
 msgstr "路由端口"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1202
-#: htdocs/luci-static/resources/view/fchomo/client.js:1211
+#: htdocs/luci-static/resources/view/fchomo/client.js:1262
+#: htdocs/luci-static/resources/view/fchomo/client.js:1271
 msgid "Routing rule"
 msgstr "路由规则"
 
@@ -2702,8 +2756,8 @@ msgstr "路由表 ID"
 msgid "Rule"
 msgstr "规则"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:854
-#: htdocs/luci-static/resources/view/fchomo/client.js:867
+#: htdocs/luci-static/resources/view/fchomo/client.js:862
+#: htdocs/luci-static/resources/view/fchomo/client.js:875
 #: htdocs/luci-static/resources/view/fchomo/ruleset.js:147
 msgid "Rule set"
 msgstr "规则集"
@@ -2720,7 +2774,7 @@ msgstr "规则集"
 msgid "Ruleset-URI-Scheme"
 msgstr ""
 
-#: htdocs/luci-static/resources/fchomo.js:1242
+#: htdocs/luci-static/resources/fchomo.js:1592
 msgid "Running"
 msgstr "正在运行"
 
@@ -2728,15 +2782,15 @@ msgstr "正在运行"
 msgid "SMTP"
 msgstr ""
 
-#: htdocs/luci-static/resources/fchomo.js:154
+#: htdocs/luci-static/resources/fchomo.js:155
 msgid "SOCKS"
 msgstr ""
 
-#: htdocs/luci-static/resources/fchomo.js:190
+#: htdocs/luci-static/resources/fchomo.js:191
 msgid "SOCKS5"
 msgstr ""
 
-#: htdocs/luci-static/resources/fchomo.js:206
+#: htdocs/luci-static/resources/fchomo.js:207
 msgid "SSH"
 msgstr ""
 
@@ -2744,29 +2798,29 @@ msgstr ""
 msgid "STUN"
 msgstr ""
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:890
-#: htdocs/luci-static/resources/view/fchomo/node.js:1053
+#: htdocs/luci-static/resources/fchomo/listeners.js:908
+#: htdocs/luci-static/resources/view/fchomo/node.js:1081
 msgid "STUN servers"
 msgstr "STUN 服务器"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1294
+#: htdocs/luci-static/resources/view/fchomo/client.js:1354
 msgid "SUB-RULE"
 msgstr "SUB-RULE"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:954
+#: htdocs/luci-static/resources/view/fchomo/node.js:982
 msgid "SUoT version"
 msgstr "SUoT 版本"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:195
-#: htdocs/luci-static/resources/view/fchomo/node.js:323
+#: htdocs/luci-static/resources/view/fchomo/node.js:333
 msgid "Salamander"
 msgstr "Salamander"
 
-#: htdocs/luci-static/resources/fchomo.js:182
+#: htdocs/luci-static/resources/fchomo.js:183
 msgid "Same dstaddr requests. Same node"
 msgstr "相同 目标地址 请求。相同节点"
 
-#: htdocs/luci-static/resources/fchomo.js:183
+#: htdocs/luci-static/resources/fchomo.js:184
 msgid "Same srcaddr and dstaddr requests. Same node"
 msgstr "相同 来源地址 和 目标地址 请求。相同节点"
 
@@ -2779,7 +2833,7 @@ msgstr ""
 msgid "Segment maximum size"
 msgstr "分段最大尺寸"
 
-#: htdocs/luci-static/resources/fchomo.js:240
+#: htdocs/luci-static/resources/fchomo.js:241
 msgid "Select"
 msgstr "手动选择"
 
@@ -2791,14 +2845,18 @@ msgstr "选择面板"
 msgid "Send padding randomly 0-3333 bytes with 50% probability."
 msgstr "以 50% 的概率发送随机 0-3333 字节的填充。"
 
+#: htdocs/luci-static/resources/view/fchomo/client.js:1924
+msgid "Send queries to both the <code>%s</code> and the <code>%s</code>."
+msgstr "同时向<code>%s</code>和<code>%s</code>发起查询。"
+
 #: htdocs/luci-static/resources/fchomo.js:399
 #: htdocs/luci-static/resources/fchomo.js:400
 msgid "Send random ticket of 300s-600s duration for client 0-RTT reuse."
 msgstr "发送 300-600 秒的随机票证，以供客户端 0-RTT 重用。"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:712
-#: htdocs/luci-static/resources/fchomo/listeners.js:973
-#: htdocs/luci-static/resources/fchomo/listeners.js:988
+#: htdocs/luci-static/resources/fchomo/listeners.js:730
+#: htdocs/luci-static/resources/fchomo/listeners.js:991
+#: htdocs/luci-static/resources/fchomo/listeners.js:1006
 #: htdocs/luci-static/resources/view/fchomo/server.js:58
 #: root/usr/share/luci/menu.d/luci-app-fchomo.json:62
 msgid "Server"
@@ -2808,9 +2866,9 @@ msgstr "服务端"
 msgid "Server address"
 msgstr "服务器地址"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:1154
-#: htdocs/luci-static/resources/view/fchomo/node.js:1281
-#: htdocs/luci-static/resources/view/fchomo/node.js:1287
+#: htdocs/luci-static/resources/fchomo/listeners.js:1172
+#: htdocs/luci-static/resources/view/fchomo/node.js:1310
+#: htdocs/luci-static/resources/view/fchomo/node.js:1316
 msgid "Server hostname"
 msgstr "服务器主机名称"
 
@@ -2822,46 +2880,46 @@ msgstr "服务端状态"
 msgid "Service status"
 msgstr "服务状态"
 
-#: htdocs/luci-static/resources/fchomo.js:156
-#: htdocs/luci-static/resources/fchomo.js:191
+#: htdocs/luci-static/resources/fchomo.js:157
+#: htdocs/luci-static/resources/fchomo.js:192
 msgid "Shadowsocks"
 msgstr ""
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:506
-#: htdocs/luci-static/resources/view/fchomo/node.js:632
+#: htdocs/luci-static/resources/fchomo/listeners.js:503
+#: htdocs/luci-static/resources/view/fchomo/node.js:642
 msgid "Shadowsocks chipher"
 msgstr "Shadowsocks 加密方法"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:501
-#: htdocs/luci-static/resources/view/fchomo/node.js:627
+#: htdocs/luci-static/resources/fchomo/listeners.js:498
+#: htdocs/luci-static/resources/view/fchomo/node.js:637
 msgid "Shadowsocks encrypt"
 msgstr "Shadowsocks 加密"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:514
-#: htdocs/luci-static/resources/view/fchomo/node.js:640
+#: htdocs/luci-static/resources/fchomo/listeners.js:511
+#: htdocs/luci-static/resources/view/fchomo/node.js:650
 msgid "Shadowsocks password"
 msgstr "Shadowsocks 密码"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1482
+#: htdocs/luci-static/resources/view/fchomo/node.js:1511
 msgid "Show connections in the dashboard for breaking connections easier."
 msgstr "在面板中显示连接以便于打断连接。"
 
-#: htdocs/luci-static/resources/fchomo.js:89
+#: htdocs/luci-static/resources/fchomo.js:90
 msgid "Silent"
 msgstr "静音"
 
-#: htdocs/luci-static/resources/fchomo.js:181
+#: htdocs/luci-static/resources/fchomo.js:182
 msgid "Simple round-robin all nodes"
 msgstr "简单轮替所有节点"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1735
+#: htdocs/luci-static/resources/view/fchomo/node.js:1764
 #: htdocs/luci-static/resources/view/fchomo/ruleset.js:391
 msgid "Size limit"
 msgstr "大小限制"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1597
-#: htdocs/luci-static/resources/view/fchomo/node.js:1151
-#: htdocs/luci-static/resources/view/fchomo/node.js:1892
+#: htdocs/luci-static/resources/view/fchomo/client.js:1663
+#: htdocs/luci-static/resources/view/fchomo/node.js:1180
+#: htdocs/luci-static/resources/view/fchomo/node.js:1926
 msgid "Skip cert verify"
 msgstr "跳过证书验证"
 
@@ -2877,8 +2935,8 @@ msgstr "跳过嗅探目标地址"
 msgid "Skiped sniffing src address"
 msgstr "跳过嗅探来源地址"
 
-#: htdocs/luci-static/resources/fchomo.js:159
-#: htdocs/luci-static/resources/fchomo.js:195
+#: htdocs/luci-static/resources/fchomo.js:160
+#: htdocs/luci-static/resources/fchomo.js:196
 msgid "Snell"
 msgstr ""
 
@@ -2909,7 +2967,7 @@ msgstr "指定需要被代理的目标端口。多个端口必须用逗号隔开
 msgid "Stack"
 msgstr "堆栈"
 
-#: htdocs/luci-static/resources/fchomo.js:60
+#: htdocs/luci-static/resources/fchomo.js:61
 msgid "Standard"
 msgstr "标准"
 
@@ -2921,22 +2979,22 @@ msgstr ""
 msgid "Steam P2P"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1162
-#: htdocs/luci-static/resources/view/fchomo/client.js:1164
+#: htdocs/luci-static/resources/view/fchomo/client.js:1222
+#: htdocs/luci-static/resources/view/fchomo/client.js:1224
 msgid "Strategy"
 msgstr "策略"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:609
-#: htdocs/luci-static/resources/view/fchomo/client.js:1321
-#: htdocs/luci-static/resources/view/fchomo/client.js:1330
+#: htdocs/luci-static/resources/fchomo/listeners.js:617
+#: htdocs/luci-static/resources/view/fchomo/client.js:1384
+#: htdocs/luci-static/resources/view/fchomo/client.js:1393
 msgid "Sub rule"
 msgstr "子规则"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1376
+#: htdocs/luci-static/resources/view/fchomo/client.js:1439
 msgid "Sub rule group"
 msgstr "子规则组"
 
-#: htdocs/luci-static/resources/fchomo.js:702
+#: htdocs/luci-static/resources/fchomo.js:727
 #: htdocs/luci-static/resources/view/fchomo/ruleset.js:231
 msgid "Successfully imported %s %s of total %s."
 msgstr "已成功导入 %s 个%s (共 %s 个)。"
@@ -2945,12 +3003,12 @@ msgstr "已成功导入 %s 个%s (共 %s 个)。"
 msgid "Successfully updated."
 msgstr "更新成功。"
 
-#: htdocs/luci-static/resources/fchomo.js:1744
+#: htdocs/luci-static/resources/fchomo.js:2094
 msgid "Successfully uploaded."
 msgstr "已成功上传。"
 
-#: htdocs/luci-static/resources/fchomo.js:158
-#: htdocs/luci-static/resources/fchomo.js:194
+#: htdocs/luci-static/resources/fchomo.js:159
+#: htdocs/luci-static/resources/fchomo.js:195
 msgid "Sudoku"
 msgstr ""
 
@@ -2966,28 +3024,28 @@ msgstr ""
 msgid "System"
 msgstr "系统"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:57
+#: htdocs/luci-static/resources/view/fchomo/client.js:59
 msgid "System DNS"
 msgstr "系统 DNS"
 
-#: htdocs/luci-static/resources/fchomo.js:153
-#: htdocs/luci-static/resources/fchomo.js:158
+#: htdocs/luci-static/resources/fchomo.js:154
 #: htdocs/luci-static/resources/fchomo.js:159
 #: htdocs/luci-static/resources/fchomo.js:160
 #: htdocs/luci-static/resources/fchomo.js:161
 #: htdocs/luci-static/resources/fchomo.js:162
 #: htdocs/luci-static/resources/fchomo.js:163
-#: htdocs/luci-static/resources/fchomo.js:189
-#: htdocs/luci-static/resources/fchomo.js:194
+#: htdocs/luci-static/resources/fchomo.js:164
+#: htdocs/luci-static/resources/fchomo.js:190
 #: htdocs/luci-static/resources/fchomo.js:195
 #: htdocs/luci-static/resources/fchomo.js:196
 #: htdocs/luci-static/resources/fchomo.js:197
 #: htdocs/luci-static/resources/fchomo.js:198
 #: htdocs/luci-static/resources/fchomo.js:199
-#: htdocs/luci-static/resources/fchomo.js:206
-#: htdocs/luci-static/resources/fchomo/listeners.js:643
-#: htdocs/luci-static/resources/view/fchomo/client.js:598
-#: htdocs/luci-static/resources/view/fchomo/client.js:688
+#: htdocs/luci-static/resources/fchomo.js:200
+#: htdocs/luci-static/resources/fchomo.js:207
+#: htdocs/luci-static/resources/fchomo/listeners.js:661
+#: htdocs/luci-static/resources/view/fchomo/client.js:600
+#: htdocs/luci-static/resources/view/fchomo/client.js:690
 msgid "TCP"
 msgstr "TCP"
 
@@ -2995,7 +3053,7 @@ msgstr "TCP"
 msgid "TCP concurrency"
 msgstr "TCP 并发"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1475
+#: htdocs/luci-static/resources/view/fchomo/node.js:1504
 msgid "TCP only"
 msgstr "仅 TCP"
 
@@ -3007,41 +3065,41 @@ msgstr "TCP-Keep-Alive 闲置超时"
 msgid "TCP-Keep-Alive interval"
 msgstr "TCP-Keep-Alive 间隔"
 
-#: htdocs/luci-static/resources/fchomo.js:154
 #: htdocs/luci-static/resources/fchomo.js:155
 #: htdocs/luci-static/resources/fchomo.js:156
 #: htdocs/luci-static/resources/fchomo.js:157
-#: htdocs/luci-static/resources/fchomo.js:166
+#: htdocs/luci-static/resources/fchomo.js:158
 #: htdocs/luci-static/resources/fchomo.js:167
 #: htdocs/luci-static/resources/fchomo.js:168
-#: htdocs/luci-static/resources/fchomo.js:188
-#: htdocs/luci-static/resources/fchomo.js:190
+#: htdocs/luci-static/resources/fchomo.js:169
+#: htdocs/luci-static/resources/fchomo.js:189
 #: htdocs/luci-static/resources/fchomo.js:191
-#: htdocs/luci-static/resources/fchomo.js:193
-#: htdocs/luci-static/resources/fchomo.js:204
+#: htdocs/luci-static/resources/fchomo.js:192
+#: htdocs/luci-static/resources/fchomo.js:194
+#: htdocs/luci-static/resources/fchomo.js:205
 msgid "TCP/UDP"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1506
-#: htdocs/luci-static/resources/view/fchomo/node.js:1859
+#: htdocs/luci-static/resources/view/fchomo/node.js:1535
+#: htdocs/luci-static/resources/view/fchomo/node.js:1893
 msgid "TFO"
 msgstr "TCP 快速打开 (TFO)"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:570
-#: htdocs/luci-static/resources/fchomo/listeners.js:900
+#: htdocs/luci-static/resources/fchomo/listeners.js:579
+#: htdocs/luci-static/resources/fchomo/listeners.js:918
 #: htdocs/luci-static/resources/view/fchomo/global.js:550
-#: htdocs/luci-static/resources/view/fchomo/node.js:499
-#: htdocs/luci-static/resources/view/fchomo/node.js:884
-#: htdocs/luci-static/resources/view/fchomo/node.js:1063
+#: htdocs/luci-static/resources/view/fchomo/node.js:509
+#: htdocs/luci-static/resources/view/fchomo/node.js:906
+#: htdocs/luci-static/resources/view/fchomo/node.js:1091
 msgid "TLS"
 msgstr "TLS"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:967
-#: htdocs/luci-static/resources/view/fchomo/node.js:1094
+#: htdocs/luci-static/resources/fchomo/listeners.js:985
+#: htdocs/luci-static/resources/view/fchomo/node.js:1122
 msgid "TLS ALPN"
 msgstr "TLS ALPN"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1088
+#: htdocs/luci-static/resources/view/fchomo/node.js:1116
 msgid "TLS SNI"
 msgstr ""
 
@@ -3050,8 +3108,8 @@ msgstr ""
 msgid "TLS fields"
 msgstr "TLS字段"
 
-#: htdocs/luci-static/resources/fchomo.js:164
-#: htdocs/luci-static/resources/fchomo.js:202
+#: htdocs/luci-static/resources/fchomo.js:165
+#: htdocs/luci-static/resources/fchomo.js:203
 msgid "TUIC"
 msgstr ""
 
@@ -3059,7 +3117,7 @@ msgstr ""
 msgid "TURN"
 msgstr ""
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:553
+#: htdocs/luci-static/resources/fchomo/listeners.js:550
 msgid "Target address"
 msgstr "目标地址"
 
@@ -3068,35 +3126,35 @@ msgid ""
 "Tell the client to use the BBR flow control algorithm instead of Hysteria CC."
 msgstr "让客户端使用 BBR 流控算法。"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:737
-#: htdocs/luci-static/resources/view/fchomo/node.js:745
+#: htdocs/luci-static/resources/view/fchomo/node.js:747
+#: htdocs/luci-static/resources/view/fchomo/node.js:755
 msgid "The %s address used by local machine in the Cloudflare WARP network."
 msgstr "Cloudflare WARP 网络中使用的本机 %s 地址。"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:800
-#: htdocs/luci-static/resources/view/fchomo/node.js:808
+#: htdocs/luci-static/resources/view/fchomo/node.js:810
+#: htdocs/luci-static/resources/view/fchomo/node.js:818
 msgid "The %s address used by local machine in the Wireguard network."
 msgstr "WireGuard 网络中使用的本机 %s 地址。"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:988
-#: htdocs/luci-static/resources/view/fchomo/node.js:1174
+#: htdocs/luci-static/resources/fchomo/listeners.js:1006
+#: htdocs/luci-static/resources/view/fchomo/node.js:1203
 msgid "The %s private key, in PEM format."
 msgstr "%s私钥，需要 PEM 格式。"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:973
-#: htdocs/luci-static/resources/fchomo/listeners.js:1011
+#: htdocs/luci-static/resources/fchomo/listeners.js:991
+#: htdocs/luci-static/resources/fchomo/listeners.js:1029
 #: htdocs/luci-static/resources/view/fchomo/global.js:571
-#: htdocs/luci-static/resources/view/fchomo/node.js:1160
+#: htdocs/luci-static/resources/view/fchomo/node.js:1189
 msgid "The %s public key, in PEM format."
 msgstr "%s公钥，需要 PEM 格式。"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1194
+#: htdocs/luci-static/resources/view/fchomo/node.js:1223
 msgid ""
 "The ECH parameter of the HTTPS record for the domain. Leave empty to resolve "
 "via DNS."
 msgstr "域名的 HTTPS 记录的 ECH 参数。留空则通过 DNS 解析。"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:421
+#: htdocs/luci-static/resources/view/fchomo/node.js:431
 msgid "The ED25519 available private key or UUID provided by Sudoku server."
 msgstr "Sudoku 服务器提供的 ED25519 可用私钥 或 UUID。"
 
@@ -3108,42 +3166,48 @@ msgstr "Sudoku 生成的 ED25519 主公钥 或 UUID。"
 msgid "The default value is 2:00 every day."
 msgstr "默认值为每天 2:00。"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:744
-#: htdocs/luci-static/resources/view/fchomo/node.js:1010
+#: htdocs/luci-static/resources/view/fchomo/node.js:964
+msgid ""
+"The default value is <code>%s</code>, indicating that only the outer "
+"connection timeout is used."
+msgstr "默认值为<code>%s</code>，表示仅使用外层连接超时。"
+
+#: htdocs/luci-static/resources/fchomo/listeners.js:762
+#: htdocs/luci-static/resources/view/fchomo/node.js:1038
 msgid ""
 "The first padding must have a probability of 100% and at least 35 bytes."
 msgstr "首个填充必须为 100% 的概率并且至少 35 字节。"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1827
+#: htdocs/luci-static/resources/view/fchomo/client.js:1893
 msgid "The matching <code>%s</code> will be deemed as not-poisoned."
 msgstr "匹配 <code>%s</code> 的将被视为未被投毒污染。"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1836
-#: htdocs/luci-static/resources/view/fchomo/client.js:1840
-#: htdocs/luci-static/resources/view/fchomo/client.js:1845
+#: htdocs/luci-static/resources/view/fchomo/client.js:1902
+#: htdocs/luci-static/resources/view/fchomo/client.js:1906
+#: htdocs/luci-static/resources/view/fchomo/client.js:1911
 msgid "The matching <code>%s</code> will be deemed as poisoned."
 msgstr "匹配 <code>%s</code> 的将被视为已被投毒污染。"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:742
-#: htdocs/luci-static/resources/view/fchomo/node.js:1008
+#: htdocs/luci-static/resources/fchomo/listeners.js:760
+#: htdocs/luci-static/resources/view/fchomo/node.js:1036
 msgid "The server and client can set different padding parameters."
 msgstr "服务器和客户端可以设置不同的填充参数。"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:1069
+#: htdocs/luci-static/resources/fchomo/listeners.js:1087
 #: htdocs/luci-static/resources/view/fchomo/global.js:615
 msgid "This ECH parameter needs to be added to the HTTPS record of the domain."
 msgstr "此 ECH 参数需要添加到域名的 HTTPS 记录中。"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1600
-#: htdocs/luci-static/resources/view/fchomo/node.js:1154
-#: htdocs/luci-static/resources/view/fchomo/node.js:1895
+#: htdocs/luci-static/resources/view/fchomo/client.js:1666
+#: htdocs/luci-static/resources/view/fchomo/node.js:1183
+#: htdocs/luci-static/resources/view/fchomo/node.js:1929
 msgid ""
 "This is <strong>DANGEROUS</strong>, your traffic is almost like "
 "<strong>PLAIN TEXT</strong>! Use at your own risk!"
 msgstr ""
 "这是危险行为，您的流量将几乎等同于<strong>明文</strong>！使用风险自负！"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:578
+#: htdocs/luci-static/resources/view/fchomo/node.js:588
 msgid ""
 "This is the TUIC port of the SUoT protocol, designed to provide a QUIC "
 "stream based UDP relay mode that TUIC does not provide."
@@ -3176,22 +3240,22 @@ msgid "Tproxy port"
 msgstr "Tproxy 端口"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:285
-#: htdocs/luci-static/resources/view/fchomo/node.js:413
+#: htdocs/luci-static/resources/view/fchomo/node.js:423
 msgid "Traffic pattern"
 msgstr "流量模式"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:2054
+#: htdocs/luci-static/resources/view/fchomo/node.js:2098
 msgid "Transit proxy group"
 msgstr "中转代理组"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:2060
+#: htdocs/luci-static/resources/view/fchomo/node.js:2109
 msgid "Transit proxy node"
 msgstr "中转代理节点"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:273
-#: htdocs/luci-static/resources/fchomo/listeners.js:1120
-#: htdocs/luci-static/resources/view/fchomo/node.js:390
-#: htdocs/luci-static/resources/view/fchomo/node.js:1236
+#: htdocs/luci-static/resources/fchomo/listeners.js:1138
+#: htdocs/luci-static/resources/view/fchomo/node.js:400
+#: htdocs/luci-static/resources/view/fchomo/node.js:1265
 msgid "Transport"
 msgstr "传输层"
 
@@ -3200,22 +3264,22 @@ msgstr "传输层"
 msgid "Transport fields"
 msgstr "传输层字段"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:1125
-#: htdocs/luci-static/resources/view/fchomo/node.js:1241
+#: htdocs/luci-static/resources/fchomo/listeners.js:1143
+#: htdocs/luci-static/resources/view/fchomo/node.js:1270
 msgid "Transport type"
 msgstr "传输层类型"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:811
+#: htdocs/luci-static/resources/view/fchomo/client.js:819
 msgid "Treat the <code>destination IP</code> as the <code>source IP</code>."
 msgstr "将 <code>目标 IP</code> 视为 <code>来源 IP</code>。"
 
-#: htdocs/luci-static/resources/fchomo.js:162
-#: htdocs/luci-static/resources/fchomo.js:198
+#: htdocs/luci-static/resources/fchomo.js:163
+#: htdocs/luci-static/resources/fchomo.js:199
 msgid "Trojan"
 msgstr ""
 
-#: htdocs/luci-static/resources/fchomo.js:167
-#: htdocs/luci-static/resources/fchomo.js:204
+#: htdocs/luci-static/resources/fchomo.js:168
+#: htdocs/luci-static/resources/fchomo.js:205
 msgid "TrustTunnel"
 msgstr ""
 
@@ -3239,35 +3303,35 @@ msgstr "Tun 设置"
 msgid "Tun stack."
 msgstr "Tun 堆栈"
 
-#: htdocs/luci-static/resources/fchomo.js:168
+#: htdocs/luci-static/resources/fchomo.js:169
 msgid "Tunnel"
 msgstr ""
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:142
-#: htdocs/luci-static/resources/view/fchomo/client.js:531
-#: htdocs/luci-static/resources/view/fchomo/client.js:652
-#: htdocs/luci-static/resources/view/fchomo/client.js:746
-#: htdocs/luci-static/resources/view/fchomo/client.js:851
-#: htdocs/luci-static/resources/view/fchomo/client.js:1038
+#: htdocs/luci-static/resources/view/fchomo/client.js:533
+#: htdocs/luci-static/resources/view/fchomo/client.js:654
+#: htdocs/luci-static/resources/view/fchomo/client.js:751
+#: htdocs/luci-static/resources/view/fchomo/client.js:859
+#: htdocs/luci-static/resources/view/fchomo/client.js:1057
 #: htdocs/luci-static/resources/view/fchomo/node.js:250
-#: htdocs/luci-static/resources/view/fchomo/node.js:1672
-#: htdocs/luci-static/resources/view/fchomo/node.js:2025
+#: htdocs/luci-static/resources/view/fchomo/node.js:1701
+#: htdocs/luci-static/resources/view/fchomo/node.js:2059
 #: htdocs/luci-static/resources/view/fchomo/ruleset.js:285
 msgid "Type"
 msgstr "类型"
 
-#: htdocs/luci-static/resources/fchomo.js:164
 #: htdocs/luci-static/resources/fchomo.js:165
-#: htdocs/luci-static/resources/fchomo.js:201
+#: htdocs/luci-static/resources/fchomo.js:166
 #: htdocs/luci-static/resources/fchomo.js:202
 #: htdocs/luci-static/resources/fchomo.js:203
-#: htdocs/luci-static/resources/fchomo.js:205
-#: htdocs/luci-static/resources/fchomo/listeners.js:644
-#: htdocs/luci-static/resources/fchomo/listeners.js:649
-#: htdocs/luci-static/resources/view/fchomo/client.js:597
-#: htdocs/luci-static/resources/view/fchomo/client.js:687
-#: htdocs/luci-static/resources/view/fchomo/node.js:942
-#: htdocs/luci-static/resources/view/fchomo/node.js:1869
+#: htdocs/luci-static/resources/fchomo.js:204
+#: htdocs/luci-static/resources/fchomo.js:206
+#: htdocs/luci-static/resources/fchomo/listeners.js:662
+#: htdocs/luci-static/resources/fchomo/listeners.js:667
+#: htdocs/luci-static/resources/view/fchomo/client.js:599
+#: htdocs/luci-static/resources/view/fchomo/client.js:689
+#: htdocs/luci-static/resources/view/fchomo/node.js:970
+#: htdocs/luci-static/resources/view/fchomo/node.js:1903
 msgid "UDP"
 msgstr "UDP"
 
@@ -3275,42 +3339,42 @@ msgstr "UDP"
 msgid "UDP NAT expiration time"
 msgstr "UDP NAT 过期时间"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:577
+#: htdocs/luci-static/resources/view/fchomo/node.js:587
 msgid "UDP over stream"
 msgstr "UDP over stream"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:583
+#: htdocs/luci-static/resources/view/fchomo/node.js:593
 msgid "UDP over stream version"
 msgstr "UDP over stream 版本"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:570
+#: htdocs/luci-static/resources/view/fchomo/node.js:580
 msgid "UDP packet relay mode."
 msgstr "UDP 包中继模式。"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:569
+#: htdocs/luci-static/resources/view/fchomo/node.js:579
 msgid "UDP relay mode"
 msgstr "UDP 中继模式"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:373
 #: htdocs/luci-static/resources/fchomo/listeners.js:374
-#: htdocs/luci-static/resources/view/fchomo/node.js:445
-#: htdocs/luci-static/resources/view/fchomo/node.js:446
+#: htdocs/luci-static/resources/view/fchomo/node.js:455
+#: htdocs/luci-static/resources/view/fchomo/node.js:456
 msgid "UP: %s; DOWN: %s"
 msgstr "上传: %s; 下载: %s"
 
-#: htdocs/luci-static/resources/fchomo.js:242
+#: htdocs/luci-static/resources/fchomo.js:243
 msgid "URL test"
 msgstr "自动选择"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:294
-#: htdocs/luci-static/resources/fchomo/listeners.js:474
-#: htdocs/luci-static/resources/fchomo/listeners.js:529
-#: htdocs/luci-static/resources/view/fchomo/node.js:557
-#: htdocs/luci-static/resources/view/fchomo/node.js:671
+#: htdocs/luci-static/resources/fchomo/listeners.js:471
+#: htdocs/luci-static/resources/fchomo/listeners.js:526
+#: htdocs/luci-static/resources/view/fchomo/node.js:567
+#: htdocs/luci-static/resources/view/fchomo/node.js:681
 msgid "UUID"
 msgstr "UUID"
 
-#: htdocs/luci-static/resources/fchomo.js:1287
+#: htdocs/luci-static/resources/fchomo.js:1637
 msgid "Unable to download unsupported type: %s"
 msgstr "无法下载不支持的类型: %s"
 
@@ -3335,8 +3399,8 @@ msgstr "未知错误。"
 msgid "Unknown error: %s"
 msgstr "未知错误：%s"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:948
-#: htdocs/luci-static/resources/view/fchomo/node.js:1874
+#: htdocs/luci-static/resources/view/fchomo/node.js:976
+#: htdocs/luci-static/resources/view/fchomo/node.js:1908
 msgid "UoT"
 msgstr "UDP over TCP (UoT)"
 
@@ -3344,22 +3408,22 @@ msgstr "UDP over TCP (UoT)"
 msgid "Update failed."
 msgstr "更新失败。"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1741
+#: htdocs/luci-static/resources/view/fchomo/node.js:1770
 #: htdocs/luci-static/resources/view/fchomo/ruleset.js:397
 msgid "Update interval"
 msgstr "更新间隔"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1493
+#: htdocs/luci-static/resources/view/fchomo/node.js:1522
 msgid "Upload bandwidth"
 msgstr "上传带宽"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1494
+#: htdocs/luci-static/resources/view/fchomo/node.js:1523
 msgid "Upload bandwidth in Mbps."
 msgstr "上传带宽（单位：Mbps）。"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:979
-#: htdocs/luci-static/resources/fchomo/listeners.js:1019
-#: htdocs/luci-static/resources/view/fchomo/node.js:1165
+#: htdocs/luci-static/resources/fchomo/listeners.js:997
+#: htdocs/luci-static/resources/fchomo/listeners.js:1037
+#: htdocs/luci-static/resources/view/fchomo/node.js:1194
 msgid "Upload certificate"
 msgstr "上传证书"
 
@@ -3367,45 +3431,45 @@ msgstr "上传证书"
 msgid "Upload initial package"
 msgstr "上传初始资源包"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:994
-#: htdocs/luci-static/resources/view/fchomo/node.js:1179
+#: htdocs/luci-static/resources/fchomo/listeners.js:1012
+#: htdocs/luci-static/resources/view/fchomo/node.js:1208
 msgid "Upload key"
 msgstr "上传密钥"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:982
-#: htdocs/luci-static/resources/fchomo/listeners.js:997
-#: htdocs/luci-static/resources/fchomo/listeners.js:1022
+#: htdocs/luci-static/resources/fchomo/listeners.js:1000
+#: htdocs/luci-static/resources/fchomo/listeners.js:1015
+#: htdocs/luci-static/resources/fchomo/listeners.js:1040
 #: htdocs/luci-static/resources/view/fchomo/global.js:306
-#: htdocs/luci-static/resources/view/fchomo/node.js:1168
-#: htdocs/luci-static/resources/view/fchomo/node.js:1182
+#: htdocs/luci-static/resources/view/fchomo/node.js:1197
+#: htdocs/luci-static/resources/view/fchomo/node.js:1211
 msgid "Upload..."
 msgstr "上传..."
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:273
+#: htdocs/luci-static/resources/view/fchomo/node.js:278
 msgid "Use sub rule"
 msgstr "使用子规则"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1420
+#: htdocs/luci-static/resources/view/fchomo/client.js:1483
 msgid ""
 "Used to resolve domains that can be directly connected. Can use domestic DNS "
 "servers or ECS."
 msgstr "用于解析可直连的域名。可以使用国内 DNS 服务器或 ECS。"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1422
+#: htdocs/luci-static/resources/view/fchomo/client.js:1485
 msgid ""
 "Used to resolve domains you want to proxy. Recommended to configure %s for "
 "DNS servers."
 msgstr "用于解析想要代理的域名。建议为 DNS 服务器配置%s。"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1404
+#: htdocs/luci-static/resources/view/fchomo/client.js:1467
 msgid "Used to resolve the domain of the DNS server. Must be IP."
 msgstr "用于解析 DNS 服务器的域名。必须是 IP。"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1411
+#: htdocs/luci-static/resources/view/fchomo/client.js:1474
 msgid "Used to resolve the domain of the Proxy node."
 msgstr "用于解析代理节点的域名。"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1089
+#: htdocs/luci-static/resources/view/fchomo/node.js:1117
 msgid "Used to verify the hostname on the returned certificates."
 msgstr "用于验证返回的证书上的主机名。"
 
@@ -3418,7 +3482,7 @@ msgid "User-hint is mandatory"
 msgstr "User-hint 是必填项"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:161
-#: htdocs/luci-static/resources/view/fchomo/node.js:280
+#: htdocs/luci-static/resources/view/fchomo/node.js:290
 msgid "Username"
 msgstr "用户名"
 
@@ -3426,26 +3490,26 @@ msgstr "用户名"
 msgid "Users filter mode"
 msgstr "使用者过滤模式"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1350
+#: htdocs/luci-static/resources/view/fchomo/node.js:1379
 msgid "V2ray HTTPUpgrade"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1355
+#: htdocs/luci-static/resources/view/fchomo/node.js:1384
 msgid "V2ray HTTPUpgrade fast open"
+msgstr ""
+
+#: htdocs/luci-static/resources/fchomo.js:162
+#: htdocs/luci-static/resources/fchomo.js:198
+msgid "VLESS"
 msgstr ""
 
 #: htdocs/luci-static/resources/fchomo.js:161
 #: htdocs/luci-static/resources/fchomo.js:197
-msgid "VLESS"
-msgstr ""
-
-#: htdocs/luci-static/resources/fchomo.js:160
-#: htdocs/luci-static/resources/fchomo.js:196
 msgid "VMess"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1678
-#: htdocs/luci-static/resources/view/fchomo/node.js:2031
+#: htdocs/luci-static/resources/view/fchomo/node.js:1707
+#: htdocs/luci-static/resources/view/fchomo/node.js:2065
 #: htdocs/luci-static/resources/view/fchomo/ruleset.js:328
 msgid "Value"
 msgstr "可视化值"
@@ -3455,13 +3519,13 @@ msgid "Verify if given"
 msgstr ""
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:463
-#: htdocs/luci-static/resources/fchomo/listeners.js:595
-#: htdocs/luci-static/resources/view/fchomo/node.js:541
-#: htdocs/luci-static/resources/view/fchomo/node.js:903
+#: htdocs/luci-static/resources/fchomo/listeners.js:603
+#: htdocs/luci-static/resources/view/fchomo/node.js:551
+#: htdocs/luci-static/resources/view/fchomo/node.js:923
 msgid "Version"
 msgstr "版本"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:911
+#: htdocs/luci-static/resources/view/fchomo/node.js:931
 msgid "Version hint"
 msgstr ""
 
@@ -3474,20 +3538,20 @@ msgstr "Vless Encryption 字段"
 msgid "Wait a random 0-111 milliseconds with 75% probability."
 msgstr "以 75% 的概率等待随机 0-111 毫秒。"
 
-#: htdocs/luci-static/resources/fchomo.js:91
+#: htdocs/luci-static/resources/fchomo.js:92
 msgid "Warning"
 msgstr "警告"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:441
-#: htdocs/luci-static/resources/fchomo/listeners.js:1127
-#: htdocs/luci-static/resources/fchomo/listeners.js:1136
-#: htdocs/luci-static/resources/fchomo/listeners.js:1143
-#: htdocs/luci-static/resources/view/fchomo/node.js:495
-#: htdocs/luci-static/resources/view/fchomo/node.js:524
-#: htdocs/luci-static/resources/view/fchomo/node.js:1246
-#: htdocs/luci-static/resources/view/fchomo/node.js:1257
-#: htdocs/luci-static/resources/view/fchomo/node.js:1264
-#: htdocs/luci-static/resources/view/fchomo/node.js:1270
+#: htdocs/luci-static/resources/fchomo/listeners.js:1145
+#: htdocs/luci-static/resources/fchomo/listeners.js:1154
+#: htdocs/luci-static/resources/fchomo/listeners.js:1161
+#: htdocs/luci-static/resources/view/fchomo/node.js:505
+#: htdocs/luci-static/resources/view/fchomo/node.js:534
+#: htdocs/luci-static/resources/view/fchomo/node.js:1275
+#: htdocs/luci-static/resources/view/fchomo/node.js:1286
+#: htdocs/luci-static/resources/view/fchomo/node.js:1293
+#: htdocs/luci-static/resources/view/fchomo/node.js:1299
 msgid "WebSocket"
 msgstr ""
 
@@ -3499,52 +3563,52 @@ msgstr "用作服务端时，HomeProxy 是更好的选择。"
 msgid "White list"
 msgstr "白名单"
 
-#: htdocs/luci-static/resources/fchomo.js:205
+#: htdocs/luci-static/resources/fchomo.js:206
 msgid "WireGuard"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:822
+#: htdocs/luci-static/resources/view/fchomo/node.js:832
 msgid "WireGuard peer public key."
 msgstr "WireGuard 对端公钥。"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:829
+#: htdocs/luci-static/resources/view/fchomo/node.js:839
 msgid "WireGuard pre-shared key."
 msgstr "WireGuard 预共享密钥。"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:814
+#: htdocs/luci-static/resources/view/fchomo/node.js:824
 msgid "WireGuard requires base64-encoded private keys."
 msgstr "WireGuard 要求 base64 编码的私钥。"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:1128
-#: htdocs/luci-static/resources/fchomo/listeners.js:1137
-#: htdocs/luci-static/resources/view/fchomo/node.js:1247
-#: htdocs/luci-static/resources/view/fchomo/node.js:1265
+#: htdocs/luci-static/resources/fchomo/listeners.js:1146
+#: htdocs/luci-static/resources/fchomo/listeners.js:1155
+#: htdocs/luci-static/resources/view/fchomo/node.js:1276
+#: htdocs/luci-static/resources/view/fchomo/node.js:1294
 msgid "XHTTP"
 msgstr ""
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:1173
-#: htdocs/luci-static/resources/view/fchomo/node.js:1360
+#: htdocs/luci-static/resources/fchomo/listeners.js:1191
+#: htdocs/luci-static/resources/view/fchomo/node.js:1389
 msgid "XHTTP mode"
 msgstr "XHTTP 模式"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1391
+#: htdocs/luci-static/resources/view/fchomo/node.js:1420
 msgid "XMUX"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1396
-#: htdocs/luci-static/resources/view/fchomo/node.js:1401
-#: htdocs/luci-static/resources/view/fchomo/node.js:1406
-#: htdocs/luci-static/resources/view/fchomo/node.js:1411
-#: htdocs/luci-static/resources/view/fchomo/node.js:1416
-#: htdocs/luci-static/resources/view/fchomo/node.js:1421
+#: htdocs/luci-static/resources/view/fchomo/node.js:1425
+#: htdocs/luci-static/resources/view/fchomo/node.js:1430
+#: htdocs/luci-static/resources/view/fchomo/node.js:1435
+#: htdocs/luci-static/resources/view/fchomo/node.js:1440
+#: htdocs/luci-static/resources/view/fchomo/node.js:1445
+#: htdocs/luci-static/resources/view/fchomo/node.js:1450
 msgid "XMUX:"
 msgstr ""
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:703
+#: htdocs/luci-static/resources/fchomo/listeners.js:721
 msgid "XOR mode"
 msgstr "XOR 模式"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:716
+#: htdocs/luci-static/resources/view/fchomo/node.js:726
 msgid "Xudp (Xray-core)"
 msgstr ""
 
@@ -3552,22 +3616,22 @@ msgstr ""
 msgid "Yaml text"
 msgstr "Yaml 格式文本"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1898
+#: htdocs/luci-static/resources/view/fchomo/node.js:1932
 msgid "Yes"
 msgstr ""
 
-#: htdocs/luci-static/resources/fchomo.js:46
+#: htdocs/luci-static/resources/fchomo.js:47
 msgid "YouTube"
 msgstr "油管"
 
-#: htdocs/luci-static/resources/fchomo.js:1726
+#: htdocs/luci-static/resources/fchomo.js:2076
 msgid "Your %s was successfully uploaded. Size: %sB."
 msgstr "您的 %s 已成功上传。大小：%sB。"
 
 #: htdocs/luci-static/resources/fchomo.js:345
 #: htdocs/luci-static/resources/fchomo.js:358
 #: htdocs/luci-static/resources/fchomo.js:363
-#: htdocs/luci-static/resources/view/fchomo/node.js:696
+#: htdocs/luci-static/resources/view/fchomo/node.js:706
 msgid "aes-128-gcm"
 msgstr ""
 
@@ -3580,11 +3644,11 @@ msgstr ""
 msgid "aes-256-gcm"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1758
+#: htdocs/luci-static/resources/view/fchomo/node.js:1792
 msgid "age private key"
 msgstr "age 私钥"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1819
+#: htdocs/luci-static/resources/view/fchomo/node.js:1853
 msgid "age public key"
 msgstr "age 公钥"
 
@@ -3596,17 +3660,17 @@ msgstr ""
 msgid "age-x25519"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:693
+#: htdocs/luci-static/resources/view/fchomo/node.js:703
 msgid "auto"
 msgstr "自动"
 
-#: htdocs/luci-static/resources/fchomo.js:55
+#: htdocs/luci-static/resources/fchomo.js:56
 msgid "bbr"
 msgstr "bbr"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:984
-#: htdocs/luci-static/resources/fchomo/listeners.js:1024
-#: htdocs/luci-static/resources/view/fchomo/node.js:1170
+#: htdocs/luci-static/resources/fchomo/listeners.js:1002
+#: htdocs/luci-static/resources/fchomo/listeners.js:1042
+#: htdocs/luci-static/resources/view/fchomo/node.js:1199
 msgid "certificate"
 msgstr "证书"
 
@@ -3616,16 +3680,16 @@ msgstr "证书"
 msgid "chacha20-ietf-poly1305"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:697
+#: htdocs/luci-static/resources/view/fchomo/node.js:707
 msgid "chacha20-poly1305"
 msgstr ""
 
-#: htdocs/luci-static/resources/fchomo.js:53
+#: htdocs/luci-static/resources/fchomo.js:54
 msgid "cubic"
 msgstr "cubic"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:655
-#: htdocs/luci-static/resources/fchomo/listeners.js:686
+#: htdocs/luci-static/resources/fchomo/listeners.js:673
+#: htdocs/luci-static/resources/fchomo/listeners.js:704
 msgid "decryption"
 msgstr "decryption"
 
@@ -3633,41 +3697,41 @@ msgstr "decryption"
 msgid "dnsmasq selects upstream on its own. (may affect CDN accuracy)"
 msgstr "dnsmasq 自行选择上游服务器。 (可能影响 CDN 准确性)"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1886
+#: htdocs/luci-static/resources/view/fchomo/node.js:1920
 msgid "down"
 msgstr "Hysteria 下载速率"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:690
-#: htdocs/luci-static/resources/view/fchomo/node.js:962
-#: htdocs/luci-static/resources/view/fchomo/node.js:985
+#: htdocs/luci-static/resources/fchomo/listeners.js:708
+#: htdocs/luci-static/resources/view/fchomo/node.js:990
+#: htdocs/luci-static/resources/view/fchomo/node.js:1013
 msgid "encryption"
 msgstr "encryption"
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:425
-#: htdocs/luci-static/resources/view/fchomo/node.js:479
+#: htdocs/luci-static/resources/view/fchomo/node.js:489
 msgid "false = bandwidth optimized downlink; true = pure Sudoku downlink."
 msgstr "false = 带宽优化下行 true = 纯 Sudoku 下行。"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:1126
-#: htdocs/luci-static/resources/fchomo/listeners.js:1135
-#: htdocs/luci-static/resources/fchomo/listeners.js:1142
-#: htdocs/luci-static/resources/view/fchomo/node.js:1245
-#: htdocs/luci-static/resources/view/fchomo/node.js:1256
-#: htdocs/luci-static/resources/view/fchomo/node.js:1263
-#: htdocs/luci-static/resources/view/fchomo/node.js:1269
+#: htdocs/luci-static/resources/fchomo/listeners.js:1144
+#: htdocs/luci-static/resources/fchomo/listeners.js:1153
+#: htdocs/luci-static/resources/fchomo/listeners.js:1160
+#: htdocs/luci-static/resources/view/fchomo/node.js:1274
+#: htdocs/luci-static/resources/view/fchomo/node.js:1285
+#: htdocs/luci-static/resources/view/fchomo/node.js:1292
+#: htdocs/luci-static/resources/view/fchomo/node.js:1298
 msgid "gRPC"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1326
+#: htdocs/luci-static/resources/view/fchomo/node.js:1355
 msgid "gRPC User-Agent"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1331
+#: htdocs/luci-static/resources/view/fchomo/node.js:1360
 msgid "gRPC ping interval"
 msgstr "gRPC ping 间隔"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:1167
-#: htdocs/luci-static/resources/view/fchomo/node.js:1322
+#: htdocs/luci-static/resources/fchomo/listeners.js:1185
+#: htdocs/luci-static/resources/view/fchomo/node.js:1351
 msgid "gRPC service name"
 msgstr "gRPC 服务名称"
 
@@ -3675,37 +3739,37 @@ msgstr "gRPC 服务名称"
 msgid "gVisor"
 msgstr "gVisor"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:760
+#: htdocs/luci-static/resources/view/fchomo/node.js:770
 msgid "h2"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1438
+#: htdocs/luci-static/resources/view/fchomo/node.js:1467
 msgid "h2mux"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:758
+#: htdocs/luci-static/resources/view/fchomo/node.js:768
 msgid "h3"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:759
+#: htdocs/luci-static/resources/view/fchomo/node.js:769
 msgid "h3-l4proxy"
 msgstr ""
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:855
+#: htdocs/luci-static/resources/fchomo/listeners.js:873
 msgid "least one keypair required"
 msgstr "至少需要一对密钥"
 
-#: htdocs/luci-static/resources/fchomo.js:76
+#: htdocs/luci-static/resources/fchomo.js:77
 msgid "metacubexd"
 msgstr "metacubexd"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1011
-#: htdocs/luci-static/resources/view/fchomo/client.js:1267
-#: htdocs/luci-static/resources/view/fchomo/client.js:1359
-#: htdocs/luci-static/resources/view/fchomo/client.js:1501
-#: htdocs/luci-static/resources/view/fchomo/client.js:1732
-#: htdocs/luci-static/resources/view/fchomo/client.js:1788
-#: htdocs/luci-static/resources/view/fchomo/node.js:1644
+#: htdocs/luci-static/resources/view/fchomo/client.js:1030
+#: htdocs/luci-static/resources/view/fchomo/client.js:1327
+#: htdocs/luci-static/resources/view/fchomo/client.js:1422
+#: htdocs/luci-static/resources/view/fchomo/client.js:1564
+#: htdocs/luci-static/resources/view/fchomo/client.js:1798
+#: htdocs/luci-static/resources/view/fchomo/client.js:1854
+#: htdocs/luci-static/resources/view/fchomo/node.js:1673
 #: htdocs/luci-static/resources/view/fchomo/ruleset.js:247
 msgid "mihomo config"
 msgstr "mihomo 配置"
@@ -3714,33 +3778,33 @@ msgstr "mihomo 配置"
 msgid "mlkem768x25519plus"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1511
-#: htdocs/luci-static/resources/view/fchomo/node.js:1864
+#: htdocs/luci-static/resources/view/fchomo/node.js:1540
+#: htdocs/luci-static/resources/view/fchomo/node.js:1898
 msgid "mpTCP"
 msgstr "多路径 TCP (mpTCP)"
 
-#: htdocs/luci-static/resources/fchomo.js:54
+#: htdocs/luci-static/resources/fchomo.js:55
 msgid "new_reno"
 msgstr "new_reno"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:828
+#: htdocs/luci-static/resources/view/fchomo/client.js:836
 msgid "no-resolve"
 msgstr "no-resolve"
 
-#: htdocs/luci-static/resources/fchomo.js:1461
-#: htdocs/luci-static/resources/fchomo.js:1556
-#: htdocs/luci-static/resources/fchomo.js:1591
-#: htdocs/luci-static/resources/fchomo.js:1619
+#: htdocs/luci-static/resources/fchomo.js:1811
+#: htdocs/luci-static/resources/fchomo.js:1906
+#: htdocs/luci-static/resources/fchomo.js:1941
+#: htdocs/luci-static/resources/fchomo.js:1969
 msgid "non-empty value"
 msgstr "非空值"
 
 #: htdocs/luci-static/resources/fchomo.js:343
 #: htdocs/luci-static/resources/fchomo.js:357
 #: htdocs/luci-static/resources/fchomo.js:369
-#: htdocs/luci-static/resources/fchomo/listeners.js:561
-#: htdocs/luci-static/resources/view/fchomo/node.js:694
-#: htdocs/luci-static/resources/view/fchomo/node.js:714
-#: htdocs/luci-static/resources/view/fchomo/node.js:872
+#: htdocs/luci-static/resources/fchomo/listeners.js:558
+#: htdocs/luci-static/resources/view/fchomo/node.js:704
+#: htdocs/luci-static/resources/view/fchomo/node.js:724
+#: htdocs/luci-static/resources/view/fchomo/node.js:882
 #: htdocs/luci-static/resources/view/fchomo/ruleset.js:324
 msgid "none"
 msgstr "无"
@@ -3749,62 +3813,64 @@ msgstr "无"
 msgid "not found"
 msgstr "未找到"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1028
+#: htdocs/luci-static/resources/view/fchomo/client.js:1047
 msgid "not included \",\""
 msgstr "不包含 \",\""
 
-#: htdocs/luci-static/resources/fchomo.js:228
-#: htdocs/luci-static/resources/fchomo/listeners.js:611
-#: htdocs/luci-static/resources/fchomo/listeners.js:612
+#: htdocs/luci-static/resources/fchomo.js:229
+#: htdocs/luci-static/resources/fchomo/listeners.js:619
+#: htdocs/luci-static/resources/fchomo/listeners.js:622
 msgid "null"
 msgstr ""
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:562
-#: htdocs/luci-static/resources/view/fchomo/node.js:873
+#: htdocs/luci-static/resources/fchomo/listeners.js:559
+#: htdocs/luci-static/resources/fchomo/listeners.js:567
+#: htdocs/luci-static/resources/view/fchomo/node.js:883
+#: htdocs/luci-static/resources/view/fchomo/node.js:894
 msgid "obfs-simple"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:526
+#: htdocs/luci-static/resources/view/fchomo/node.js:536
 msgid "only applies when %s is %s."
 msgstr "仅当 %s 为 %s 时适用。"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:524
+#: htdocs/luci-static/resources/view/fchomo/node.js:534
 msgid "only applies when %s is not %s."
 msgstr "仅当 %s 不为 %s 时适用。"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1844
+#: htdocs/luci-static/resources/view/fchomo/node.js:1878
 msgid "override.proxy-name"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:715
+#: htdocs/luci-static/resources/view/fchomo/node.js:725
 msgid "packet addr (v2ray-core v5+)"
 msgstr ""
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:1177
-#: htdocs/luci-static/resources/view/fchomo/node.js:1364
+#: htdocs/luci-static/resources/fchomo/listeners.js:1195
+#: htdocs/luci-static/resources/view/fchomo/node.js:1393
 msgid "packet-up"
 msgstr ""
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:439
-#: htdocs/luci-static/resources/view/fchomo/node.js:493
+#: htdocs/luci-static/resources/view/fchomo/node.js:503
 msgid "poll"
 msgstr ""
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:999
-#: htdocs/luci-static/resources/view/fchomo/node.js:1184
+#: htdocs/luci-static/resources/fchomo/listeners.js:1017
+#: htdocs/luci-static/resources/view/fchomo/node.js:1213
 msgid "private key"
 msgstr "私钥"
 
-#: htdocs/luci-static/resources/fchomo.js:78
+#: htdocs/luci-static/resources/fchomo.js:79
 msgid "razord-meta"
 msgstr "razord-meta"
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:1191
-#: htdocs/luci-static/resources/view/fchomo/client.js:1197
+#: htdocs/luci-static/resources/view/fchomo/client.js:1251
+#: htdocs/luci-static/resources/view/fchomo/client.js:1257
 msgid "requires front-end adaptation using the API."
 msgstr "需要使用 API 的前端适配。"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:877
+#: htdocs/luci-static/resources/view/fchomo/node.js:887
 msgid "restls"
 msgstr ""
 
@@ -3812,39 +3878,41 @@ msgstr ""
 msgid "rule-set"
 msgstr "规则集"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:563
-#: htdocs/luci-static/resources/view/fchomo/node.js:876
+#: htdocs/luci-static/resources/fchomo/listeners.js:560
+#: htdocs/luci-static/resources/fchomo/listeners.js:568
+#: htdocs/luci-static/resources/view/fchomo/node.js:886
+#: htdocs/luci-static/resources/view/fchomo/node.js:895
 msgid "shadow-tls"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1436
+#: htdocs/luci-static/resources/view/fchomo/node.js:1465
 msgid "smux"
 msgstr ""
 
 #: htdocs/luci-static/resources/fchomo/listeners.js:438
-#: htdocs/luci-static/resources/view/fchomo/node.js:492
+#: htdocs/luci-static/resources/view/fchomo/node.js:502
 msgid "split-stream"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/client.js:810
+#: htdocs/luci-static/resources/view/fchomo/client.js:818
 msgid "src"
 msgstr "src"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:1175
-#: htdocs/luci-static/resources/view/fchomo/node.js:1362
+#: htdocs/luci-static/resources/fchomo/listeners.js:1193
+#: htdocs/luci-static/resources/view/fchomo/node.js:1391
 msgid "stream-one"
 msgstr ""
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:1176
-#: htdocs/luci-static/resources/view/fchomo/node.js:1363
+#: htdocs/luci-static/resources/fchomo/listeners.js:1194
+#: htdocs/luci-static/resources/view/fchomo/node.js:1392
 msgid "stream-up"
 msgstr ""
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:1192
+#: htdocs/luci-static/resources/fchomo/listeners.js:1210
 msgid "stream-up server seconds"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:526
+#: htdocs/luci-static/resources/view/fchomo/node.js:536
 msgid "stream/poll/auto"
 msgstr ""
 
@@ -3864,80 +3932,77 @@ msgstr "独立 UCI 标识"
 msgid "unique identifier"
 msgstr "独立标识"
 
-#: htdocs/luci-static/resources/fchomo.js:1628
+#: htdocs/luci-static/resources/fchomo.js:1978
 msgid "unique value"
 msgstr "独立值"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1880
+#: htdocs/luci-static/resources/view/fchomo/node.js:1914
 msgid "up"
 msgstr "Hysteria 上传速率"
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:464
-#: htdocs/luci-static/resources/fchomo/listeners.js:596
-#: htdocs/luci-static/resources/view/fchomo/node.js:542
-#: htdocs/luci-static/resources/view/fchomo/node.js:584
-#: htdocs/luci-static/resources/view/fchomo/node.js:904
-#: htdocs/luci-static/resources/view/fchomo/node.js:955
+#: htdocs/luci-static/resources/fchomo/listeners.js:604
+#: htdocs/luci-static/resources/view/fchomo/node.js:552
+#: htdocs/luci-static/resources/view/fchomo/node.js:594
+#: htdocs/luci-static/resources/view/fchomo/node.js:924
+#: htdocs/luci-static/resources/view/fchomo/node.js:983
 msgid "v1"
 msgstr ""
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:465
-#: htdocs/luci-static/resources/fchomo/listeners.js:597
-#: htdocs/luci-static/resources/view/fchomo/node.js:543
-#: htdocs/luci-static/resources/view/fchomo/node.js:905
-#: htdocs/luci-static/resources/view/fchomo/node.js:956
+#: htdocs/luci-static/resources/fchomo/listeners.js:605
+#: htdocs/luci-static/resources/view/fchomo/node.js:553
+#: htdocs/luci-static/resources/view/fchomo/node.js:925
+#: htdocs/luci-static/resources/view/fchomo/node.js:984
 msgid "v2"
 msgstr ""
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:466
-#: htdocs/luci-static/resources/fchomo/listeners.js:598
-#: htdocs/luci-static/resources/view/fchomo/node.js:544
-#: htdocs/luci-static/resources/view/fchomo/node.js:906
+#: htdocs/luci-static/resources/fchomo/listeners.js:606
+#: htdocs/luci-static/resources/view/fchomo/node.js:554
+#: htdocs/luci-static/resources/view/fchomo/node.js:926
 msgid "v3"
 msgstr ""
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:467
-#: htdocs/luci-static/resources/view/fchomo/node.js:545
+#: htdocs/luci-static/resources/fchomo/listeners.js:464
+#: htdocs/luci-static/resources/view/fchomo/node.js:555
 msgid "v4"
 msgstr ""
 
-#: htdocs/luci-static/resources/fchomo/listeners.js:468
-#: htdocs/luci-static/resources/view/fchomo/node.js:546
+#: htdocs/luci-static/resources/fchomo/listeners.js:465
+#: htdocs/luci-static/resources/view/fchomo/node.js:556
 msgid "v5"
 msgstr ""
 
-#: htdocs/luci-static/resources/fchomo.js:1508
-#: htdocs/luci-static/resources/fchomo.js:1511
+#: htdocs/luci-static/resources/fchomo.js:1858
+#: htdocs/luci-static/resources/fchomo.js:1861
 msgid "valid JSON format"
 msgstr "有效的 JSON 格式"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1144
+#: htdocs/luci-static/resources/view/fchomo/node.js:1173
 msgid "valid SHA256 string with %d characters"
 msgstr "包含 %d 个字符的有效 SHA256 字符串"
 
-#: htdocs/luci-static/resources/fchomo.js:1533
-#: htdocs/luci-static/resources/fchomo.js:1536
+#: htdocs/luci-static/resources/fchomo.js:1883
+#: htdocs/luci-static/resources/fchomo.js:1886
 msgid "valid URL"
 msgstr "有效网址"
 
-#: htdocs/luci-static/resources/fchomo.js:1546
+#: htdocs/luci-static/resources/fchomo.js:1896
 msgid "valid base64 key with %d characters"
 msgstr "包含 %d 个字符的有效 base64 密钥"
 
-#: htdocs/luci-static/resources/fchomo.js:1606
-#: htdocs/luci-static/resources/fchomo.js:1612
+#: htdocs/luci-static/resources/fchomo.js:1956
+#: htdocs/luci-static/resources/fchomo.js:1962
 msgid "valid format: 2x, 2p, 4v"
 msgstr "有效格式: 2x, 2p, 4v"
 
-#: htdocs/luci-static/resources/fchomo.js:1593
+#: htdocs/luci-static/resources/fchomo.js:1943
 msgid "valid key length with %d characters"
 msgstr "包含 %d 个字符的有效密钥"
 
-#: htdocs/luci-static/resources/fchomo.js:1471
+#: htdocs/luci-static/resources/fchomo.js:1821
 msgid "valid port value"
 msgstr "有效端口值"
 
-#: htdocs/luci-static/resources/fchomo.js:1521
+#: htdocs/luci-static/resources/fchomo.js:1871
 msgid "valid uuid"
 msgstr "有效 uuid"
 
@@ -3953,23 +4018,23 @@ msgstr ""
 msgid "xchacha20-ietf-poly1305"
 msgstr ""
 
-#: htdocs/luci-static/resources/fchomo.js:77
+#: htdocs/luci-static/resources/fchomo.js:78
 msgid "yacd-meta"
 msgstr "yacd-meta"
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:1437
+#: htdocs/luci-static/resources/view/fchomo/node.js:1466
 msgid "yamux"
 msgstr ""
 
-#: htdocs/luci-static/resources/fchomo.js:75
+#: htdocs/luci-static/resources/fchomo.js:76
 msgid "zashboard"
 msgstr ""
 
-#: htdocs/luci-static/resources/view/fchomo/node.js:695
+#: htdocs/luci-static/resources/view/fchomo/node.js:705
 msgid "zero"
 msgstr ""
 
-#: htdocs/luci-static/resources/fchomo.js:1289
+#: htdocs/luci-static/resources/fchomo.js:1639
 msgid "🡇"
 msgstr ""
 

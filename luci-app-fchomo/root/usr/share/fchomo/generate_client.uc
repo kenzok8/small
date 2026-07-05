@@ -121,7 +121,7 @@ function parse_filter(cfg) {
 		return cfg;
 }
 
-function get_proxy(cfg) {
+function get_proxy(cfg, pass_undefined) {
 	if (isEmpty(cfg))
 		return null;
 
@@ -129,9 +129,12 @@ function get_proxy(cfg) {
 		return cfg;
 
 	const label = uci.get(uciconf, cfg, 'label');
-	if (isEmpty(label))
-		die(sprintf("%s's label is missing, please check your configuration.", cfg));
-	else
+	if (isEmpty(label)) {
+		if (pass_undefined)
+			return cfg;
+		else
+			die(sprintf("%s's label is missing, please check your configuration.", cfg));
+	} else
 		return label;
 }
 
@@ -440,6 +443,7 @@ if (!isEmpty(config.dns.fallback))
 		ipcidr: uci.get(uciconf, ucidns, 'fallback_filter_ipcidr') || [],
 		domain: uci.get(uciconf, ucidns, 'fallback_filter_domain') || [],
 	};
+config.dns["fallback-lazy-query"] = strToBool(uci.get(uciconf, ucidns, 'fallback_lazy_query'));
 /* DNS END */
 
 /* Hosts START */
@@ -559,10 +563,6 @@ uci.foreach(uciconf, ucinode, (cfg) => {
 		psk: cfg.snell_psk,
 		version: cfg.snell_version,
 		reuse: strToBool(cfg.snell_reuse),
-		"obfs-opts": cfg.type === 'snell' ? {
-			mode: cfg.plugin_opts_obfsmode,
-			host: cfg.plugin_opts_host,
-		} : null,
 
 		/* TUIC */
 		ip: cfg.tuic_ip,
@@ -610,19 +610,35 @@ uci.foreach(uciconf, ucinode, (cfg) => {
 		"persistent-keepalive": strToInt(cfg.wireguard_persistent_keepalive),
 
 		/* Plugin fields */
-		plugin: cfg.plugin,
-		"plugin-opts": cfg.plugin ? {
-			mode: cfg.plugin_opts_obfsmode,
-			host: cfg.plugin_opts_host,
-			password: cfg.plugin_opts_thetlspassword,
-			version: strToInt(cfg.plugin_opts_shadowtls_version),
-			"version-hint": cfg.plugin_opts_restls_versionhint,
-			"restls-script": cfg.plugin_opts_restls_script
-		} : null,
+		...(cfg.plugin ? (
+			cfg.type === 'snell' ? {
+				// snell
+				"obfs-opts": {
+					mode: cfg.plugin in ['shadow-tls'] ? cfg.plugin : cfg.plugin_opts_obfsmode,
+					host: cfg.plugin_opts_host,
+					password: cfg.plugin_opts_thetlspassword,
+					version: strToInt(cfg.plugin_opts_shadowtls_version),
+					alpn: cfg.tls_alpn // Array
+				}
+			} : {
+				// others
+				plugin: cfg.plugin,
+				"plugin-opts": {
+					mode: cfg.plugin_opts_obfsmode,
+					host: cfg.plugin_opts_host,
+					password: cfg.plugin_opts_thetlspassword,
+					version: strToInt(cfg.plugin_opts_shadowtls_version),
+					alpn: cfg.tls_alpn, // Array
+					"version-hint": cfg.plugin_opts_restls_versionhint,
+					"restls-script": cfg.plugin_opts_restls_script
+				}
+			}
+		) : {}),
 
 		/* Extra fields */
 		"congestion-controller": cfg.congestion_controller,
 		"bbr-profile": cfg.bbr_profile,
+		"handshake-timeout": strToInt(cfg.handshake_timeout),
 		udp: strToBool(cfg.udp),
 		"udp-over-tcp": strToBool(cfg.uot),
 		"udp-over-tcp-version": cfg.uot_version,
@@ -633,7 +649,7 @@ uci.foreach(uciconf, ucinode, (cfg) => {
 		"disable-sni": strToBool(cfg.tls_disable_sni),
 		...arrToObj([[(cfg.type in ['vmess', 'vless']) ? 'servername' : 'sni', cfg.tls_sni]]),
 		fingerprint: cfg.tls_fingerprint,
-		alpn: cfg.tls_alpn, // Array
+		alpn: cfg.plugin in ['shadow-tls'] ? null : cfg.tls_alpn, // Array
 		"skip-cert-verify": strToBool(cfg.tls_skip_cert_verify),
 		certificate: cfg.tls_cert_path, // mTLS
 		"private-key": cfg.masque_private_key || cfg.wireguard_private_key || cfg.ssh_priv_key || cfg.tls_key_path, // mTLS/SSH/WireGuard/Masque
@@ -744,7 +760,9 @@ uci.foreach(uciconf, ucipgrp, (cfg) => {
 		"include-all": strToBool(cfg.include_all),
 		"include-all-proxies": strToBool(cfg.include_all_proxies),
 		"include-all-providers": strToBool(cfg.include_all_providers),
-		"empty-fallback": cfg.empty_fallback ? get_proxy(cfg.empty_fallback) : null,
+		"empty-fallback": cfg.empty_fallback ? get_proxy(cfg.empty_fallback, true) : null,
+		// Select fields
+		"default-selected": cfg.default_selected ? get_proxy(cfg.default_selected, true) : null,
 		// Url-test fields
 		tolerance: (cfg.type === 'url-test') ? strToInt(cfg.tolerance) ?? 150 : null,
 		// Load-balance fields
