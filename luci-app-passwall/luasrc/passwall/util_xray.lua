@@ -14,6 +14,8 @@ local GLOBAL = {
 
 local xray_version = api.get_app_version("xray")
 
+local xray_min_version = "26.3.27"
+
 local function get_domain_excluded()
 	local path = string.format("/usr/share/%s/rules/domains_excluded", appname)
 	local content = fs.readfile(path)
@@ -789,7 +791,10 @@ function gen_config_server(node)
 		},
 		-- 传出连接
 		outbounds = outbounds,
-		routing = routing
+		routing = routing,
+		version = {
+			min = xray_min_version
+		}
 	}
 
 	local alpn = {}
@@ -1935,6 +1940,10 @@ function gen_config(var)
 
 	if inbounds or outbounds then
 		local config = {
+			env = (function()
+				local asset_location = uci:get(appname, "@global_rules[0]", "v2ray_location_asset") or "/usr/share/v2ray/"
+				return { XRAY_LOCATION_ASSET = asset_location }
+			end)(),
 			log = {
 				-- error = string.format("/tmp/etc/%s/%s.log", appname, node[".name"]),
 				loglevel = loglevel
@@ -1968,6 +1977,9 @@ function gen_config(var)
 				--     statsInboundUplink = false,
 				--     statsInboundDownlink = false
 				-- }
+			},
+			version = {
+				min = xray_min_version
 			}
 		}
 
