@@ -211,18 +211,16 @@ export function parseVlessEncryption(payload, side) {
 		(isEmpty(content.keypairs) ? '' : '.' + join('.', map(content.keypairs, e => e[side]))); // Required
 };
 
-export function parseListener(cfg, isClient, label) {
+export function parseListener(cfg) {
 	return {
 		name: cfg['.name'],
 		type: cfg.type,
 
 		listen: cfg.listen || '::',
 		port: strToInt(cfg.port),
-		...(isClient ? {
-			"routing-mark": strToInt(cfg.routing_mark) || null,
-			rule: cfg.rule,
-			proxy: label,
-		} : {}),
+		"routing-mark": strToInt(cfg.routing_mark) || null,
+		rule: cfg.rule,
+		proxy: cfg.proxy, // raw data need post-processing
 
 		/* HTTP / SOCKS / VMess / VLESS / Trojan / AnyTLS / Tuic / Hysteria2 */
 		users: (cfg.type in ['http', 'socks', 'mixed', 'vmess', 'vless', 'trojan', 'trusttunnel']) ? [
@@ -331,9 +329,15 @@ export function parseListener(cfg, isClient, label) {
 		/* Tunnel */
 		target: cfg.tunnel_target,
 
+		/* Extra fields */
+		"congestion-controller": cfg.congestion_controller,
+		"bbr-profile": cfg.bbr_profile,
+		network: cfg.network,
+		udp: cfg.udp === '0' ? false : true,
+
 		/* Plugin fields */
-		...(cfg.plugin ? (
-			cfg.plugin === 'obfs' ? (
+		...(cfg.plugin === '1' ? (
+			cfg.plugin_type === 'obfs' ? (
 			// obfs-simple
 				cfg.type === 'snell' ? {
 					// snell
@@ -348,7 +352,7 @@ export function parseListener(cfg, isClient, label) {
 						mode: cfg.plugin_opts_obfsmode
 					}
 				}
-			) : cfg.plugin === 'shadow-tls' ? {
+			) : cfg.plugin_type === 'shadow-tls' ? {
 			// shadow-tls
 				"shadow-tls": {
 					enable: true,
@@ -365,7 +369,7 @@ export function parseListener(cfg, isClient, label) {
 						dest: cfg.plugin_opts_handshake_dest
 					}
 				}
-			} : cfg.plugin === 'restls' ? {
+			} : cfg.plugin_type === 'restls' ? {
 			// restls
 				"res-tls": {
 					enable: true,
@@ -377,12 +381,6 @@ export function parseListener(cfg, isClient, label) {
 				}
 			} : {}
 		) : {}),
-
-		/* Extra fields */
-		"congestion-controller": cfg.congestion_controller,
-		"bbr-profile": cfg.bbr_profile,
-		network: cfg.network,
-		udp: cfg.udp === '0' ? false : true,
 
 		/* TLS fields */
 		...(cfg.allow_insecure === '1' ? { "allow-insecure": true } : cfg.tls === '1' ? {
