@@ -292,10 +292,12 @@ export function parseListener(cfg) {
 		"authentication-timeout": durationToSecond(cfg.tuic_authentication_timeout),
 		"max-udp-relay-packet-size": strToInt(cfg.tuic_max_udp_relay_packet_size),
 
+		/* Brutal */
+		up: strToInt(cfg.brutal_up_mbps),
+		down: strToInt(cfg.brutal_down_mbps),
+		"ignore-client-bandwidth": strToBool(cfg.brutal_ignore_client_bandwidth),
+
 		/* Hysteria2 */
-		up: strToInt(cfg.hysteria_up_mbps),
-		down: strToInt(cfg.hysteria_down_mbps),
-		"ignore-client-bandwidth": strToBool(cfg.hysteria_ignore_client_bandwidth),
 		obfs: cfg.hysteria_obfs_type,
 		"obfs-password": cfg.hysteria_obfs_password,
 		"obfs-min-packet-size": strToInt(cfg.hysteria_obfs_min_packet_size),
@@ -417,7 +419,7 @@ export function parseListener(cfg) {
 
 		/* TLS fields */
 		...(cfg.allow_insecure === '1' ? { "allow-insecure": true } : cfg.tls === '1' ? {
-			alpn: cfg.tls_alpn,
+			alpn: cfg.plugin_type in ['jls'] ? null : cfg.tls_alpn,
 			...(cfg.tls_reality === '1' ? {
 				"reality-config": {
 					dest: cfg.tls_reality_dest,

@@ -667,6 +667,19 @@ return view.extend({
 		so.depends('type', 'tuic');
 		so.modalonly = true;
 
+		/* Brutal fields */
+		so = ss.taboption('field_general', form.Value, 'brutal_up_mbps', _('Max upload speed'),
+			_('In Mbps.'));
+		so.datatype = 'uinteger';
+		so.depends({type: /^(hysteria|hysteria2|shadowquic)$/});
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.Value, 'brutal_down_mbps', _('Max download speed'),
+			_('In Mbps.'));
+		so.datatype = 'uinteger';
+		so.depends({type: /^(hysteria|hysteria2|shadowquic)$/});
+		so.modalonly = true;
+
 		/* Hysteria / Hysteria2 fields */
 		so = ss.taboption('field_general', form.DynamicList, 'hysteria_ports', _('Ports pool'));
 		so.datatype = 'or(port, portrange)';
@@ -677,18 +690,6 @@ return view.extend({
 			_('In seconds. <code>%s</code> will be used if empty.').format('30'));
 		so.placeholder = '15 OR 15-30';
 		so.depends('type', 'hysteria2');
-		so.modalonly = true;
-
-		so = ss.taboption('field_general', form.Value, 'hysteria_up_mbps', _('Max upload speed'),
-			_('In Mbps.'));
-		so.datatype = 'uinteger';
-		so.depends({type: /^(hysteria|hysteria2)$/});
-		so.modalonly = true;
-
-		so = ss.taboption('field_general', form.Value, 'hysteria_down_mbps', _('Max download speed'),
-			_('In Mbps.'));
-		so.datatype = 'uinteger';
-		so.depends({type: /^(hysteria|hysteria2)$/});
 		so.modalonly = true;
 
 		so = ss.taboption('field_general', form.ListValue, 'hysteria_obfs_type', _('Obfuscate type'));
@@ -716,17 +717,6 @@ return view.extend({
 		so.depends('hysteria_obfs_type', 'gecko');
 		so.modalonly = true;
 
-		/* TrustTunnel fields */
-		so = ss.taboption('field_general', form.Flag, 'trusttunnel_health_check', _('Health check'));
-		so.default = so.enabled;
-		so.depends('type', 'trusttunnel');
-		so.modalonly = true;
-
-		so = ss.taboption('field_general', form.Flag, 'trusttunnel_quic', _('QUIC'));
-		so.default = so.disabled;
-		so.depends('type', 'trusttunnel');
-		so.modalonly = true;
-
 		/* ShadowQUIC fields */
 		so = ss.taboption('field_general', form.DynamicList, 'shadowquic_quic_versions', _('QUIC versions'),
 			_('Support %s, default %s.').format('v1/v2', 'v1'));
@@ -750,6 +740,17 @@ return view.extend({
 		so.datatype = 'uinteger';
 		so.placeholder = '10000';
 		so.depends('type', 'shadowquic');
+		so.modalonly = true;
+
+		/* TrustTunnel fields */
+		so = ss.taboption('field_general', form.Flag, 'trusttunnel_health_check', _('Health check'));
+		so.default = so.enabled;
+		so.depends('type', 'trusttunnel');
+		so.modalonly = true;
+
+		so = ss.taboption('field_general', form.Flag, 'trusttunnel_quic', _('QUIC'));
+		so.default = so.disabled;
+		so.depends('type', 'trusttunnel');
 		so.modalonly = true;
 
 		/* WireGuard fields */
@@ -982,7 +983,7 @@ return view.extend({
 
 			if (value) {
 				if (type === 'snell' && !['obfs', 'shadow-tls'].includes(value)) {
-					return _('Expecting: only support %s.').format(_('obfs-simple') +
+					return _('Expecting: Only support %s.').format(_('obfs-simple') +
 						' / ' + _('ShadowTLS'));
 				}
 			}
@@ -1166,6 +1167,14 @@ return view.extend({
 
 		so = ss.taboption('field_tls', form.Value, 'tls_sni', _('TLS SNI'),
 			_('Hostname that the client attempts to connect to at the start of the TLS handshake process.'));
+		so.validate = function(section_id, value) {
+			const tls_jls = this.section.getOption('tls_jls').formvalue(section_id);
+
+			if (tls_jls == 1 && !value)
+				return _('Expecting: %s cannot be empty when %s is enabled.').format(_('TLS SNI'), _('JLS'));
+
+			return true;
+		};
 		so.depends({tls: '1', type: /^(http|vmess|vless|trojan|anytls|hysteria|hysteria2|shadowquic|trusttunnel|masque)$/});
 		so.depends({tls: '1', type: /^(tuic)$/, tls_disable_sni: '0'});
 		so.modalonly = true;
@@ -1300,9 +1309,24 @@ return view.extend({
 		so.depends({type: 'ss', plugin_type: 'jls'});
 		so.modalonly = true;
 
+		so = ss.taboption('field_tls', form.Flag, 'tls_jls', _('JLS'));
+		so.default = so.disabled;
+		so.depends({tls: '1', type: /^(vmess|vless|trojan|anytls)$/});
+		so.modalonly = true;
+
+		so = ss.taboption('field_tls', form.Value, 'tls_jls_username', _('JLS username'));
+		so.rmempty = false;
+		so.depends('tls_jls', '1');
+		so.modalonly = true;
+
+		so = ss.taboption('field_tls', form.Value, 'tls_jls_password', _('JLS password'));
+		so.rmempty = false;
+		so.depends('tls_jls', '1');
+		so.modalonly = true;
+
 		so = ss.taboption('field_tls', form.Flag, 'tls_reality', _('REALITY'));
 		so.default = so.disabled;
-		so.depends({tls: '1', type: /^(vmess|vless|trojan)$/});
+		so.depends({tls: '1', tls_jls: '0', type: /^(vmess|vless|trojan)$/});
 		so.modalonly = true;
 
 		so = ss.taboption('field_tls', form.Value, 'tls_reality_public_key', _('REALITY public key'));
@@ -1344,14 +1368,14 @@ return view.extend({
 			switch (type) {
 				case 'vmess':
 					if (!['http', 'h2', 'grpc', 'ws'].includes(value))
-						return _('Expecting: only support %s.').format(_('HTTP') +
+						return _('Expecting: Only support %s.').format(_('HTTP') +
 							' / ' + _('HTTPUpgrade') +
 							' / ' + _('gRPC') +
 							' / ' + _('WebSocket'));
 					break;
 				case 'vless':
 					if (!['http', 'h2', 'grpc', 'ws', 'xhttp'].includes(value))
-						return _('Expecting: only support %s.').format(_('HTTP') +
+						return _('Expecting: Only support %s.').format(_('HTTP') +
 							' / ' + _('HTTPUpgrade') +
 							' / ' + _('gRPC') +
 							' / ' + _('WebSocket') +
@@ -1359,7 +1383,7 @@ return view.extend({
 					break;
 				case 'trojan':
 					if (!['grpc', 'ws'].includes(value))
-						return _('Expecting: only support %s.').format(_('gRPC') +
+						return _('Expecting: Only support %s.').format(_('gRPC') +
 							' / ' + _('WebSocket'));
 					break;
 				default:
