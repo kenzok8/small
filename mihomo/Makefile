@@ -37,7 +37,6 @@ define Package/mihomo
   TITLE:=Another Mihomo Kernel.
   URL:=https://wiki.metacubex.one
   DEPENDS:=$(GO_ARCH_DEPENDS)
-  PROVIDES:=mihomo
   ALTERNATIVES:=\
     100:/usr/bin/mihomo:/usr/libexec/mihomo-core
   USERID:=mihomo=7890:mihomo=7890
