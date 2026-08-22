@@ -36,7 +36,7 @@ define Package/clashoo
   CATEGORY:=Network
   TITLE:=Clashoo (Mihomo)
   DEPENDS:=$(GO_ARCH_DEPENDS) +ca-bundle +yq +firewall4 +ip-full +coreutils-nohup +coreutils-timeout +kmod-inet-diag +kmod-nft-socket +kmod-nft-tproxy +kmod-tun +kmod-dummy +unzip
-  PROVIDES:=mihomo clash-meta
+  PROVIDES:=clash-meta
 endef
 
 define Package/clashoo/description
