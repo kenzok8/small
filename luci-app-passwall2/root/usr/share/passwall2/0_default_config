@@ -25,8 +25,6 @@ config global_delay
 	option start_delay '60'
 
 config global_forwarding
-	option tcp_no_redir_ports 'disable'
-	option udp_no_redir_ports 'disable'
 	option tcp_redir_ports '1:65535'
 	option udp_redir_ports '1:65535'
 	option accept_icmp '0'
@@ -45,13 +43,12 @@ config global_rules
 	option geosite_update '1'
 	option geoip_update '1'
 	option v2ray_location_asset '/usr/share/v2ray/'
-	option geoip_url 'https://github.com/Loyalsoldier/geoip/releases/latest/download/geoip.dat'
+	option geoip_url 'https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geoip.dat'
 	option geosite_url 'https://github.com/Loyalsoldier/v2ray-rules-dat/releases/latest/download/geosite.dat'
 
 config global_app
 	option geoview_file '/usr/bin/geoview'
 	option xray_file '/usr/bin/xray'
-	option hysteria_file '/usr/bin/hysteria'
 	option sing_box_file '/usr/bin/sing-box'
 
 config global_subscribe
