@@ -201,9 +201,17 @@ o = s:taboption("DNS", ListValue, "remote_dns_protocol", translate("Remote DNS P
 o:value("tcp", "TCP")
 o:value("doh", "DoH")
 o:value("udp", "UDP")
-o:value("tls", "TLS(DoT)", { _is_singbox = "1" })
-o:value("quic", "QUIC(DoQ)", { _is_singbox = "1" })
-o:value("http3", "HTTP3(DoH3)", { _is_singbox = "1" })
+if m.is_js_luci then
+	if current_node.type == "sing-box" then
+		o:value("tls", "TLS(DoT)")
+		o:value("quic", "QUIC(DoQ)")
+		o:value("http3", "HTTP3(DoH3)")
+	end
+else
+	o:value("tls", "TLS(DoT)", { _is_singbox = "1" })
+	o:value("quic", "QUIC(DoQ)", { _is_singbox = "1" })
+	o:value("http3", "HTTP3(DoH3)", { _is_singbox = "1" })
+end
 
 ---- DNS over TCP or UDP or TLS (DoT) or QUIC (DoQ)
 o = s:taboption("DNS", Value, "remote_dns", translate("Remote DNS"))
@@ -259,11 +267,10 @@ o:value("UseIP")
 o:value("UseIPv4")
 o:value("UseIPv6")
 
-if current_node.type == "sing-box" then
-	o = s:taboption("DNS", Value, "remote_rewrite_ttl", translate("Remote DNS") .. " TTL")
-	o.datatype = "min(1)"
-	o.default = "30"
-end
+o = s:taboption("DNS", Value, "remote_rewrite_ttl", translate("Remote DNS") .. " TTL")
+o.datatype = "min(1)"
+o.default = "30"
+o:depends("_is_singbox", "1")
 
 o = s:taboption("DNS", TextValue, "dns_hosts", translate("Domain Override"))
 o.rows = 5

@@ -272,9 +272,17 @@ o = s:option(ListValue, "remote_dns_protocol", translate("Remote DNS Protocol"))
 o:value("tcp", "TCP")
 o:value("doh", "DoH")
 o:value("udp", "UDP")
-o:value("tls", "TLS(DoT)", { _is_singbox = "1" })
-o:value("quic", "QUIC(DoQ)", { _is_singbox = "1" })
-o:value("http3", "HTTP3(DoH3)", { _is_singbox = "1" })
+if m.is_js_luci then
+	if current_node.type == "sing-box" then
+		o:value("tls", "TLS(DoT)")
+		o:value("quic", "QUIC(DoQ)")
+		o:value("http3", "HTTP3(DoH3)")
+	end
+else
+	o:value("tls", "TLS(DoT)", { _is_singbox = "1" })
+	o:value("quic", "QUIC(DoQ)", { _is_singbox = "1" })
+	o:value("http3", "HTTP3(DoH3)", { _is_singbox = "1" })
+end
 o:depends("_show_dns_option", "1")
 
 ---- DNS over TCP or UDP or TLS (DoT) or QUIC (DoQ)
@@ -382,9 +390,8 @@ for k, v in pairs(nodes_table) do
 	end
 end
 
---m:appendTemplate("/acl/options", {section = arg[1]})
-
--- Shunt Start
+--[[
+-- Shunt
 if current_node.protocol == "_shunt" then
 	local shunt_lua = loadfile("/usr/lib/lua/luci/model/cbi/passwall2/client/include/shunt_options.lua")
 	setfenv(shunt_lua, getfenv(1))(m, s, {
@@ -396,5 +403,6 @@ if current_node.protocol == "_shunt" then
 end
 
 m:appendTemplate("/acl/shunt", { shunt_list = api.jsonc.stringify(shunt_list), section = s.section })
+]]--
 
 return api.return_map(m)
