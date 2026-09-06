@@ -6,7 +6,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=dae
 PKG_VERSION:=2026.08.28
-PKG_RELEASE:=4
+PKG_RELEASE:=5
 
 PKG_SOURCE:=dae-src-2026.08.28-d6aca8a10b35.tar.gz
 PKG_SOURCE_URL:=https://github.com/kenzok8/openwrt-daede/releases/download/dae-src
@@ -127,6 +127,7 @@ define Package/dae/install
 	$(call GoPackage/Package/Install/Bin,$(PKG_INSTALL_DIR))
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) $(PKG_INSTALL_DIR)/usr/bin/dae $(1)/usr/bin/dae
+	$(INSTALL_BIN) $(CURDIR)/files/dae-guard $(1)/usr/bin/dae-guard
 
 	$(INSTALL_DIR) $(1)/etc/dae
 	$(INSTALL_CONF) $(PKG_BUILD_DIR)/example.dae $(1)/etc/dae/example.dae

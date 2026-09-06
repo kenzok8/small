@@ -1,0 +1,39 @@
+#!/bin/sh
+
+STATE="/var/run/daede-dae.ready"
+LOG="/var/log/dae/dae.log"
+READY="Total startup time:"
+PID="$$"
+watcher_pid=
+
+mark_state() {
+	local value="$1" tmp="${STATE}.${PID}"
+	printf '%s %s\n' "$PID" "$value" > "$tmp" && mv -f "$tmp" "$STATE"
+}
+
+watch_ready() {
+	local offset size
+	offset="$(wc -c < "$LOG" 2>/dev/null || echo 0)"
+	mark_state starting
+	(
+		while kill -0 "$PID" 2>/dev/null; do
+			size="$(wc -c < "$LOG" 2>/dev/null || echo 0)"
+			[ "$size" -lt "$offset" ] && offset=0
+			if [ -r "$LOG" ] && tail -c "+$((offset + 1))" "$LOG" 2>/dev/null | grep -Fq "$READY"; then
+				# Check before and after the atomic publish. If dae exits during this
+				# window, remove the ready marker rather than leaving a false positive.
+				[ "$(cat "$STATE" 2>/dev/null)" = "$PID starting" ] || exit 1
+				kill -0 "$PID" 2>/dev/null || exit 1
+				mark_state ready || exit 1
+				kill -0 "$PID" 2>/dev/null || { rm -f "$STATE" "$STATE".*; exit 1; }
+				[ "$(cat "$STATE" 2>/dev/null)" = "$PID ready" ] || exit 1
+				exit 0
+			fi
+			sleep 1
+		done
+	) >/dev/null 2>&1 &
+	watcher_pid=$!
+}
+
+watch_ready
+exec /usr/bin/dae "$@"
