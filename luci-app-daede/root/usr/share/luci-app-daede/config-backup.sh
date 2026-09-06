@@ -31,6 +31,12 @@ paths() {
 		case "${name%.sub}" in ''|*[!A-Za-z0-9_]*) fail 'unexpected subscription filename' ;; esac
 		printf 'etc/dae/subscriptions/%s\n' "$name"
 	done
+	for sub in "$1"/etc/daed/daede-sub-*; do
+		[ -e "$sub" ] || [ -L "$sub" ] || continue
+		name="${sub##*/daede-sub-}"
+		case "$name" in ''|*[!A-Za-z0-9]*) fail 'unexpected daed subscription filename' ;; esac
+		printf 'etc/daed/daede-sub-%s\n' "$name"
+	done
 }
 check_paths() {
 	for dir in /etc/config /etc/dae /etc/daed /etc/dae/subscriptions; do
@@ -41,6 +47,14 @@ check_paths() {
 		[ ! -L "/$p" ] || fail "refusing symlink: /$p"
 		[ ! -e "/$p" ] || [ -f "/$p" ] || fail "not a regular file: /$p"
 	done < "$WORK/paths"
+}
+cleanup_stages() {
+	for stage in /etc/daed/.daede-sub-stage-*; do
+		[ -e "$stage" ] || [ -L "$stage" ] || continue
+		[ ! -L "$stage" ] || fail "refusing symlink: $stage"
+		[ -f "$stage" ] || fail "not a regular file: $stage"
+		rm -f "$stage" || fail "failed to remove stale snapshot stage: $stage"
+	done
 }
 snapshot() {
 	mkdir -p "$WORK/before"
@@ -139,6 +153,9 @@ validate_archive() {
 			etc/dae/subscriptions/*.sub)
 				name="${p#etc/dae/subscriptions/}"
 				case "${name%.sub}" in ''|*[!A-Za-z0-9_]*) fail 'invalid subscription path' ;; esac ;;
+			etc/daed/daede-sub-*)
+				name="${p#etc/daed/daede-sub-}"
+				case "$name" in ''|*[!A-Za-z0-9]*) fail 'invalid daed subscription path' ;; esac ;;
 			*) fail 'unexpected archive entry' ;;
 		esac
 	done < "$WORK/entries"
@@ -175,6 +192,7 @@ run_action() {
 		fi
 	fi
 	stop_backends
+	[ "$ACTION" = reset ] && cleanup_stages
 	snapshot
 	if [ "$ACTION" = export ]; then
 		paths "$WORK/before" > "$WORK/candidates"

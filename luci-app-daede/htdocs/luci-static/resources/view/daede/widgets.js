@@ -23,8 +23,7 @@ function execInit(be, action) {
 }
 
 function restartService(be) {
-	return execChecked(be.initd, ['restart'])
-		.then(function() { return waitForService(be, true, 80); });
+	return execChecked(be.initd, ['restart']);
 }
 
 function rejectIfOtherRunning(be, running) {
@@ -60,14 +59,26 @@ function toggleService(be, turnOn) {
 		.then(function() { return execChecked(be.initd, [action]); });
 }
 
-function waitForService(be, turnOn, attempts) {
+function waitForService(be, turnOn, attempts, readyAfter) {
 	return backend.serviceStatus(be.name).then(function(state) {
-		if (!!state.running === turnOn)
+		if (!turnOn && !state.running)
+			return state;
+		if (turnOn && state.running)
+				return backend.serviceReady(be, readyAfter, state.pid).then(function(ready) {
+				if (ready) {
+					state.ready = true;
+					return state;
+				}
+				return null;
+			});
+		return null;
+	}).then(function(state) {
+		if (state)
 			return state;
 		if (attempts <= 0)
 			throw new Error(turnOn ? _('Service did not start in time.') : _('Service did not stop in time.'));
 		return new Promise(function(resolve) { setTimeout(resolve, 250); })
-			.then(function() { return waitForService(be, turnOn, attempts - 1); });
+			.then(function() { return waitForService(be, turnOn, attempts - 1, readyAfter); });
 	});
 }
 
@@ -156,6 +167,21 @@ function renderStatusCard(ctx, listenAddr) {
 	let busy = false;
 	let lastError = '';
 	let refreshGeneration = 0;
+	const boundaryKey = 'daede.ready-boundary.' + window.location.host + '.' + be.name;
+	let readyBoundary = null;
+	try {
+		const savedBoundary = window.localStorage.getItem(boundaryKey);
+		if (savedBoundary !== null && /^\d+$/.test(savedBoundary))
+			readyBoundary = Number(savedBoundary);
+	} catch (e) {}
+	const rememberBoundary = function(offset) {
+		readyBoundary = Number(offset) || 0;
+		try { window.localStorage.setItem(boundaryKey, String(readyBoundary)); } catch (e) {}
+	};
+	const clearBoundary = function() {
+		readyBoundary = null;
+		try { window.localStorage.removeItem(boundaryKey); } catch (e) {}
+	};
 	const body = E('div', { 'id': 'dd-status-body' }, E('em', {}, _('Collecting data…')));
 	const card = E('div', { 'class': 'dd-card dd-status-card' }, [
 		E('h4', { 'class': 'dd-card-title' }, _('Service Status')),
@@ -165,7 +191,10 @@ function renderStatusCard(ctx, listenAddr) {
 	const render = function(state) {
 		while (body.firstChild) body.removeChild(body.firstChild);
 
-		const badge = state.running
+		const starting = !!state.starting;
+		const badge = starting
+			? E('span', { 'class': 'dd-badge dd-badge-wait' }, [ E('span', { 'class': 'dd-badge-dot' }), _('Starting…') ])
+			: state.running
 			? E('span', { 'class': 'dd-badge dd-badge-run' }, [ E('span', { 'class': 'dd-badge-dot' }), _('RUNNING') ])
 			: E('span', { 'class': 'dd-badge dd-badge-stop' }, [ E('span', { 'class': 'dd-badge-dot' }), _('STOPPED') ]);
 
@@ -177,7 +206,12 @@ function renderStatusCard(ctx, listenAddr) {
 			meta.push(E('span', { 'class': 'dd-meta' }, [ E('span', { 'class': 'dd-meta-label' }, 'PID'), state.pid ]));
 
 		const swErr = E('span', { 'class': 'dd-meta dd-err', 'style': lastError ? '' : 'display:none' }, lastError);
-		const sw = E('button', { 'class': 'dd-switch' + (state.running ? ' is-on' : ''), 'type': 'button', 'aria-label': _('Toggle service') }, [
+		const sw = E('button', {
+			'class': 'dd-switch' + (state.running ? ' is-on' : ''),
+			'type': 'button',
+			'aria-label': _('Toggle service'),
+			'disabled': busy ? '' : null
+		}, [
 			E('span', { 'class': 'dd-switch-knob' })
 		]);
 		sw.addEventListener('click', function(ev) {
@@ -185,21 +219,25 @@ function renderStatusCard(ctx, listenAddr) {
 			if (busy) return;
 			refreshGeneration++;
 			busy = true;
-			sw.disabled = true;
 			lastError = '';
-			swErr.style.display = 'none';
 			const turnOn = !state.running;
-			/* instant optimistic feedback — the start/stop chain (esp. dae's eBPF
-			   load) takes a few seconds; flip the switch and show a pending label
-			   right away instead of looking frozen */
-			sw.classList.toggle('is-on', turnOn);
-			const lbl = sw.parentNode && sw.parentNode.querySelector('.dd-switch-label');
-			if (lbl) lbl.textContent = '…';
-			toggleService(be, turnOn)
-				.then(function() { return waitForService(be, turnOn, 40); })
-				.then(function() {
-					busy = false;
-					return refresh(true);
+			/* Keep process liveness separate from data-plane readiness. The process
+			   appears in procd before dae has attached its rules, so show the real
+			   transition until the backend's final startup marker is logged. */
+			render({ running: turnOn, pid: 0, starting: turnOn });
+			if (!turnOn)
+				clearBoundary();
+			const boundary = turnOn ? backend.serviceLogOffset(be) : Promise.resolve(0);
+			boundary.then(function(offset) {
+				if (turnOn)
+					rememberBoundary(offset);
+				return toggleService(be, turnOn)
+					.then(function() { return waitForService(be, turnOn, turnOn ? 240 : 40, offset); });
+			})
+					.then(function() {
+						busy = false;
+						clearBoundary();
+						return refresh(true);
 				})
 				.catch(function(e) {
 					busy = false;
@@ -214,7 +252,7 @@ function renderStatusCard(ctx, listenAddr) {
 			E('span', { 'class': 'dd-grow' }),
 			swErr,
 			E('span', { 'class': 'dd-switch-wrap' }, [
-				E('span', { 'class': 'dd-switch-label' }, state.running ? 'ON' : 'OFF'),
+				E('span', { 'class': 'dd-switch-label' }, starting ? _('Starting…') : (state.running ? 'ON' : 'OFF')),
 				sw
 			])
 		]);
@@ -223,7 +261,7 @@ function renderStatusCard(ctx, listenAddr) {
 			body.appendChild(E('div', { 'class': 'dd-status-meta' }, meta));
 
 		const actions = [];
-		if (be.hasWebUI && state.running) {
+		if (be.hasWebUI && state.running && !starting) {
 			const port = (listenAddr || be.defaultListen).split(':').slice(-1)[0];
 			actions.push(E('a', {
 				'class': 'cbi-button cbi-button-action',
@@ -232,19 +270,23 @@ function renderStatusCard(ctx, listenAddr) {
 				'rel': 'noreferrer noopener'
 			}, _('Open WebUI')));
 		}
-		if (state.running) {
+		if (state.running && !starting) {
 			const restart = E('button', { 'class': 'cbi-button cbi-button-positive' }, _('Restart'));
 			restart.addEventListener('click', function(ev) {
 				ev.preventDefault();
 				if (busy) return;
 				busy = true;
-				restart.disabled = true;
 				lastError = '';
-				swErr.style.display = 'none';
-				restartService(be)
-					.then(function() {
-						busy = false;
-						return refresh(true);
+				render({ running: true, pid: 0, starting: true });
+				backend.serviceLogOffset(be).then(function(offset) {
+					rememberBoundary(offset);
+					return restartService(be)
+						.then(function() { return waitForService(be, true, 240, offset); });
+				})
+						.then(function() {
+							busy = false;
+							clearBoundary();
+							return refresh(true);
 					})
 					.catch(function(e) {
 						busy = false;
@@ -254,7 +296,7 @@ function renderStatusCard(ctx, listenAddr) {
 			});
 			actions.push(restart);
 		}
-		if (state.running && be.name === 'dae') {
+		if (state.running && !starting && be.name === 'dae') {
 			const hot = E('button', { 'class': 'cbi-button cbi-button-action' }, _('Hot Reload'));
 			hot.addEventListener('click', function(ev) {
 				ev.preventDefault();
@@ -263,7 +305,7 @@ function renderStatusCard(ctx, listenAddr) {
 			});
 			actions.push(hot);
 		}
-		if (state.running && be.name === 'dae') {
+		if (state.running && !starting && be.name === 'dae') {
 			const ckBtn = E('button', { 'class': 'cbi-button cbi-button-action' }, _('Test YouTube'));
 			const ckRes = E('span', { 'class': 'dd-meta', style: 'margin-left:8px;display:none' }, '');
 			ckBtn.addEventListener('click', function(ev) {
@@ -308,7 +350,18 @@ function renderStatusCard(ctx, listenAddr) {
 		const generation = refreshGeneration;
 		return backend.serviceStatus(be.name).then(function(state) {
 			if (generation !== refreshGeneration || (busy && !force)) return;
-			render(state);
+			if (!state.running) {
+				clearBoundary();
+				render(state);
+				return;
+			}
+			return backend.serviceReady(be, readyBoundary, state.pid).then(function(ready) {
+				if (generation !== refreshGeneration || (busy && !force)) return;
+				state.starting = !ready;
+				if (ready)
+					clearBoundary();
+				render(state);
+			});
 		});
 	};
 

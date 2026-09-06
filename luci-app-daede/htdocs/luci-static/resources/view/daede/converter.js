@@ -13,6 +13,7 @@
 
 const FETCHER = '/usr/share/luci-app-daede/fetch-clash-yaml.sh';
 const GENERATOR = '/usr/share/luci-app-daede/gen-dae-config.sh';
+const SNAPSHOT_HELPER = '/usr/share/luci-app-daede/snapshot-file.sh';
 const SUB_STAGE = '/tmp/daede-sub.txt';
 const FETCH_CHUNK_BYTES = 16384;
 
@@ -651,11 +652,19 @@ return view.extend({
 			const name = airportName.value.trim();
 			const groupName = airportSync.backendGroupName(name, 'daed', airportId);
 			const endpoint = daedEndpoint();
-			// daed can't read file:// — it HTTP-fetches a subscription link. Stage
-			// the converted links (base64) and let daed pull them from the
-			// loopback-only CGI, so the import lands as ONE subscription.
-			const subToken = airportSync.backendId(airportId) + Date.now().toString(36);
-			const stageFile = '/tmp/daede-daedsub-' + subToken;
+			// daed can't read file:// — it HTTP-fetches a subscription link. Persist
+			// the converted snapshot and let daed pull it from the loopback-only CGI,
+			// so later daed refreshes and configuration backups keep working.
+			// Keep the CGI token opaque, bounded, and unique across imports started in
+			// the same millisecond. The final sanitization also protects the filename
+			// and the CGI's allow-list if backendId ever changes.
+			const tokenTime = Date.now().toString(36);
+			const tokenRandom = Math.random().toString(36).slice(2, 12);
+			const tokenPrefix = airportSync.backendId(airportId).replace(/[^A-Za-z0-9]/g, '')
+				.slice(0, Math.max(0, 64 - tokenTime.length - tokenRandom.length));
+			const subToken = (tokenPrefix + tokenTime + tokenRandom).slice(0, 64);
+			const snapshotFile = '/etc/daed/daede-sub-' + subToken;
+			const stageFile = '/etc/daed/.daede-sub-stage-' + subToken;
 			const subUrl = 'http://127.0.0.1/cgi-bin/daede-sub?t=' + subToken;
 			const b64 = btoa(items.map(function(item) { return item.link; }).join('\n') + '\n');
 
@@ -664,15 +673,156 @@ return view.extend({
 			let createdGroupId = '';
 			const createdNodeIds = [];
 			let groupReady = false;
+			let snapshotCommitted = false;
+			let snapshotFinalToken = '';
+			let reuseExistingSnapshot = false;
 			const oldSubId = existingAirport ? existingAirport.subscription_id : '';
 			const oldNodeIds = existingAirport ? existingAirport.node_ids : [];
 
-			const dropStage = function() { return fs.exec('/bin/rm', [ '-f', stageFile ]).catch(function() {}); };
+			const dropSnapshot = function(path) {
+				if (!path)
+					return Promise.resolve();
+				return fs.remove(path).catch(function(error) {
+					const message = String(error && (error.message || error) || '');
+					if (/not found|no such file|enoent/i.test(message))
+						return;
+					throw error;
+				});
+			};
+			const appendWarning = function(error, warning) {
+				const result = error instanceof Error ? error : new Error(String(error && (error.message || error) || error));
+				result.message = result.message + '; ' + warning;
+				return result;
+			};
+			const snapshotAction = function(args) {
+				return fs.exec(SNAPSHOT_HELPER, args).then(function(res) {
+					if (!res || res.code !== 0)
+						throw new Error((res && (res.stderr || res.stdout)) || _('Snapshot operation failed'));
+					return res;
+				});
+			};
+			const cleanupStage = function() {
+				return snapshotAction([ 'discard', subToken ]);
+			};
+			const querySubscriptions = function() {
+				if (!token)
+					return Promise.reject(new Error(_('daed subscription cleanup could not be verified')));
+				return graphQL(endpoint, 'query SubscriptionLinks{subscriptions{id link}}', {}, token).then(function(value) {
+					if (!value || !Array.isArray(value.subscriptions))
+						throw new Error(_('daed returned an invalid subscription list'));
+					return value.subscriptions;
+				});
+			};
+			const dropSnapshotIfUnreferenced = function() {
+				if (snapshotFinalToken !== subToken)
+					return Promise.resolve();
+				return querySubscriptions().then(function(subscriptions) {
+					if (subscriptions.some(function(sub) { return String(sub.link || '') === subUrl; }))
+						throw new Error(_('new daed subscription snapshot is still referenced; it was kept'));
+					return dropSnapshot(snapshotFile);
+				});
+			};
+			const finishWithSnapshotCleanup = function(result) {
+				return dropSnapshotIfUnreferenced().then(function() {
+					return result;
+				}).catch(function(error) {
+					const warning = String(error && (error.message || error) || error);
+					result.warning = result.warning
+						? result.warning + '; ' + warning
+						: warning;
+					return result;
+				});
+			};
+			const updateExistingSubscription = function() {
+				const old = (((before || {}).subscriptions) || []).find(function(sub) { return sub.id === oldSubId; });
+				if (!old)
+					return Promise.reject(new Error(_('Managed subscription no longer exists in daed')));
+
+				const oldLink = String(old.link || '');
+				const localToken = oldLink.match(/^http:\/\/127\.0\.0\.1\/cgi-bin\/daede-sub\?t=([A-Za-z0-9]{1,64})$/);
+				const refresh = function() {
+					return graphQL(endpoint, 'mutation UpdateSub($id:ID!){updateSubscription(id:$id){id}}', { id: oldSubId }, token);
+				};
+				const currentLink = function() {
+					return querySubscriptions().then(function(subscriptions) {
+						const current = subscriptions.find(function(sub) { return sub.id === oldSubId; });
+						return current ? String(current.link || '') : '';
+					});
+				};
+				const restoreOldLink = function(originalError) {
+					return graphQL(endpoint, 'mutation RestoreLink($id:ID!,$link:String!){updateSubscriptionLink(id:$id,link:$link)}', {
+						id: oldSubId,
+						link: oldLink
+					}, token).then(refresh).then(currentLink).then(function(link) {
+						if (link !== oldLink) {
+							snapshotCommitted = true;
+							throw appendWarning(originalError, _('rollback was not confirmed; both subscription snapshots were kept'));
+						}
+						throw originalError;
+					}, function(rollbackError) {
+						snapshotCommitted = true;
+						throw appendWarning(originalError, _('rollback could not be confirmed; both subscription snapshots were kept: %s').format(String(rollbackError && (rollbackError.message || rollbackError) || rollbackError)));
+					});
+				};
+				const finish = function() {
+					const tag = old.tag !== groupName
+						? graphQL(endpoint, 'mutation TagSub($id:ID!,$tag:String!){tagSubscription(id:$id,tag:$tag)}', {
+							id: oldSubId,
+							tag: groupName
+						}, token).catch(function(error) {
+							return String(error && (error.message || error) || error);
+						})
+						: Promise.resolve('');
+					return tag.then(function(tagWarning) {
+						writeAirportRecord(existingAirport, {
+							id: airportId,
+							backend: 'daed',
+							name: name,
+							sourceHash: state.sourceHash,
+							groupId: existingAirport.group_id,
+							subscriptionId: oldSubId,
+							nodeIds: []
+						});
+						return applyUciChanges().then(function() {
+							items.forEach(function(item) { item.duplicate = true; item.selected = false; });
+							return {
+								added: items.length,
+								duplicates: 0,
+								failed: 0,
+								warning: tagWarning
+							};
+						});
+					});
+				};
+
+				if (localToken && reuseExistingSnapshot) {
+					return graphQL(endpoint, 'mutation UpdateSub($id:ID!){updateSubscription(id:$id){id}}', { id: oldSubId }, token)
+						.then(currentLink).then(function(link) {
+							if (link !== oldLink)
+								throw new Error(_('daed did not confirm the existing subscription link after refresh'));
+						}).catch(function(error) {
+							throw appendWarning(error, _('daed subscription refresh failed; the new snapshot remains at the existing link and existing nodes were kept'));
+						}).then(finish);
+				}
+
+				return graphQL(endpoint, 'mutation SetLink($id:ID!,$link:String!){updateSubscriptionLink(id:$id,link:$link)}', {
+					id: oldSubId,
+					link: subUrl
+				}, token).then(refresh).then(function() {
+					return currentLink().then(function(link) {
+						if (link !== subUrl)
+							throw new Error(_('daed did not confirm the new subscription link'));
+					});
+				}).catch(restoreOldLink).then(function() {
+					snapshotCommitted = true;
+					return finish();
+				});
+			};
 			const loadState = function(forceLogin) {
 				return requestDaedToken(endpoint, forceLogin).then(function(auth) {
 					token = auth.token;
 					usedCachedToken = auth.cached;
-					return graphQL(endpoint, 'query State{nodes(first:10000){edges{id link tag}} groups{id name nodes{id}}}', {}, token);
+					return graphQL(endpoint, 'query State{nodes(first:10000){edges{id link tag}} groups{id name nodes{id}} subscriptions{id link tag}}', {}, token);
 				});
 			};
 			const importDirectNodes = function() {
@@ -797,7 +947,7 @@ return view.extend({
 				});
 			};
 
-			return fs.write(stageFile, b64).then(function() {
+			return fs.write(stageFile, b64, 384).then(function() {
 				return loadState(false).catch(function(error) {
 					if (!usedCachedToken || !daedSession.isAccessDenied(error))
 						throw error;
@@ -806,42 +956,63 @@ return view.extend({
 				});
 			}).then(function(dataValue) {
 				before = dataValue;
-				// drop this airport's previous subscription first: the new one
-				// reuses the same tag (group name) and daed enforces unique tags.
-				if (!oldSubId)
-					return null;
-				return graphQL(endpoint, 'mutation RmSub($ids:[ID!]!){removeSubscriptions(ids:$ids)}', { ids: [ oldSubId ] }, token).catch(function() {});
-			}).then(function() {
-				// import the whole converted batch as one subscription
-				return graphQL(endpoint,
-					'mutation Import($a:ImportArgument!){importSubscription(rollbackError:false,arg:$a){sub{id} nodeImportResult{error}}}',
-					{ a: { link: subUrl, tag: groupName } }, token).then(function(result) {
-						const sub = result.importSubscription && result.importSubscription.sub;
-						const rows = (result.importSubscription && result.importSubscription.nodeImportResult) || [];
-						const usable = rows.length
-							? rows.some(function(r) { return !r.error || r.error === 'node already exists'; })
-							: !!(sub && sub.id);
-						if (!sub || !sub.id || !usable) {
-							const details = rows.map(function(r) { return r.error; }).filter(Boolean).join('; ');
-							if (sub && sub.id)
-								newSubId = sub.id;
-							throw new Error(details || _('No usable nodes were imported'));
-						}
-						return result;
-					}).catch(function(error) {
-						if (daedSession.isAccessDenied(error))
-							throw error;
-						const cleanupSub = newSubId
-							? graphQL(endpoint, 'mutation Rm($ids:[ID!]!){removeSubscriptions(ids:$ids)}', { ids: [ newSubId ] }, token).catch(function() {})
-							: Promise.resolve();
-						newSubId = '';
-						return cleanupSub.then(importDirectNodes).then(function(result) {
-							return { directResult: result };
-						});
+				const old = (before.subscriptions || []).find(function(sub) { return sub.id === oldSubId; });
+				const localToken = old && String(old.link || '').match(/^http:\/\/127\.0\.0\.1\/cgi-bin\/daede-sub\?t=([A-Za-z0-9]{1,64})$/);
+				const oldLinkReferences = localToken
+					? (before.subscriptions || []).filter(function(sub) { return String(sub.link || '') === String(old.link || ''); })
+					: [];
+				reuseExistingSnapshot = !!(localToken && oldLinkReferences.length === 1 && String(oldLinkReferences[0].id) === String(oldSubId));
+				const publish = reuseExistingSnapshot
+					? snapshotAction([ 'replace', localToken[1], subToken ]).then(function() {
+						snapshotFinalToken = localToken[1];
+						snapshotCommitted = true;
+					})
+					: snapshotAction([ 'publish', subToken ]).then(function() {
+						snapshotFinalToken = subToken;
 					});
+				return publish.then(function() {
+					if (oldSubId)
+						return updateExistingSubscription().then(function(result) { return { existingResult: result }; });
+					// import the whole converted batch as one subscription
+					return graphQL(endpoint,
+						'mutation Import($a:ImportArgument!){importSubscription(rollbackError:false,arg:$a){sub{id} nodeImportResult{error}}}',
+						{ a: { link: subUrl, tag: groupName } }, token).then(function(result) {
+							const sub = result.importSubscription && result.importSubscription.sub;
+							const rows = (result.importSubscription && result.importSubscription.nodeImportResult) || [];
+							const usable = rows.length
+								? rows.some(function(r) { return !r.error || r.error === 'node already exists'; })
+								: !!(sub && sub.id);
+							if (!sub || !sub.id || !usable) {
+								const details = rows.map(function(r) { return r.error; }).filter(Boolean).join('; ');
+								if (sub && sub.id)
+									newSubId = sub.id;
+								throw new Error(details || _('No usable nodes were imported'));
+							}
+							return result;
+						}).catch(function(error) {
+							if (daedSession.isAccessDenied(error))
+								throw error;
+							const cleanupSub = newSubId
+								? graphQL(endpoint, 'mutation Rm($ids:[ID!]!){removeSubscriptions(ids:$ids)}', { ids: [ newSubId ] }, token).catch(function(cleanupError) {
+									snapshotCommitted = true;
+									throw appendWarning(error, _('rollback could not be confirmed; the new subscription snapshot was kept: %s').format(String(cleanupError && (cleanupError.message || cleanupError) || cleanupError)));
+								})
+								: Promise.resolve();
+							newSubId = '';
+							return cleanupSub.then(function() {
+								if (oldSubId)
+									throw error;
+								return importDirectNodes();
+							}).then(function(result) {
+								return { directResult: result };
+							});
+						});
+				});
 			}).then(function(result) {
+				if (result.existingResult)
+					return result.existingResult;
 				if (result.directResult)
-					return result.directResult;
+					return finishWithSnapshotCleanup(result.directResult);
 
 				const sub = result.importSubscription && result.importSubscription.sub;
 				newSubId = sub.id;
@@ -861,6 +1032,7 @@ return view.extend({
 				return ensureGroup.then(function(groupId) {
 					return graphQL(endpoint, 'mutation AddSubs($id:ID!,$ids:[ID!]!){groupAddSubscriptions(id:$id,subscriptionIDs:$ids)}', { id: groupId, ids: [ newSubId ] }, token).then(function() {
 						groupReady = true;
+						snapshotCommitted = true;
 						const cleanup = [];
 						// Migrate converter-managed airport groups to proxy, but never
 						// disturb proxy's existing nodes or other subscriptions.
@@ -880,7 +1052,12 @@ return view.extend({
 							});
 							return applyUciChanges().then(function() {
 								items.forEach(function(item) { item.duplicate = true; item.selected = false; });
-								return { added: items.length, duplicates: 0, failed: failed };
+								return {
+									added: items.length,
+									duplicates: 0,
+									failed: failed,
+									warning: ''
+								};
 							});
 						});
 					});
@@ -892,15 +1069,47 @@ return view.extend({
 					throw error;
 				const cleanup = [];
 				if (newSubId)
-					cleanup.push(graphQL(endpoint, 'mutation Rm($ids:[ID!]!){removeSubscriptions(ids:$ids)}', { ids: [ newSubId ] }, token));
+					cleanup.push(graphQL(endpoint, 'mutation Rm($ids:[ID!]!){removeSubscriptions(ids:$ids)}', { ids: [ newSubId ] }, token).catch(function(cleanupError) {
+						snapshotCommitted = true;
+						throw cleanupError;
+					}));
 				if (createdNodeIds.length)
 					cleanup.push(graphQL(endpoint, 'mutation Rm($ids:[ID!]!){removeNodes(ids:$ids)}', { ids: createdNodeIds }, token));
 				if (createdGroupId)
 					cleanup.push(graphQL(endpoint, 'mutation RmG($id:ID!){removeGroup(id:$id)}', { id: createdGroupId }, token));
-				return Promise.all(cleanup).catch(function() {}).then(function() { throw error; });
-			}).finally(function() {
-				token = '';
-				return dropStage();
+				return Promise.all(cleanup).then(function() {
+					throw error;
+				}, function(cleanupError) {
+					snapshotCommitted = true;
+					throw appendWarning(error, _('rollback could not be confirmed; the new subscription snapshot was kept: %s').format(String(cleanupError && (cleanupError.message || cleanupError) || cleanupError)));
+				});
+			}).then(function(result) {
+				return cleanupStage().then(function() {
+					token = '';
+					return result;
+				}, function(cleanupError) {
+					token = '';
+					result.warning = result.warning
+						? result.warning + '; ' + String(cleanupError && (cleanupError.message || cleanupError) || cleanupError)
+						: String(cleanupError && (cleanupError.message || cleanupError) || cleanupError);
+					return result;
+				});
+			}, function(error) {
+				let cleanupWarning = '';
+				const removeSnapshot = snapshotCommitted
+					? Promise.resolve()
+					: dropSnapshotIfUnreferenced().catch(function(cleanupError) {
+						cleanupWarning = _('rollback could not be confirmed; the new subscription snapshot was kept: %s').format(String(cleanupError && (cleanupError.message || cleanupError) || cleanupError));
+					});
+				return removeSnapshot.then(function() {
+					return cleanupStage().catch(function(stageError) {
+						const warning = _('snapshot stage cleanup failed: %s').format(String(stageError && (stageError.message || stageError) || stageError));
+						cleanupWarning = cleanupWarning ? cleanupWarning + '; ' + warning : warning;
+					});
+				}).then(function() {
+					token = '';
+					throw cleanupWarning ? appendWarning(error, cleanupWarning) : error;
+				});
 			});
 		};
 
@@ -924,8 +1133,11 @@ return view.extend({
 			setImportStatus(_('Importing node group…'));
 			const action = state.target === 'dae' ? importDae(items) : importDaed(items);
 			action.then(function(result) {
-				setImportStatus(_('Node group imported: added %d, reused %d, failed %d')
-					.format(result.added, result.duplicates, result.failed), result.failed ? 'err' : 'ok');
+				let message = _('Node group imported: added %d, reused %d, failed %d')
+					.format(result.added, result.duplicates, result.failed);
+				if (result.warning)
+					message += ' ' + _('Completed with warning: %s').format(result.warning);
+				setImportStatus(message, result.failed || result.warning ? 'err' : 'ok');
 				renderResults();
 			}).catch(function(e) {
 				setImportStatus(_('Node group import failed: %s').format(e.message || e), 'err');

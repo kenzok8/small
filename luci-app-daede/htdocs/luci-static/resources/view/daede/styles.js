@@ -16,6 +16,7 @@ const CSS = [
 	'.dd-status-row .dd-grow{flex:1 1 auto}',
 	'.dd-badge{display:inline-flex;align-items:center;gap:5px;padding:2px 10px;border-radius:999px;font-size:10.5px;font-weight:700;letter-spacing:.3px;border:1px solid transparent;line-height:1.3}',
 	'.dd-badge-run{color:#3da66a;border-color:rgba(61,166,106,.5)}',
+	'.dd-badge-wait{color:#d6a23d;border-color:rgba(214,162,61,.55)}',
 	'.dd-badge-stop{color:#d96d6d;border-color:rgba(217,109,109,.55)}',
 	'.dd-badge-dot{width:6px;height:6px;border-radius:50%;background:currentColor;display:inline-block}',
 	'.dd-meta{font-size:11.5px;opacity:.7;font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace}',

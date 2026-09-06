@@ -812,6 +812,12 @@ msgstr ""
 msgid "Node group imported: added %d, reused %d, failed %d"
 msgstr ""
 
+msgid "Completed with warning: %s"
+msgstr ""
+
+msgid "Managed subscription no longer exists in daed"
+msgstr ""
+
 msgid "Node group import failed: %s"
 msgstr ""
 

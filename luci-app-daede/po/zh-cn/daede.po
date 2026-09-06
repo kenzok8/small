@@ -1004,6 +1004,12 @@ msgstr "正在导入节点组…"
 msgid "Node group imported: added %d, reused %d, failed %d"
 msgstr "节点组导入完成：新增 %d，复用 %d，失败 %d"
 
+msgid "Completed with warning: %s"
+msgstr "已完成，但有警告：%s"
+
+msgid "Managed subscription no longer exists in daed"
+msgstr "daed 中已不存在该托管订阅"
+
 msgid "Node group import failed: %s"
 msgstr "节点组导入失败：%s"
 
