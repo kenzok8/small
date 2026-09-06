@@ -2,68 +2,16 @@
 
 . /usr/share/daed/cleanup.sh
 
-STATE="/var/run/daede-daed.ready"
-LOG="/var/log/daed/daed.log"
-READY="Reload: Finished"
-PID="$$"
-watcher_pid=
-
-mark_state() {
-	local value="$1" tmp="${STATE}.${PID}"
-	printf '%s %s\n' "$PID" "$value" > "$tmp" && mv -f "$tmp" "$STATE"
-}
-
-watch_ready() {
-	local offset size
-	offset="$(wc -c < "$LOG" 2>/dev/null || echo 0)"
-	(
-		while kill -0 "$PID" 2>/dev/null; do
-			size="$(wc -c < "$LOG" 2>/dev/null || echo 0)"
-			[ "$size" -lt "$offset" ] && offset=0
-			if [ -r "$LOG" ] && tail -c "+$((offset + 1))" "$LOG" 2>/dev/null | grep -Fq "$READY"; then
-				[ "$(cat "$STATE" 2>/dev/null)" = "$PID starting" ] && mark_state ready
-				exit 0
-			fi
-			sleep 1
-		done
-	) >/dev/null 2>&1 &
-	watcher_pid=$!
-}
-
-stop_watcher() {
-	[ -n "$watcher_pid" ] || return 0
-	kill "$watcher_pid" 2>/dev/null
-	wait "$watcher_pid" 2>/dev/null
-	watcher_pid=
-}
-
-mark_state starting
-
 if ! daed_cleanup_runtime; then
 	echo "daed: stale network state could not be removed" >&2
 	exit 1
 fi
 
-watch_ready
-
 # Keep daed as a child so a panic or unexpected exit is followed by an
 # immediate teardown of all kernel/runtime state before procd can respawn us.
 child_pid=
-term_requested=0
 cleanup_child() {
-	term_requested=1
-	[ -n "$child_pid" ] || return 0
-	kill "$child_pid" 2>/dev/null
-	# Do not let an interrupted wait leave a daed child behind. Four one-second
-	# polls give a graceful TERM about four seconds before the bounded KILL.
-	local attempt=0
-	while kill -0 "$child_pid" 2>/dev/null && [ "$attempt" -lt 4 ]; do
-		sleep 1
-		attempt=$((attempt + 1))
-	done
-	if kill -0 "$child_pid" 2>/dev/null; then
-		kill -9 "$child_pid" 2>/dev/null
-	fi
+	[ -n "$child_pid" ] && kill "$child_pid" 2>/dev/null
 }
 trap cleanup_child TERM INT
 
@@ -71,21 +19,8 @@ trap cleanup_child TERM INT
 child_pid=$!
 wait "$child_pid"
 status=$?
-# A signal can interrupt ash's wait even though the trap has already asked the
-# child to exit. Confirm the process is gone and reap it a second time before
-# publishing stopping or running cleanup.
-if [ "$term_requested" = 1 ]; then
-	cleanup_child
-	wait "$child_pid" 2>/dev/null
-	reap_status=$?
-	[ "$status" -eq 0 ] && status="$reap_status"
-fi
 child_pid=
 trap - TERM INT
-# The watcher may have observed the marker at the same time as the child
-# exited. Reap it before publishing stopping so it cannot overwrite that state.
-stop_watcher
-mark_state stopping
 
 if ! daed_cleanup_runtime; then
 	echo "daed: runtime cleanup after exit failed" >&2
