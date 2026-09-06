@@ -10,8 +10,6 @@
 				"/etc/dae/example.dae": [ "read" ],
 				"/var/log/dae/dae.log": [ "read" ],
 				"/var/log/daed/daed.log": [ "read" ],
-				"/var/run/daede-dae.ready": [ "read" ],
-				"/var/run/daede-daed.ready": [ "read" ],
 				"/usr/share/v2ray/geoip.dat": [ "read" ],
 				"/usr/share/v2ray/geosite.dat": [ "read" ],
 				"/sys/kernel/btf/vmlinux": [ "read" ],

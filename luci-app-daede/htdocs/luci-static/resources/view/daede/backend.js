@@ -23,9 +23,7 @@ const BACKENDS = {
 		pkg: 'daed',
 		hasWebUI: true,
 		useNetns: true,
-		defaultListen: '0.0.0.0:2023',
-		readyState: '/var/run/daede-daed.ready',
-		readyPattern: /Reload: Finished/
+		defaultListen: '0.0.0.0:2023'
 	},
 	dae: {
 		name: 'dae',
@@ -36,9 +34,7 @@ const BACKENDS = {
 		pkg: 'dae',
 		config: '/etc/dae/config.dae',
 		hasWebUI: false,
-		useNetns: false,
-		readyState: '/var/run/daede-dae.ready',
-		readyPattern: /Total startup time:/
+		useNetns: false
 	}
 };
 
@@ -65,56 +61,6 @@ function serviceStatus(name) {
 		} catch (e) {}
 
 		return { running: running, pid: pid };
-	});
-}
-
-function serviceLogOffset(be) {
-	if (!be || !be.log)
-		return Promise.resolve(0);
-
-	return L.resolveDefault(fs.read_direct(be.log, 'text'), '').then(function(content) {
-		return String(content || '').length;
-	});
-}
-
-function serviceReady(be, afterOffset, pid) {
-	if (!be || !be.log || !be.readyPattern)
-		return Promise.resolve(false);
-
-	const expectedPid = Number(pid) || 0;
-	const notFound = function(error) {
-		const code = String(error && (error.code || error.errno || error.name) || '').toUpperCase();
-		const message = String(error && (error.message || error) || '').toUpperCase();
-		return code === 'ENOENT' || code === '-2' || code === 'NOTFOUNDERROR' ||
-			/ENOENT|NO SUCH FILE|RESOURCE NOT FOUND/.test(message);
-	};
-	const readState = be.readyState
-		? fs.stat(be.readyState).then(function(stat) {
-			// A successful stat makes the state file authoritative. A subsequent
-			// read error must fail closed instead of falling back to an old log line.
-			if (!stat)
-				return { present: true, error: true };
-			return fs.read_direct(be.readyState, 'text').then(function(value) {
-				return { present: true, value: String(value || '').trim() };
-			}, function() {
-				return { present: true, error: true };
-			});
-		}, function(error) {
-			return notFound(error) ? { present: false } : { present: true, error: true };
-		})
-		: Promise.resolve({ present: true, error: true });
-
-	return readState.then(function(result) {
-		if (result.present)
-			return !result.error && expectedPid > 0 && result.value === expectedPid + ' ready';
-
-		// Compatibility fallback for a luci-app upgrade before the matching dae or
-		// daed package. It is allowed only when stat explicitly reported ENOENT.
-		return L.resolveDefault(fs.read_direct(be.log, 'text'), '').then(function(content) {
-			const text = String(content || '');
-			const offset = Number(afterOffset) || 0;
-			return be.readyPattern.test(text.slice(text.length < offset ? 0 : offset));
-		});
 	});
 }
 
@@ -190,7 +136,5 @@ return baseclass.extend({
 	detectRunning: detectRunning,
 	detectBackend: detectBackend,
 	setActiveBackend: setActiveBackend,
-	serviceStatus: serviceStatus,
-	serviceLogOffset: serviceLogOffset,
-	serviceReady: serviceReady
+	serviceStatus: serviceStatus
 });
