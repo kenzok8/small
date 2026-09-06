@@ -21,7 +21,6 @@ start_service() {
 	config_get listen_addr "config" "listen_addr" "0.0.0.0:2023"
 	config_get log_maxbackups "config" "log_maxbackups" "1"
 	config_get log_maxsize "config" "log_maxsize" "5"
-
 	procd_open_instance "$CONF"
 	procd_set_param env DAE_LOCATION_ASSET="/usr/share/v2ray" TZ="$(uci -q get system.@system[0].zonename)"
 	procd_set_param command "$PROG" run
@@ -45,6 +44,9 @@ start_service() {
 stop_service() {
 	rm -f "$LOG"
 	daed_cleanup_runtime
+	local status=$?
+	rm -f /var/run/daede-daed.ready /var/run/daede-daed.ready.*
+	return "$status"
 }
 
 restart() {
