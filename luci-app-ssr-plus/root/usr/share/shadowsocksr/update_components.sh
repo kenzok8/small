@@ -2,13 +2,11 @@
 
 set -u
 
-XRAY_RELEASE_PAGE="https://github.com/XTLS/Xray-core/releases/latest"
+XRAY_RELEASE_PAGE="https://github.com/fw876/helloworld/releases/latest"
 MIHOMO_RELEASE_PAGE="https://github.com/MetaCubeX/mihomo/releases/latest"
-NAIVEPROXY_RELEASE_API="https://api.github.com/repos/klzgrad/naiveproxy/releases/latest"
 HELLOWORLD_RELEASE_API="https://api.github.com/repos/fw876/helloworld/releases/latest"
 XRAY_BINARY="/usr/bin/xray"
 MIHOMO_BINARY="/usr/bin/mihomo"
-NAIVEPROXY_BINARY="/usr/bin/naive"
 
 # Geo 数据文件 URL
 GEOIP_REPO="Loyalsoldier/geoip"
@@ -71,9 +69,6 @@ mirror_wrap_url() {
 			;;
 		jsdelivr)
 			case "$raw_url" in
-				https://github.com/XTLS/Xray-core/releases/download/*)
-					printf '%s' "$raw_url" | sed 's#https://github.com/XTLS/Xray-core/releases/download/\(v[^/]*\)/\(.*\)#https://fastly.jsdelivr.net/gh/XTLS/Xray-core@\1/\2#'
-					;;
 				https://github.com/MetaCubeX/mihomo/releases/download/*)
 					printf '%s' "$raw_url" | sed 's#https://github.com/MetaCubeX/mihomo/releases/download/\(v[^/]*\)/\(.*\)#https://fastly.jsdelivr.net/gh/MetaCubeX/mihomo@\1/\2#'
 					;;
@@ -141,10 +136,6 @@ get_openwrt_arch() {
 	printf '%s' "$arch"
 }
 
-is_openwrt_env() {
-	[ -r /etc/openwrt_release ] || command -v opkg >/dev/null 2>&1
-}
-
 detect_package_manager() {
 	if command -v apk >/dev/null 2>&1; then
 		printf '%s' 'apk'
@@ -209,79 +200,30 @@ get_mihomo_current_version() {
 }
 
 get_naiveproxy_current_version() {
-	local binary
+	local pm version binary
+
+	pm="$(detect_package_manager 2>/dev/null || true)"
+	case "$pm" in
+		apk)
+			version="$(apk list -I naiveproxy 2>/dev/null | sed -n 's/^naiveproxy-\([^[:space:]]*\).*$/\1/p' | sed -n '1p')"
+			;;
+		opkg)
+			version="$(opkg status naiveproxy 2>/dev/null | sed -n 's/^Version:[[:space:]]*//p' | sed -n '1p')"
+			;;
+	esac
+
+	if [ -n "${version:-}" ]; then
+		printf '%s' "$version"
+		return 0
+	fi
 
 	binary="$(find_naiveproxy_binary)" || return 1
 	"$binary" --version 2>&1 | grep -Eo '[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+(-[0-9]+)?' | sed -n '1p'
 	return 0
 }
 
-map_xray_asset() {
-	case "$1" in
-		x86_64*|amd64*)
-			printf '%s' 'Xray-linux-64.zip'
-			;;
-		i386*|i486*|i586*|i686*|x86*)
-			printf '%s' 'Xray-linux-32.zip'
-			;;
-		aarch64*|arm64*)
-			printf '%s' 'Xray-linux-arm64-v8a.zip'
-			;;
-		*armv7*|*cortex-a*|*neon*|*vfpv3*|*vfpv4*)
-			printf '%s' 'Xray-linux-arm32-v7a.zip'
-			;;
-		*armv6*|*arm1176*)
-			printf '%s' 'Xray-linux-arm32-v6.zip'
-			;;
-		*armv5*|*arm926*|*xscale*)
-			printf '%s' 'Xray-linux-arm32-v5.zip'
-			;;
-		mips64el*|mips64le*)
-			printf '%s' 'Xray-linux-mips64le.zip'
-			;;
-		mips64*)
-			printf '%s' 'Xray-linux-mips64.zip'
-			;;
-		mipsel*|mips32el*|mips32le*)
-			printf '%s' 'Xray-linux-mips32le.zip'
-			;;
-		mips*)
-			printf '%s' 'Xray-linux-mips32.zip'
-			;;
-		riscv64*)
-			printf '%s' 'Xray-linux-riscv64.zip'
-			;;
-		loongarch64*|loong64*)
-			printf '%s' 'Xray-linux-loong64.zip'
-			;;
-		powerpc64*|ppc64*)
-			printf '%s' 'Xray-linux-ppc64.zip'
-			;;
-		s390x*)
-			printf '%s' 'Xray-linux-s390x.zip'
-			;;
-		*)
-			return 1
-			;;
-	 esac
-}
-
 require_cmd() {
 	command -v "$1" >/dev/null 2>&1
-}
-
-select_unzip_cmd() {
-	if require_cmd unzip; then
-		printf '%s' 'unzip -oq'
-		return 0
-	fi
-
-	if busybox unzip >/dev/null 2>&1; then
-		printf '%s' 'busybox unzip -o'
-		return 0
-	fi
-
-	return 1
 }
 
 select_gzip_cmd() {
@@ -292,34 +234,6 @@ select_gzip_cmd() {
 
 	if busybox gzip >/dev/null 2>&1; then
 		printf '%s' 'busybox gzip -dc'
-		return 0
-	fi
-
-	return 1
-}
-
-select_xz_cmd() {
-	if require_cmd xz; then
-		printf '%s' 'xz -dc'
-		return 0
-	fi
-
-	if busybox xz >/dev/null 2>&1; then
-		printf '%s' 'busybox xz -dc'
-		return 0
-	fi
-
-	return 1
-}
-
-select_tar_cmd() {
-	if require_cmd tar; then
-		printf '%s' 'tar'
-		return 0
-	fi
-
-	if busybox tar --help >/dev/null 2>&1; then
-		printf '%s' 'busybox tar'
 		return 0
 	fi
 
@@ -1080,22 +994,72 @@ get_xray_latest_tag() {
 	local location tag
 
 	location="$(effective_url "$XRAY_RELEASE_PAGE")" || return 1
-	tag="$(printf '%s' "$location" | sed -n 's#.*/tag/\(v[0-9][^/]*\)$#\1#p' | sed -n '1p')"
+	tag="$(printf '%s' "$location" | sed -n 's#.*/tag/\([^/]*\)$#\1#p' | sed -n '1p')"
 	[ -n "$tag" ] || return 1
 	printf '%s' "$tag"
 }
 
-get_xray_latest_info() {
-	local tag version asset url arch
+select_xray_asset() {
+	local asset_list="$1"
+	local pm="$2"
+	local arch="$3"
+	local candidate
 
+	case "$pm" in
+		apk)
+			candidate="$(printf '%s\n' "$asset_list" | grep -E '^xray-core-[^[:space:]]+\.apk$' | grep -F "_${arch}.apk" | sed -n '1p')"
+			;;
+		opkg)
+			candidate="$(printf '%s\n' "$asset_list" | grep -E '^xray-core_[^[:space:]]+\.ipk$' | grep -F "_${arch}.ipk" | sed -n '1p')"
+			;;
+		*)
+			return 1
+			;;
+	esac
+
+	[ -n "$candidate" ] || return 1
+	printf '%s' "$candidate"
+}
+
+xray_asset_version() {
+	local asset="$1"
+	local arch="$2"
+	local version
+
+	case "$asset" in
+		xray-core_*_"$arch".ipk)
+			version="${asset#xray-core_}"
+			version="${version%_${arch}.ipk}"
+			;;
+		xray-core-*_"$arch".apk)
+			version="${asset#xray-core-}"
+			version="${version%_${arch}.apk}"
+			;;
+		*)
+			return 1
+			;;
+	esac
+
+	version="$(printf '%s' "$version" | sed 's/-r[0-9][0-9]*$//')"
+	[ -n "$version" ] || return 1
+	printf '%s' "$version"
+}
+
+get_xray_latest_info() {
+	local pm tag version asset asset_list release_html url arch
+
+	pm="$(detect_package_manager)" || return 2
 	arch="$(get_openwrt_arch)"
-	asset="$(map_xray_asset "$arch")" || return 2
 	tag="$(get_xray_latest_tag)" || return 3
-	version="$(trim_version "$tag")"
-	url="$(mirror_wrap_url "https://github.com/XTLS/Xray-core/releases/download/$tag/$asset")"
+	release_html="$(fetch_text "https://github.com/fw876/helloworld/releases/expanded_assets/$tag")" || return 3
+	asset_list="$(printf '%s\n' "$release_html" | sed -n 's#.*href="/fw876/helloworld/releases/download/[^/]*/\([^"]*\)".*#\1#p')"
+	asset="$(select_xray_asset "$asset_list" "$pm" "$arch")" || return 4
+	version="$(xray_asset_version "$asset" "$arch")" || return 4
+	url="$(mirror_wrap_url "https://github.com/fw876/helloworld/releases/download/$tag/$asset")"
 
 	[ -n "$tag" ] && [ -n "$version" ] && [ -n "$url" ] || return 4
 
+	log_kv package_manager "$pm"
 	log_kv arch "$arch"
 	log_kv asset "$asset"
 	log_kv latest_version "$version"
@@ -1181,112 +1145,64 @@ get_mihomo_latest_info() {
 	return 0
 }
 
-map_naiveproxy_linux_asset() {
-	case "$1" in
-		x86_64*|amd64*)
-			printf '%s' 'x64'
+select_naiveproxy_asset() {
+	local asset_list="$1"
+	local pm="$2"
+	local arch="$3"
+	local candidate
+
+	case "$pm" in
+		apk)
+			candidate="$(printf '%s\n' "$asset_list" | grep -E '^naiveproxy-[^[:space:]]+\.apk$' | grep -F "_${arch}.apk" | sed -n '1p')"
 			;;
-		i386*|i486*|i586*|i686*|x86*)
-			printf '%s' 'x86'
-			;;
-		aarch64*|arm64*)
-			printf '%s' 'arm64'
-			;;
-		*armv7*|*cortex-a*|*neon*|*vfpv3*|*vfpv4*)
-			printf '%s' 'arm'
-			;;
-		mips64el*|mips64le*)
-			printf '%s' 'mips64el'
-			;;
-		mipsel*|mips32el*|mips32le*)
-			printf '%s' 'mipsel'
-			;;
-		riscv64*)
-			printf '%s' 'riscv64'
-			;;
-		loongarch64*|loong64*)
-			printf '%s' 'loong64'
+		opkg)
+			candidate="$(printf '%s\n' "$asset_list" | grep -E '^naiveproxy_[^[:space:]]+\.ipk$' | grep -F "_${arch}.ipk" | sed -n '1p')"
 			;;
 		*)
 			return 1
 			;;
 	esac
+
+	[ -n "$candidate" ] || return 1
+	printf '%s' "$candidate"
 }
 
-normalize_naiveproxy_openwrt_arch() {
-	local arch="${1%%+*}"
-	printf '%s' "$arch"
-}
+naiveproxy_asset_version() {
+	local asset="$1"
+	local arch="$2"
+	local version
 
-naiveproxy_openwrt_arch_candidates() {
-	local normalized
-
-	normalized="$(normalize_naiveproxy_openwrt_arch "$1")"
-	printf '%s\n' "$normalized"
-
-	case "$normalized" in
-		aarch64_*)
-			[ "$normalized" = "aarch64_generic" ] || printf '%s\n' 'aarch64_generic'
+	case "$asset" in
+		naiveproxy_*_"$arch".ipk)
+			version="${asset#naiveproxy_}"
+			version="${version%_${arch}.ipk}"
 			;;
-		x86|i386|i486|i586|i686)
-			printf '%s\n' 'x86'
+		naiveproxy-*_"$arch".apk)
+			version="${asset#naiveproxy-}"
+			version="${version%_${arch}.apk}"
+			;;
+		*)
+			return 1
 			;;
 	esac
-}
 
-asset_list_has() {
-	local asset_list="$1"
-	local candidate="$2"
-
-	printf '%s\n' "$asset_list" | grep -Fx "$candidate" >/dev/null 2>&1
-}
-
-select_naiveproxy_asset() {
-	local asset_list="$1"
-	local tag="$2"
-	local arch="$3"
-	local candidate linux_arch candidate_arch
-
-	if is_openwrt_env; then
-		for candidate_arch in $(naiveproxy_openwrt_arch_candidates "$arch"); do
-			candidate="naiveproxy-${tag}-openwrt-${candidate_arch}-static.tar.xz"
-			if asset_list_has "$asset_list" "$candidate"; then
-				printf '%s' "$candidate"
-				return 0
-			fi
-
-			candidate="naiveproxy-${tag}-openwrt-${candidate_arch}.tar.xz"
-			if asset_list_has "$asset_list" "$candidate"; then
-				printf '%s' "$candidate"
-				return 0
-			fi
-		done
-	fi
-
-	linux_arch="$(map_naiveproxy_linux_asset "$arch" 2>/dev/null || true)"
-	if [ -n "$linux_arch" ]; then
-		candidate="naiveproxy-${tag}-linux-${linux_arch}.tar.xz"
-		if asset_list_has "$asset_list" "$candidate"; then
-			printf '%s' "$candidate"
-			return 0
-		fi
-	fi
-
-	return 1
+	[ -n "$version" ] || return 1
+	printf '%s' "$version"
 }
 
 get_naiveproxy_latest_info() {
-	local arch release_json tag version asset asset_list url
+	local pm arch tag version asset asset_list release_html url
 
+	pm="$(detect_package_manager)" || return 2
 	arch="$(get_openwrt_arch)"
-	release_json="$(fetch_text "$NAIVEPROXY_RELEASE_API")" || return 3
-	tag="$(printf '%s\n' "$release_json" | sed -n 's/.*"tag_name":[[:space:]]*"\([^"]*\)".*/\1/p' | sed -n '1p')"
-	[ -n "$tag" ] || return 3
-	version="$(trim_version "$tag")"
-	asset_list="$(printf '%s\n' "$release_json" | sed -n 's/.*"name":[[:space:]]*"\([^"]*\.tar\.xz\)".*/\1/p')"
-	asset="$(select_naiveproxy_asset "$asset_list" "$tag" "$arch")" || return 4
-	url="$(mirror_wrap_url "https://github.com/klzgrad/naiveproxy/releases/download/$tag/$asset")"
+	tag="$(get_xray_latest_tag)" || return 3
+	release_html="$(fetch_text "https://github.com/fw876/helloworld/releases/expanded_assets/$tag")" || return 3
+	asset_list="$(printf '%s\n' "$release_html" | sed -n 's#.*href="/fw876/helloworld/releases/download/[^/]*/\([^"]*\)".*#\1#p')"
+	asset="$(select_naiveproxy_asset "$asset_list" "$pm" "$arch")" || return 4
+	version="$(naiveproxy_asset_version "$asset" "$arch")" || return 4
+	url="$(mirror_wrap_url "https://github.com/fw876/helloworld/releases/download/$tag/$asset")"
 
+	log_kv package_manager "$pm"
 	log_kv arch "$arch"
 	log_kv asset "$asset"
 	log_kv latest_version "$version"
@@ -1529,12 +1445,13 @@ mainprogram_upgrade() {
 }
 
 xray_info() {
-	local current installed latest_output latest_rc latest_version arch asset can_upgrade
+	local pm current installed latest_output latest_rc latest_version arch asset can_upgrade
 
 	installed=0
 	current=""
+	pm="$(detect_package_manager 2>/dev/null || true)"
 	arch="$(get_openwrt_arch)"
-	asset="$(map_xray_asset "$arch" 2>/dev/null || true)"
+	asset=""
 	if current="$(get_xray_current_version)" && [ -n "$current" ]; then
 		installed=1
 	fi
@@ -1545,13 +1462,14 @@ xray_info() {
 	log_kv component xray
 	log_kv installed "$installed"
 	log_kv current_version "$current"
+	log_kv package_manager "$pm"
 	log_kv arch "$arch"
 	log_kv asset "$asset"
 
 	if [ $latest_rc -ne 0 ]; then
 		log_kv can_upgrade 0
 		case "$latest_rc" in
-			2) log_kv error 'unsupported_arch' ;;
+			2) log_kv error 'unsupported_package_manager' ;;
 			3) log_kv error 'fetch_failed' ;;
 			4) log_kv error 'asset_not_found' ;;
 			*) log_kv error 'unknown_error' ;;
@@ -1560,6 +1478,7 @@ xray_info() {
 	fi
 
 	latest_version="$(printf '%s\n' "$latest_output" | sed -n 's/^latest_version=//p' | sed -n '1p')"
+	pm="$(printf '%s\n' "$latest_output" | sed -n 's/^package_manager=//p' | sed -n '1p')"
 	arch="$(printf '%s\n' "$latest_output" | sed -n 's/^arch=//p' | sed -n '1p')"
 	asset="$(printf '%s\n' "$latest_output" | sed -n 's/^asset=//p' | sed -n '1p')"
 	can_upgrade=0
@@ -1619,10 +1538,11 @@ mihomo_info() {
 }
 
 naiveproxy_info() {
-	local current installed latest_output latest_rc latest_version arch asset can_upgrade
+	local pm current installed latest_output latest_rc latest_version arch asset can_upgrade
 
 	installed=0
 	current=""
+	pm="$(detect_package_manager 2>/dev/null || true)"
 	arch="$(get_openwrt_arch)"
 	if current="$(get_naiveproxy_current_version)" && [ -n "$current" ]; then
 		installed=1
@@ -1634,12 +1554,14 @@ naiveproxy_info() {
 	log_kv component naiveproxy
 	log_kv installed "$installed"
 	log_kv current_version "$current"
+	log_kv package_manager "$pm"
 	log_kv arch "$arch"
 	log_kv asset ''
 
 	if [ $latest_rc -ne 0 ]; then
 		log_kv can_upgrade 0
 		case "$latest_rc" in
+			2) log_kv error 'unsupported_package_manager' ;;
 			3) log_kv error 'fetch_failed' ;;
 			4) log_kv error 'asset_not_found' ;;
 			*) log_kv error 'unknown_error' ;;
@@ -1648,6 +1570,7 @@ naiveproxy_info() {
 	fi
 
 	latest_version="$(printf '%s\n' "$latest_output" | sed -n 's/^latest_version=//p' | sed -n '1p')"
+	pm="$(printf '%s\n' "$latest_output" | sed -n 's/^package_manager=//p' | sed -n '1p')"
 	arch="$(printf '%s\n' "$latest_output" | sed -n 's/^arch=//p' | sed -n '1p')"
 	asset="$(printf '%s\n' "$latest_output" | sed -n 's/^asset=//p' | sed -n '1p')"
 	can_upgrade=0
@@ -1663,12 +1586,12 @@ naiveproxy_info() {
 }
 
 xray_local_info() {
-	local current installed arch asset
+	local pm current installed arch
 
 	installed=0
 	current=""
+	pm="$(detect_package_manager 2>/dev/null || true)"
 	arch="$(get_openwrt_arch)"
-	asset="$(map_xray_asset "$arch" 2>/dev/null || true)"
 	if current="$(get_xray_current_version)" && [ -n "$current" ]; then
 		installed=1
 	fi
@@ -1677,8 +1600,9 @@ xray_local_info() {
 	log_kv installed "$installed"
 	log_kv current_version "$current"
 	log_kv latest_version ''
+	log_kv package_manager "$pm"
 	log_kv arch "$arch"
-	log_kv asset "$asset"
+	log_kv asset ''
 	log_kv can_upgrade 0
 	log_kv error ''
 }
@@ -1707,10 +1631,11 @@ mihomo_local_info() {
 }
 
 naiveproxy_local_info() {
-	local current installed arch
+	local pm current installed arch
 
 	installed=0
 	current=""
+	pm="$(detect_package_manager 2>/dev/null || true)"
 	arch="$(get_openwrt_arch)"
 	if current="$(get_naiveproxy_current_version)" && [ -n "$current" ]; then
 		installed=1
@@ -1720,6 +1645,7 @@ naiveproxy_local_info() {
 	log_kv installed "$installed"
 	log_kv current_version "$current"
 	log_kv latest_version ''
+	log_kv package_manager "$pm"
 	log_kv arch "$arch"
 	log_kv asset ''
 	log_kv can_upgrade 0
@@ -1727,14 +1653,14 @@ naiveproxy_local_info() {
 }
 
 xray_upgrade() {
-	local latest_output latest_rc latest_version download_url tmp_dir zip_file unzip_cmd backup_file current_before current_after
+	local latest_output latest_rc latest_version download_url package_manager asset tmp_dir package_file current_before current_after
 
 	latest_output="$(get_xray_latest_info 2>/dev/null)"
 	latest_rc=$?
 	if [ $latest_rc -ne 0 ]; then
 		log_kv success 0
 		case "$latest_rc" in
-			2) log_kv message 'Unsupported ARCH' ;;
+			2) log_kv message 'Unsupported package manager' ;;
 			3) log_kv message 'Failed to fetch release metadata' ;;
 			4) log_kv message 'Matching release asset not found' ;;
 			*) log_kv message 'Unknown error' ;;
@@ -1742,14 +1668,10 @@ xray_upgrade() {
 		return 0
 	fi
 
-	if ! unzip_cmd="$(select_unzip_cmd)"; then
-		log_kv success 0
-		log_kv message 'Missing unzip support'
-		return 0
-	fi
-
 	latest_version="$(printf '%s\n' "$latest_output" | sed -n 's/^latest_version=//p' | sed -n '1p')"
 	download_url="$(printf '%s\n' "$latest_output" | sed -n 's/^download_url=//p' | sed -n '1p')"
+	package_manager="$(printf '%s\n' "$latest_output" | sed -n 's/^package_manager=//p' | sed -n '1p')"
+	asset="$(printf '%s\n' "$latest_output" | sed -n 's/^asset=//p' | sed -n '1p')"
 	current_before="$(get_xray_current_version 2>/dev/null || true)"
 	if [ -n "$current_before" ] && ! version_gt "$latest_version" "$current_before"; then
 		log_kv success 1
@@ -1767,52 +1689,25 @@ xray_upgrade() {
 		return 0
 	fi
 
-	zip_file="$tmp_dir/xray.zip"
-	backup_file="$tmp_dir/xray.backup"
-
+	package_file="$tmp_dir/$asset"
 	trap "rm -rf '$tmp_dir'" EXIT INT TERM
 
-	if ! download_file "$download_url" "$zip_file"; then
+	if ! download_file "$download_url" "$package_file"; then
 		log_kv success 0
 		log_kv message 'Download failed'
 		return 0
 	fi
 
-	if ! sh -c "$unzip_cmd \"$zip_file\" -d \"$tmp_dir\" >/dev/null 2>&1"; then
-		log_kv success 0
-		log_kv message 'Extract failed'
-		return 0
-	fi
-
-	if [ ! -f "$tmp_dir/xray" ]; then
-		log_kv success 0
-		log_kv message 'xray binary not found in archive'
-		return 0
-	fi
-
-	chmod 0755 "$tmp_dir/xray" || true
-	if [ -x "$XRAY_BINARY" ]; then
-		cp -fp "$XRAY_BINARY" "$backup_file" 2>/dev/null || true
-	fi
-
-	if ! cp -f "$tmp_dir/xray" "$XRAY_BINARY"; then
-		if [ -f "$backup_file" ]; then
-			cp -f "$backup_file" "$XRAY_BINARY" 2>/dev/null || true
-		fi
+	if [ ! -s "$package_file" ] || ! mainprogram_install_package "$package_manager" "$package_file"; then
 		log_kv success 0
 		log_kv message 'Install failed'
 		return 0
 	fi
 
-	chmod 0755 "$XRAY_BINARY" || true
 	current_after="$(get_xray_current_version 2>/dev/null || true)"
 	if [ -z "$current_after" ]; then
-		if [ -f "$backup_file" ]; then
-			cp -f "$backup_file" "$XRAY_BINARY" 2>/dev/null || true
-			chmod 0755 "$XRAY_BINARY" || true
-		fi
 		log_kv success 0
-		log_kv message 'Installed binary failed to run'
+		log_kv message 'Installed package check failed'
 		return 0
 	fi
 
@@ -1824,6 +1719,9 @@ xray_upgrade() {
 	log_kv previous_version "$current_before"
 	log_kv current_version "$current_after"
 	log_kv latest_version "$latest_version"
+	log_kv package_manager "$package_manager"
+	log_kv arch "$(get_openwrt_arch)"
+	log_kv asset "$asset"
 	log_kv message 'Upgrade completed'
 	return 0
 }
@@ -1940,13 +1838,14 @@ mihomo_upgrade() {
 }
 
 naiveproxy_upgrade() {
-	local latest_output latest_rc latest_version download_url tmp_dir archive_file xz_cmd tar_cmd backup_file current_before current_after target_binary extracted_binary
+	local latest_output latest_rc latest_version download_url package_manager asset tmp_dir package_file current_before current_after
 
 	latest_output="$(get_naiveproxy_latest_info 2>/dev/null)"
 	latest_rc=$?
 	if [ $latest_rc -ne 0 ]; then
 		log_kv success 0
 		case "$latest_rc" in
+			2) log_kv message 'Unsupported package manager' ;;
 			3) log_kv message 'Failed to fetch release metadata' ;;
 			4) log_kv message 'Matching release asset not found' ;;
 			*) log_kv message 'Unknown error' ;;
@@ -1954,20 +1853,10 @@ naiveproxy_upgrade() {
 		return 0
 	fi
 
-	if ! xz_cmd="$(select_xz_cmd)"; then
-		log_kv success 0
-		log_kv message 'Missing xz support'
-		return 0
-	fi
-
-	if ! tar_cmd="$(select_tar_cmd)"; then
-		log_kv success 0
-		log_kv message 'Extract failed'
-		return 0
-	fi
-
 	latest_version="$(printf '%s\n' "$latest_output" | sed -n 's/^latest_version=//p' | sed -n '1p')"
 	download_url="$(printf '%s\n' "$latest_output" | sed -n 's/^download_url=//p' | sed -n '1p')"
+	package_manager="$(printf '%s\n' "$latest_output" | sed -n 's/^package_manager=//p' | sed -n '1p')"
+	asset="$(printf '%s\n' "$latest_output" | sed -n 's/^asset=//p' | sed -n '1p')"
 	current_before="$(get_naiveproxy_current_version 2>/dev/null || true)"
 	if [ -n "$current_before" ] && ! version_gt "$latest_version" "$current_before"; then
 		log_kv success 1
@@ -1978,9 +1867,6 @@ naiveproxy_upgrade() {
 		return 0
 	fi
 
-	target_binary="$(find_naiveproxy_binary 2>/dev/null || true)"
-	[ -n "$target_binary" ] || target_binary="$NAIVEPROXY_BINARY"
-
 	tmp_dir="$(mktemp -d /tmp/ssrplus-naiveproxy.XXXXXX)"
 	if [ -z "$tmp_dir" ] || [ ! -d "$tmp_dir" ]; then
 		log_kv success 0
@@ -1988,65 +1874,25 @@ naiveproxy_upgrade() {
 		return 0
 	fi
 
-	archive_file="$tmp_dir/naiveproxy.tar.xz"
-	backup_file="$tmp_dir/naive.backup"
-	extracted_binary=""
-
+	package_file="$tmp_dir/$asset"
 	trap "rm -rf '$tmp_dir'" EXIT INT TERM
 
-	if ! download_file "$download_url" "$archive_file"; then
+	if ! download_file "$download_url" "$package_file"; then
 		log_kv success 0
 		log_kv message 'Download failed'
 		return 0
 	fi
 
-	mkdir -p "$tmp_dir/extract" || {
-		log_kv success 0
-		log_kv message 'Failed to create temp directory'
-		return 0
-	}
-
-	if ! sh -c "cd \"$tmp_dir/extract\" && $xz_cmd \"$archive_file\" | $tar_cmd -xf - >/dev/null 2>&1"; then
-		log_kv success 0
-		log_kv message 'Extract failed'
-		return 0
-	fi
-
-	extracted_binary="$(find "$tmp_dir/extract" -type f -name naive | sed -n '1p')"
-	if [ -z "$extracted_binary" ] || [ ! -s "$extracted_binary" ]; then
-		log_kv success 0
-		log_kv message 'naive binary not found in archive'
-		return 0
-	fi
-
-	mkdir -p "$(dirname "$target_binary")" || true
-	chmod 0755 "$extracted_binary" || true
-	if [ -x "$target_binary" ]; then
-		cp -fp "$target_binary" "$backup_file" 2>/dev/null || true
-	fi
-
-	if ! cp -f "$extracted_binary" "$target_binary"; then
-		if [ -f "$backup_file" ]; then
-			cp -f "$backup_file" "$target_binary" 2>/dev/null || true
-		fi
+	if [ ! -s "$package_file" ] || ! mainprogram_install_package "$package_manager" "$package_file"; then
 		log_kv success 0
 		log_kv message 'Install failed'
 		return 0
 	fi
 
-	chmod 0755 "$target_binary" || true
-	if [ "$target_binary" != "$NAIVEPROXY_BINARY" ] && [ ! -x "$NAIVEPROXY_BINARY" ]; then
-		ln -sf "$target_binary" "$NAIVEPROXY_BINARY" 2>/dev/null || true
-	fi
-
 	current_after="$(get_naiveproxy_current_version 2>/dev/null || true)"
 	if [ -z "$current_after" ]; then
-		if [ -f "$backup_file" ]; then
-			cp -f "$backup_file" "$target_binary" 2>/dev/null || true
-			chmod 0755 "$target_binary" || true
-		fi
 		log_kv success 0
-		log_kv message 'Installed binary failed to run'
+		log_kv message 'Installed package check failed'
 		return 0
 	fi
 
@@ -2058,6 +1904,9 @@ naiveproxy_upgrade() {
 	log_kv previous_version "$current_before"
 	log_kv current_version "$current_after"
 	log_kv latest_version "$latest_version"
+	log_kv package_manager "$package_manager"
+	log_kv arch "$(get_openwrt_arch)"
+	log_kv asset "$asset"
 	log_kv message 'Upgrade completed'
 	return 0
 }

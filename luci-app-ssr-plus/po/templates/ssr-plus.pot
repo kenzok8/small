@@ -2667,8 +2667,8 @@ msgstr ""
 
 #: applications/luci-app-ssr-plus/luasrc/view/shadowsocksr/component.htm:10
 msgid ""
-"The online upgrade downloads the matching Xray-core linux archive for the "
-"current ARCH from the official GitHub release page."
+"The online upgrade downloads and installs the matching Xray-core package for "
+"this system from fw876/helloworld releases."
 msgstr ""
 
 #: applications/luci-app-ssr-plus/luasrc/view/shadowsocksr/component.htm:14
@@ -2680,9 +2680,8 @@ msgstr ""
 
 #: applications/luci-app-ssr-plus/luasrc/view/shadowsocksr/component.htm:18
 msgid ""
-"The online upgrade tracks the latest NaiveProxy release and prefers OpenWrt "
-"static archives matching the current ARCH before falling back to other "
-"release assets."
+"The online upgrade downloads and installs the matching NaiveProxy package "
+"for this system from fw876/helloworld releases."
 msgstr ""
 
 #: applications/luci-app-ssr-plus/luasrc/view/shadowsocksr/clash_main_panel.htm:816
