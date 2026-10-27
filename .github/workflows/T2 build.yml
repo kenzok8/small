@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       plugins:
-        description: 'Input: empty/*=default packages, 1=updated in 1 day, 2=updated in 2 days, new=added in 7 days, or package name(s)'
+        description: '输入: 留空/*=默认包, 1=最近1天更新, 2=最近2天更新, new=最近7天新增, 或插件名(空格分隔)'
         required: false
         default: ''
   push:
