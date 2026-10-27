@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       plugins:
-        description: 'Input: empty/*=default packages, 1=updated in 1 day, 2=updated in 2 days, or package name(s)'
+        description: 'Input: empty/*=default packages, 1=updated in 1 day, 2=updated in 2 days, new=added in 7 days, or package name(s)'
         required: false
         default: ''
   push:
@@ -37,10 +37,13 @@ jobs:
           
           if [ -z "$input" ] || [ "$input" == "*" ]; then
             # default packages
-            PACKAGES="luci-app-clashoo luci-app-fchomo luci-app-homeproxy luci-app-momo luci-app-nikki luci-app-openclash luci-app-passwall luci-app-passwall2 luci-app-ssr-plus brook clashoo hysteria ipt2socks pdnsd-alt redsocks2 shadow-tls trojan tuic-client xray-plugin v2ray-core v2ray-geodata naiveproxy sing-box"
+            PACKAGES="luci-app-clashoo luci-app-fchomo luci-app-homeproxy luci-app-momo luci-app-nikki luci-app-openclash luci-app-passwall luci-app-passwall2 luci-app-ssr-plus brook clashoo hysteria ipt2socks pdnsd-alt redsocks2 shadow-tls trojan tuic-client xray-plugin v2ray-core v2ray-geodata naiveproxy sing-box chinadns-ng dae daed dns2socks dns2socks-rust dns2tcp geo2txt geoview gn honk lua-neturl luci-app-daede luci-app-honk luci-app-mosdns microsocks mihomo momo mosdns nikki shadowsocks-libev shadowsocks-rust shadowsocksr-libev simple-obfs ssocks tcping trojan-go trojan-plus v2dat v2ray-plugin v2raya xray-core"
             echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
           elif [ "$input" == "1" ]; then
             PACKAGES=$(git log --since="1 days ago" --name-only --pretty=format: | grep -v '^$' | awk -F'/' '{print $1}' | sort -u | grep -v '^\.\|^$' | while read pkg; do [ -f "$pkg/Makefile" ] && echo "$pkg"; done | tr '\n' ' ' | sed 's/ $//')
+            echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
+          elif [ "$input" == "new" ]; then
+            PACKAGES=$(git log --diff-filter=A --since="7 days ago" --name-only --pretty=format: | grep -v '^$' | awk -F'/' '{print $1}' | sort -u | grep -v '^\.\|^$' | while read pkg; do [ -f "$pkg/Makefile" ] && echo "$pkg"; done | tr '\n' ' ' | sed 's/ $//')
             echo "packages=$PACKAGES" >> $GITHUB_OUTPUT
           elif [ "$input" == "2" ]; then
             PACKAGES=$(git log --since="2 days ago" --name-only --pretty=format: | grep -v '^$' | awk -F'/' '{print $1}' | sort -u | grep -v '^\.\|^$' | while read pkg; do [ -f "$pkg/Makefile" ] && echo "$pkg"; done | tr '\n' ' ' | sed 's/ $//')
