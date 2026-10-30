@@ -17,7 +17,7 @@ PKG_RELEASE:=2
 CORE_COMMIT:=aebc0d78d567cac1cd74ee9c56674857c5441451
 
 # Immutable source asset tag holding this pin's core archives.
-HONK_SOURCE_TAG?=source-40914867358
+HONK_SOURCE_TAG?=source-41012758310
 HONK_SOURCE_URL?=https://github.com/kenzok8/openwrt-honk/releases/download/$(HONK_SOURCE_TAG)
 
 -include $(CURDIR)/generated-stage.mk
@@ -25,9 +25,9 @@ HONK_SOURCE_URL?=https://github.com/kenzok8/openwrt-honk/releases/download/$(HON
 HONK_ASSET_X86_64?=honk-core-$(CORE_COMMIT)-x86_64.tar.gz
 HONK_ASSET_AARCH64?=honk-core-$(CORE_COMMIT)-aarch64.tar.gz
 HONK_ASSET_ARMV7?=honk-core-$(CORE_COMMIT)-armv7.tar.gz
-HONK_HASH_X86_64?=c01864e0196a8c2ef50aa852a696a2185a64168ee7c15ba43a7b5ed8d562669c
-HONK_HASH_AARCH64?=ea87f30ac432fa610d761cfeedec4d8c6e4834833bcf8cf26e8873aaee037ddc
-HONK_HASH_ARMV7?=2f54db460d83ba78af3f6b3460824d62cc73ac5116ca1f17b6c4c9a1b5eb8b50
+HONK_HASH_X86_64?=20293344e2b3eb287b793b1b34a58e11f04cd8100e03a38af4eedf7c0bb6e99b
+HONK_HASH_AARCH64?=3603497964db81622536f86b4c9352d3eb5492e3b4d28a39f4f4541a9d8391d1
+HONK_HASH_ARMV7?=334550d3c90a016b5b1f3b43137e11a2b76a13bfa4a75d24a67a9a198c962ccc
 
 # ARCH_PACKAGES is the package arch (e.g. arm_cortex-a7_neon-vfpv4);
 # ARCH is the CPU arch (x86_64/aarch64/arm) and coincides for 64-bit.
