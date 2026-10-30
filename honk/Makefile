@@ -9,18 +9,25 @@ PKG_VERSION:=2026.10.24
 PKG_RELEASE:=2
 
 # Pinned honk-core revision (Glassyiris/honk feat/native-api), cross-compiled by
-# ci/build-core.sh. The per-architecture asset/hash are filled by that script;
-# keep a committed fallback so the feed still evaluates without a staging run.
+# ci/build-core.sh. Every release run publishes its core archives under an
+# immutable source-<run_id> tag; the tag and SHA-256 values below are the exact
+# assets behind CORE_COMMIT, so a plain feed build downloads and verifies them
+# without any generated file. A staged run may still override them through
+# honk/generated-stage.mk, which is generated and never committed.
 CORE_COMMIT:=aebc0d78d567cac1cd74ee9c56674857c5441451
+
+# Immutable source asset tag holding this pin's core archives.
+HONK_SOURCE_TAG?=source-40914867358
+HONK_SOURCE_URL?=https://github.com/kenzok8/openwrt-honk/releases/download/$(HONK_SOURCE_TAG)
 
 -include $(CURDIR)/generated-stage.mk
 
 HONK_ASSET_X86_64?=honk-core-$(CORE_COMMIT)-x86_64.tar.gz
 HONK_ASSET_AARCH64?=honk-core-$(CORE_COMMIT)-aarch64.tar.gz
 HONK_ASSET_ARMV7?=honk-core-$(CORE_COMMIT)-armv7.tar.gz
-HONK_HASH_X86_64?=SKIP
-HONK_HASH_AARCH64?=SKIP
-HONK_HASH_ARMV7?=SKIP
+HONK_HASH_X86_64?=c01864e0196a8c2ef50aa852a696a2185a64168ee7c15ba43a7b5ed8d562669c
+HONK_HASH_AARCH64?=ea87f30ac432fa610d761cfeedec4d8c6e4834833bcf8cf26e8873aaee037ddc
+HONK_HASH_ARMV7?=2f54db460d83ba78af3f6b3460824d62cc73ac5116ca1f17b6c4c9a1b5eb8b50
 
 # ARCH_PACKAGES is the package arch (e.g. arm_cortex-a7_neon-vfpv4);
 # ARCH is the CPU arch (x86_64/aarch64/arm) and coincides for 64-bit.
@@ -40,7 +47,7 @@ PKG_LICENSE_FILES:=LICENSE
 PKG_MAINTAINER:=kenzok8
 
 PKG_SOURCE:=$(HONK_ASSET)
-PKG_SOURCE_URL?=https://github.com/kenzok8/openwrt-honk/releases/download/staging/
+PKG_SOURCE_URL?=$(HONK_SOURCE_URL)/
 PKG_HASH:=$(HONK_HASH)
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
