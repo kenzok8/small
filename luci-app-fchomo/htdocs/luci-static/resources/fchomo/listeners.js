@@ -204,7 +204,7 @@ function renderListeners(s, uciconfig, isClient) {
 	o.modalonly = true;
 
 	o = s.taboption('field_general', form.Value, 'mieru_tcp_idle_timeout', _('TCP idle timeout'),
-		_('In seconds.'), _('Minimum value is $s.').format('60'));
+		_('In seconds.') + ' ' + _('Minimum value is $s.').format('60'));
 	o.placeholder = '1800';
 	o.validate = hm.validateTimeDuration;
 	o.depends('type', 'mieru');
@@ -1003,7 +1003,7 @@ function renderListeners(s, uciconfig, isClient) {
 	// @xhttp-config其他的配置
 
 	/* Hysteria2 Realm fields */
-	hm.renderHy2Realm(s, data[0]);
+	hm.renderHy2Realm(s, uciconfig);
 
 	if (isClient) {
 		o = s.taboption('field_hysteria2_realm', form.ListValue, 'hysteria2_realm_proxy', _('Proxy group'),
