@@ -10,7 +10,11 @@ PKG_RELEASE:=5
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 
 PKG_SOURCE:=doona-21a6d7a0-b26231019769.tar.gz
-PKG_SOURCE_URL:=https://github.com/kenzok8/openwrt-honk/releases/download/staging
+# Each package Makefile is evaluated on its own, so this tag is defined here too
+# instead of relying on the honk package's variable. It must match honk/Makefile:
+# scripts/check.sh enforces that.
+HONK_SOURCE_TAG?=source-40914867358
+PKG_SOURCE_URL?=https://github.com/kenzok8/openwrt-honk/releases/download/$(HONK_SOURCE_TAG)
 PKG_SOURCE_SUBDIR:=doona
 PKG_HASH:=b2623101976979b30c7e9b23037215bf231357927738a77136647acf85a6bc3a
 
