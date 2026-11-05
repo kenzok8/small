@@ -120,7 +120,11 @@ validate_manifest() {
 	[ "$(manifest_field '@.min_updater_api')" = 1 ] || return 1
 	[ "$(manifest_field '@.state_schema')" = 2 ] || return 1
 	# (arch and OpenWrt version already validated against local system above)
-	[ -r /sys/kernel/btf/vmlinux ] || return 1
+	if [ -n "${HONK_VMLINUX_BTF:-}" ]; then
+		[ -r "$HONK_VMLINUX_BTF" ] || return 1
+	else
+		[ -r /sys/kernel/btf/vmlinux ] || [ -r /usr/lib/debug/boot/vmlinux ] || return 1
+	fi
 	kernel_version=$(uname -r | sed 's/-.*//')
 	kernel_major=${kernel_version%%.*}
 	kernel_minor=${kernel_version#*.}
