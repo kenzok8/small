@@ -68,7 +68,7 @@ jobs:
           GOLANG_BRANCH: '1.26'
 
       - name: Store packages
-        uses: actions/upload-artifact@v7.0.0
+        uses: actions/upload-artifact@v7.0.2
         with:
           name: ${{ matrix.arch }}-${{ matrix.sdk }}
           path: |
