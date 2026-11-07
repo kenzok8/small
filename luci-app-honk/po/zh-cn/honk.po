@@ -30,6 +30,9 @@ msgstr "发现兼容更新，但尚无完整且已验证的回滚软件包组。
 msgid "A compatible update is available."
 msgstr "发现兼容更新。"
 
+msgid "A file under /etc/honk has a name the backup cannot carry (spaces, wildcards or \"../\"). The service log names it; rename it and try again."
+msgstr "/etc/honk 下有文件名无法写入备份（含空格、通配符或 ../）。文件名已记入日志，改名后重试。"
+
 msgid "A previous operation did not finish cleanly."
 msgstr "上一次操作未能正常结束。"
 
@@ -908,6 +911,9 @@ msgstr "系统检查结果：%s"
 msgid "Temporary upload cleared."
 msgstr "Temporary upload cleared."
 
+msgid "The backup found an entry under /etc/honk it cannot archive (a symlink, a special file, or too many files)."
+msgstr "/etc/honk 下有无法归档的条目（符号链接、特殊文件或文件数量超出上限）。"
+
 msgid "The Clash API listener is unavailable. Check the service logs."
 msgstr "Clash API 监听不可用，请检查服务日志。"
 
@@ -1483,3 +1489,27 @@ msgstr "预检失败，请稍后重试。"
 
 msgid "Switch to panel management"
 msgstr "切换为面板管理"
+
+msgid "The maintenance script stopped without reporting a result. Check Maintenance → Logs → Maintenance for the reason."
+msgstr "维护脚本没有返回结果（崩溃或被杀）。请在「维护 → 日志 → 维护」里看具体原因。"
+
+msgid "The /etc/honk directory is missing or is a symlink."
+msgstr "/etc/honk 目录不存在，或者是个符号链接。"
+
+msgid "There is a symlink under /etc/honk. The backup cannot carry it; remove it and try again."
+msgstr "/etc/honk 下面有符号链接，备份无法携带。删掉它再试。"
+
+msgid "There is a non-regular file (device, socket, fifo) under /etc/honk. Remove it and try again."
+msgstr "/etc/honk 下面有非普通文件（设备、socket、管道），删掉它再试。"
+
+msgid "A file under /etc/honk could not be read. Check the filesystem and permissions."
+msgstr "/etc/honk 下面的文件读不出来，请检查存储和权限。"
+
+msgid "A single file under /etc/honk is larger than 64 MB. The service log names it."
+msgstr "/etc/honk 里有单个文件超过 64 MB，日志里写了是哪个。"
+
+msgid "The backup would exceed 512 files or 127 MB. The service log names the entry that crossed the limit."
+msgstr "备份会超过 512 个文件或 127 MB，日志里写了是哪个条目越界。"
+
+msgid "config.dae or system.dae is missing under /etc/honk. Reinstall or repair Honk before backing up."
+msgstr "/etc/honk 里缺 config.dae 或 system.dae，先修复或重装 Honk 再备份。"
