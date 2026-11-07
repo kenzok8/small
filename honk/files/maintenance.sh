@@ -396,8 +396,14 @@ check_root_file() {
 }
 
 safe_relpath() {
-	case "$1" in ''|/*|*..*|*[^A-Za-z0-9._/-]*|*//*|*/./*|./*|*/.) return 1 ;; esac
-	return 0
+	case "$1" in ''|/*|*..*|*//*|*/./*|./*|*/.) return 1 ;; esac
+	# 空白、控制字符、通配符、反斜杠会打乱 tar 成员解析与解包，一律拒绝；
+	# 中文等 UTF-8 名放行（路由上不一定有 od/hexdump，只能用 awk 的字符类判）。
+	printf '%s\n' "$1" | LC_ALL=C awk '
+		$0 ~ /[[:space:][:cntrl:]]/ { bad = 1 }
+		$0 ~ /\*/ || $0 ~ /\?/ || $0 ~ /\[/ || $0 ~ /\\/ { bad = 1 }
+		END { exit bad ? 1 : 0 }
+	'
 }
 
 size_of() {
@@ -504,30 +510,47 @@ is_excluded() {
 collect_tree() {
 	collect_root=$1
 	collect_out=$2
-	[ -d "$collect_root" ] && [ ! -L "$collect_root" ] || return 1
-	if find "$collect_root" -type l -print 2>/dev/null | grep -q .; then return 1; fi
-	if find "$collect_root" ! -type f ! -type d -print 2>/dev/null | grep -q .; then return 1; fi
-	: > "$collect_out" || return 1
+	collect_error=
+	[ -d "$collect_root" ] && [ ! -L "$collect_root" ] || { collect_error=honk_tree_missing; return 1; }
+	if find "$collect_root" -type l -print 2>/dev/null | grep -q .; then collect_error=honk_tree_has_symlink; return 1; fi
+	if find "$collect_root" ! -type f ! -type d -print 2>/dev/null | grep -q .; then collect_error=honk_tree_has_special_file; return 1; fi
+	: > "$collect_out" || { collect_error=temporary_storage_unavailable; return 1; }
 	(
 		cd "$collect_root" || exit 1
 		find . -type f -print
-	) > "$collect_out.raw" || return 1
+	) > "$collect_out.raw" || { collect_error=honk_tree_unreadable; return 1; }
 	: > "$collect_out"
 	collect_count=0
 	collect_total=0
 	while IFS= read -r collect_path; do
 		collect_path=${collect_path#./}
 		is_excluded "$collect_path" && continue
-		safe_relpath "$collect_path" || exit 1
-		[ -f "$collect_root/$collect_path" ] && [ ! -L "$collect_root/$collect_path" ] || return 1
-		collect_size=$(size_of "$collect_root/$collect_path") || return 1
-		[ "$collect_size" -le "$MAX_FILE" ] || return 1
+		safe_relpath "$collect_path" || {
+			collect_error=unsafe_honk_file_name
+			# 文件名进面板日志（维护→日志→维护），否则用户不知道是哪个文件。
+			logger -t honk-maintenance "unsafe file name: $collect_path" 2>/dev/null || :
+			printf '%s\n' "unsafe file name: $collect_path" >&2
+			return 1
+		}
+		[ -f "$collect_root/$collect_path" ] && [ ! -L "$collect_root/$collect_path" ] || { collect_error=honk_tree_has_special_file; return 1; }
+		collect_size=$(size_of "$collect_root/$collect_path") || { collect_error=honk_tree_unreadable; return 1; }
+		[ "$collect_size" -le "$MAX_FILE" ] || {
+			collect_error=honk_backup_file_too_large
+			logger -t honk-maintenance "file exceeds $MAX_FILE bytes: $collect_path" 2>/dev/null || :
+			printf '%s\n' "file too large: $collect_path" >&2
+			return 1
+		}
 		collect_count=$((collect_count + 1))
 		collect_total=$((collect_total + collect_size))
-		[ "$collect_count" -lt "$MAX_FILES" ] && [ "$collect_total" -le $((MAX_EXPANDED - 1048576)) ] || return 1
-		printf '%s\n' "$collect_path" >> "$collect_out" || exit 1
-	done < "$collect_out.raw" || return 1
-	[ -f "$collect_root/config.dae" ] && [ -f "$collect_root/system.dae" ] || return 1
+		[ "$collect_count" -lt "$MAX_FILES" ] && [ "$collect_total" -le $((MAX_EXPANDED - 1048576)) ] || {
+			collect_error=honk_backup_tree_too_large
+			logger -t honk-maintenance "tree exceeds limits after $collect_count files, $collect_total bytes: $collect_path" 2>/dev/null || :
+			printf '%s\n' "tree too large at: $collect_path" >&2
+			return 1
+		}
+		printf '%s\n' "$collect_path" >> "$collect_out" || { collect_error=temporary_storage_unavailable; return 1; }
+	done < "$collect_out.raw" || { collect_error=honk_tree_unreadable; return 1; }
+	[ -f "$collect_root/config.dae" ] && [ -f "$collect_root/system.dae" ] || { collect_error=honk_config_incomplete; return 1; }
 	return 0
 }
 
@@ -624,7 +647,10 @@ check_tar_members() {
 		{
 			if (NF < 2 || substr($1,1,1) != "-") exit 1
 			name=$NF
-			if (name !~ /^[A-Za-z0-9_.\/-]+$/ || name ~ /^\// || name ~ /(^|\/)\.\.(\/|$)/ || name ~ /(^|\/)\.($|\/)/ || name ~ /\/\//) exit 1
+			# 空白、控制字符、通配符会打乱成员名解析，其余（含 UTF-8）放行。
+			if (name ~ /[[:space:][:cntrl:]]/) exit 1
+			if (name ~ /\*/ || name ~ /\?/ || name ~ /\[/ || name ~ /\\/) exit 1
+			if (name ~ /^\// || name ~ /(^|\/)\.\.(\/|$)/ || name ~ /(^|\/)\.($|\/)/ || name ~ /\/\//) exit 1
 			seen[name]++
 			if (seen[name] > 1) exit 1
 			count++
@@ -651,7 +677,10 @@ extract_archive() {
 		NR==2 { if (NF!=2 || $1!="core_commit" || length($2)!=40 || $2 !~ /^[0-9a-f]+$/) exit 1; next }
 		NR==3 { if (NF!=2 || $1!="state" || ($2!="present" && $2!="absent")) exit 1; next }
 		$1=="file" {
-			if (NF!=4 || $2 !~ /^[A-Za-z0-9_.\/-]+$/ || $2 ~ /^\// || $2 ~ /(^|\/)\.\.(\/|$)/ || $2 ~ /(^|\/)\.($|\/)/ || $2 ~ /\/\//) exit 1
+			if (NF!=4) exit 1
+			if ($2 ~ /[[:space:][:cntrl:]]/) exit 1
+			if ($2 ~ /\*/ || $2 ~ /\?/ || $2 ~ /\[/ || $2 ~ /\\/) exit 1
+			if ($2 ~ /^\// || $2 ~ /(^|\/)\.\.(\/|$)/ || $2 ~ /(^|\/)\.($|\/)/ || $2 ~ /\/\//) exit 1
 			if ($3 !~ /^[0-9]+$/ || $3 > 67108864 || $4 !~ /^[0-9a-f]{64}$/) exit 1
 			if (seen[$2]++) exit 1
 			total += $3; count++; next
@@ -818,6 +847,8 @@ validate_candidate() {
 	candidate=$1
 	uci_dir=$2
 	state=$3
+	# local = 本机自己拍的快照（备份/重置），archive = 从别的设备导入的包。
+	identity=${4:-local}
 	config_tree=$candidate/etc/honk
 	mkdir -p "$temp_dir/uci-tmp" || return 1
 	load_uci_values uci "$uci_dir" || return 1
@@ -838,7 +869,14 @@ validate_candidate() {
 	candidate_ip=
 	network_get_device candidate_device "$u_network" || return 1
 	network_get_ipaddr candidate_ip "$u_network" || return 1
-	validate_config_tree "$config_tree" "$candidate_device" "$candidate_ip" "$u_port" "$u_initialized" || return 2
+	if [ "$identity" = archive ]; then
+		# 包里记的是原设备的 IP，落地时会被改写；拿本机 IP 比会拒掉换设备的备份。
+		archive_lan=$(sed -n "s/^    lan_interface: '\([^']*\)'$/\1/p" "$config_tree/system.dae")
+		archive_listen=$(sed -n "s/^        listen: '\([^']*\)'$/\1/p" "$config_tree/system.dae")
+		validate_config_tree "$config_tree" "$archive_lan" "${archive_listen%:*}" "${archive_listen##*:}" "$u_initialized" || return 2
+	else
+		validate_config_tree "$config_tree" "$candidate_device" "$candidate_ip" "$u_port" "$u_initialized" || return 2
+	fi
 	if [ "$state" = present ] || { [ "$state" = preview ] && { [ -e "$config_tree/state/honk.db" ] || [ -L "$config_tree/state/honk.db" ]; }; }; then
 		archive_sqlite_check "$config_tree/state/honk.db" || return 1
 	fi
@@ -935,7 +973,7 @@ backup() {
 		[ "$u_initialized" = 0 ] || { backup_abort initialized_state_missing; return 1; }
 	fi
 	mkdir -p "$temp_dir/archive/etc" "$temp_dir/archive/uci" || { backup_abort temporary_storage_unavailable; return 1; }
-	collect_tree "$HONK_ROOT" "$temp_dir/files.list" || { backup_abort unsupported_honk_tree_entry; return 1; }
+	collect_tree "$HONK_ROOT" "$temp_dir/files.list" || { backup_abort "${collect_error:-unsupported_honk_tree_entry}"; return 1; }
 	while IFS= read -r relpath; do
 		[ -n "$relpath" ] || continue
 		dest=$temp_dir/archive/etc/honk/$relpath
@@ -1016,7 +1054,7 @@ restore() {
 		error empty_archive_would_clear_active_state
 		return 1
 	fi
-	validate_candidate "$restore_stage" "$uci_dir" "$archive_state"
+	validate_candidate "$restore_stage" "$uci_dir" "$archive_state" archive
 	validate_rc=$?
 	if [ "$validate_rc" -ne 0 ]; then
 		[ "$validate_rc" = 2 ] && error unsupported_candidate_config || error candidate_validation_failed
