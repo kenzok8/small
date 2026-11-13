@@ -237,15 +237,15 @@ return view.extend({
 		ss.hm_lowcase_only = true;
 		/* Remove idle files start */
 		ss.renderSectionAdd = function(/* ... */) {
-			let el = hm.GridSection.prototype.renderSectionAdd.apply(this, arguments);
+			let node = hm.GridSection.prototype.renderSectionAdd.apply(this, arguments);
 
-			el.appendChild(E('button', {
+			node.appendChild(E('button', {
 				'class': 'cbi-button cbi-button-add',
 				'title': _('Remove idles'),
 				'click': ui.createHandlerFn(this, hm.handleRemoveIdles)
 			}, [ _('Remove idles') ]));
 
-			return el;
+			return node;
 		}
 		/* Remove idle files end */
 
@@ -301,9 +301,9 @@ return view.extend({
 
 		so = ss.taboption('field_general', form.ListValue, 'target_sub_rule', _('Use sub rule'));
 		so.load = function(section_id) {
-			return hm.loadLabel.call(this, [
+			return hm.loadChoices.call(this, [
 				['', _('-- Please choose --')],
-				...hm.loadLabelValues(this.config, 'subrule-group')
+				...hm.loadChoicesGetMap(this.config, 'subrule-group')
 			], section_id);
 		}
 		so.validate = function(section_id, value) {
@@ -2312,21 +2312,21 @@ return view.extend({
 			return o.render();
 		}
 		ss.renderSectionAdd = function(/* ... */) {
-			let el = hm.GridSection.prototype.renderSectionAdd.apply(this, arguments);
+			let node = hm.GridSection.prototype.renderSectionAdd.apply(this, arguments);
 
-			el.appendChild(E('button', {
+			node.appendChild(E('button', {
 				'class': 'cbi-button cbi-button-add',
 				'title': _('mihomo config'),
 				'click': ui.createHandlerFn(this, 'handleYamlImport')
 			}, [ _('Import mihomo config') ]));
 
-			el.appendChild(E('button', {
+			node.appendChild(E('button', {
 				'class': 'cbi-button cbi-button-add',
 				'title': _('Remove idles'),
 				'click': ui.createHandlerFn(this, hm.handleRemoveIdles)
 			}, [ _('Remove idles') ]));
 
-			return el;
+			return node;
 		}
 		/* Import mihomo config and Remove idle files end */
 
@@ -2426,9 +2426,9 @@ return view.extend({
 			so.value.apply(so, res);
 		})
 		so.load = function(section_id) {
-			return hm.loadLabel.call(this, [
+			return hm.loadChoices.call(this, [
 				...hm.preset_outbound.direct,
-				...hm.loadLabelValues(this.config, 'proxy_group')
+				...hm.loadChoicesGetMap(this.config, 'proxy_group')
 			], section_id);
 		}
 		so.textvalue = hm.textvalue2Value;
@@ -2751,9 +2751,9 @@ return view.extend({
 
 		so = ss.option(form.ListValue, 'chain_head_sub', _('Destination provider'));
 		so.load = function(section_id) {
-			return hm.loadLabel.call(this, [
+			return hm.loadChoices.call(this, [
 				['', _('-- Please choose --')],
-				...hm.loadLabelValues(this.config, 'provider')
+				...hm.loadChoicesGetMap(this.config, 'provider')
 			], section_id);
 		}
 		so.rmempty = false;
@@ -2762,9 +2762,9 @@ return view.extend({
 
 		so = ss.option(form.ListValue, 'chain_head', _('Destination proxy node'));
 		so.load = function(section_id) {
-			return hm.loadLabel.call(this, [
+			return hm.loadChoices.call(this, [
 				['', _('-- Please choose --')],
-				...hm.loadLabelValues(this.config, 'node')
+				...hm.loadChoicesGetMap(this.config, 'node')
 			], section_id);
 		}
 		so.rmempty = false;
@@ -2781,9 +2781,9 @@ return view.extend({
 
 		so = ss.option(form.ListValue, 'chain_tail_group', _('Transit proxy group'));
 		so.load = function(section_id) {
-			return hm.loadLabel.call(this, [
+			return hm.loadChoices.call(this, [
 				['', _('-- Please choose --')],
-				...hm.loadLabelValues(this.config, 'proxy_group')
+				...hm.loadChoicesGetMap(this.config, 'proxy_group')
 			], section_id);
 		}
 		so.rmempty = false;
@@ -2792,9 +2792,9 @@ return view.extend({
 
 		so = ss.option(form.ListValue, 'chain_tail', _('Transit proxy node'));
 		so.load = function(section_id) {
-			return hm.loadLabel.call(this, [
+			return hm.loadChoices.call(this, [
 				['', _('-- Please choose --')],
-				...hm.loadLabelValues(this.config, 'node')
+				...hm.loadChoicesGetMap(this.config, 'node')
 			], section_id);
 		}
 		so.rmempty = false;
