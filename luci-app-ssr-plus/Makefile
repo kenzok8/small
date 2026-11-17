@@ -4,7 +4,7 @@ LUCI_TITLE:=luci-app-ssr-plus
 LUCI_PKGARCH:=all
 PKG_NAME:=luci-app-ssr-plus
 PKG_VERSION:=198
-PKG_RELEASE:=4
+PKG_RELEASE:=5
 
 PKG_CONFIG_DEPENDS:= \
 	CONFIG_PACKAGE_$(PKG_NAME)_Iptables_Transparent_Proxy \
@@ -33,7 +33,7 @@ LUCI_PKGARCH:=all
 LUCI_DEPENDS:= \
 	+libuci-lua +lua +luci-compat +dns2tcp +dnsmasq-full \
 	+ip-full +lua-neturl +libuci-lua +microsocks +ipt2socks +lyaml \
-	+resolveip +curl +nping +coreutils-timeout \
+	+resolveip +curl +nping +coreutils +coreutils-timeout \
 	+PACKAGE_$(PKG_NAME)_INCLUDE_ChinaDNS_NG:chinadns-ng \
 	+PACKAGE_$(PKG_NAME)_INCLUDE_MosDNS:mosdns \
 	+PACKAGE_$(PKG_NAME)_INCLUDE_Shadow_TLS:shadow-tls \
